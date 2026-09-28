@@ -1,0 +1,23 @@
+{
+  "name": "awe-exercise",
+  "version": "1.0.0",
+  "description": "Investigate the failure of an AI-assisted rehabilitation robot.",
+  "homepage": "https://github.com/leonardo1710/mystery-road-awe-2026#readme",
+  "bugs": {
+    "url": "https://github.com/leonardo1710/mystery-road-awe-2026/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leonardo1710/mystery-road-awe-2026.git"
+  },
+  "license": "ISC",
+  "author": "zafer",
+  "type": "commonjs",
+  "main": "js/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "date-fns": "^4.4.0"
+  }
+}
