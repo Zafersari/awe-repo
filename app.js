@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------
 // GLOBAL STATE
 // ---------------------------------------------------------------------
+/* -- MOVED TO STATE.JS
 var allEvidence = [];
 var filteredEvidence = [];
 var selectedEvidence = null;
@@ -13,7 +14,7 @@ var allTimeline = [];
 var caseData = {};
 
 var currentPeopleTab = "people";
-var loadingStepsRemaining = 2; 
+var loadingStepsRemaining = 2;
 
 
 var evidenceViewLoading = true;
@@ -27,8 +28,8 @@ var viewRendered = {
   workspace: false
 };
 
-var notesStore = {}; 
-var modalCloseListenerCount = 0; 
+var notesStore = {};
+var modalCloseListenerCount = 0;
 
 var STORAGE_KEY_BOOKMARKS = "remotion_bookmarks";
 var STORAGE_KEY_NOTES = "remotion_notes";
@@ -85,7 +86,7 @@ function loadEvidenceData() {
     .then(function (data) {
       allEvidence = data;
       applyStoredBookmarkFlags();
-      filteredEvidence = allEvidence; 
+      filteredEvidence = allEvidence;
       renderDashboard();
       populateAllDropdowns();
       if (currentPage === "evidence") renderEvidenceList();
@@ -123,11 +124,11 @@ function loadAllData() {
     loadTimelineData();
   });
 }
-
+*/
 // ---------------------------------------------------------------------
 // GENERIC LOOKUP HELPERS
 // ---------------------------------------------------------------------
-
+/* -- MOVED TO UTILS.JS TO HELP EVIDENCE.JS
 function findEvidenceById(id) {
   for (var i = 0; i < allEvidence.length; i++) {
     if (allEvidence[i].id === id) return allEvidence[i];
@@ -153,7 +154,9 @@ function evidenceMentionsPerson(ev, person) {
   if (!ev.personIds) return false;
   return ev.personIds.indexOf(person.id) !== -1 || ev.personIds.indexOf(person.name) !== -1;
 }
+*/
 
+/* -- MOVED TO UTILS.JS
 function formatDate(ts) {
   if (!ts) return "Unknown date";
   var d = new Date(ts);
@@ -174,15 +177,16 @@ function getRelevanceBadgeClass(relevance) {
   if (r === "relevant") return "badge-relevant";
   return "badge-unreviewed";
 }
-
+*/
 // ---------------------------------------------------------------------
 // NAVIGATION / HASH ROUTING
 // ---------------------------------------------------------------------
-
+/* -- MOVED TO ROUTER.JS
 function navigateTo(viewName) {
   window.location.hash = viewName;
   // handleHashChange() will pick this up via the hashchange listener
 }
+
 
 function handleHashChange() {
   var hash = window.location.hash.replace("#", "");
@@ -224,11 +228,11 @@ function handleHashChange() {
     renderWorkspace();
   }
 }
-
+*/
 // ---------------------------------------------------------------------
 // DASHBOARD
 // ---------------------------------------------------------------------
-
+/* -- MOVED TO DASHBOARD.JS
 function renderDashboard() {
   var container = document.getElementById("dashboardContent");
   if (!container) return;
@@ -294,17 +298,20 @@ function renderDashboard() {
 function statCardHTML(value, label) {
   return '<div class="stat-card"><div class="stat-value">' + value + '</div><div class="stat-label">' + label + "</div></div>";
 }
+*/
 
 // ---------------------------------------------------------------------
 // EVIDENCE CATALOGUE
 // ---------------------------------------------------------------------
-
+// Here will be in main.js because if we put in evidence.js it will cause tight coupling and circular dependency and we would have to call import timeline.js and workspace.js in evidence.js
+/* MOVED TO MAIN.JS
 function populateAllDropdowns() {
   populateEvidenceDropdowns();
   populateTimelineDropdowns();
   populateHypothesisDropdowns();
 }
-
+*/
+/* -- MOVED TO EVIDENCE.JS
 function populateEvidenceDropdowns() {
   var typeSelect = document.getElementById("filterType");
   var personSelect = document.getElementById("filterPerson");
@@ -620,11 +627,11 @@ function saveCurrentNote() {
   var preview = document.getElementById("notePreview");
   if (preview) preview.innerHTML = text; // unsafe on purpose, see above
 }
-
+*/
 // ---------------------------------------------------------------------
 // PEOPLE & LOCATIONS
 // ---------------------------------------------------------------------
-
+/* -- MOVED TO PEOPLE.JS
 function switchPeopleTab(tab) {
   currentPeopleTab = tab;
   var peoplePanel = document.getElementById("peoplePanel");
@@ -707,11 +714,11 @@ function renderLocations() {
   }
   container.innerHTML = html;
 }
-
+*/
 // ---------------------------------------------------------------------
 // TIMELINE
 // ---------------------------------------------------------------------
-
+/* MOVE TO TIMELINE.JS
 function populateTimelineDropdowns() {
   var personSelect = document.getElementById("timelinePersonFilter");
   var locationSelect = document.getElementById("timelineLocationFilter");
@@ -840,11 +847,11 @@ function openEvidenceModal(evidenceId) {
     }
   });
 }
-
+*/
 // ---------------------------------------------------------------------
 // WORKSPACE
 // ---------------------------------------------------------------------
-
+/* -- MOVED TO WORKSPACE.JS
 function renderWorkspace() {
   renderBookmarksList();
   renderNotesList();
@@ -967,7 +974,7 @@ function loadHypothesisFromStorage() {
   var raw = localStorage.getItem(STORAGE_KEY_HYPOTHESIS);
   if (!raw) return;
 
-  var draft = JSON.parse(raw); 
+  var draft = JSON.parse(raw);
 
   document.getElementById("hypSuspect").value = draft.suspectId || "";
   document.getElementById("hypNature").value = draft.nature || "";
@@ -982,11 +989,11 @@ function loadHypothesisFromStorage() {
     evidenceSelect.options[i].selected = savedIds.indexOf(evidenceSelect.options[i].value) !== -1;
   }
 }
-
+*/
 // ---------------------------------------------------------------------
 // LOCAL STORAGE HELPERS (bookmarks & notes)
 // ---------------------------------------------------------------------
-
+/* -- MOVED TO STORAGE.JS
 function saveBookmarksToStorage() {
   localStorage.setItem(STORAGE_KEY_BOOKMARKS, JSON.stringify(bookmarks));
 }
@@ -1026,11 +1033,12 @@ function loadNoteAsync(evidenceId) {
     resolve(notesStore[evidenceId] || "");
   });
 }
+*/
 
 // ---------------------------------------------------------------------
 // EVENT LISTENER SETUP
 // ---------------------------------------------------------------------
-
+/* MOVED TO MAIN.JS
 function setupEventListeners() {
   window.addEventListener("hashchange", handleHashChange);
 
@@ -1083,3 +1091,4 @@ function initApp() {
 
 window.addEventListener("DOMContentLoaded", initApp);
 window.addEventListener("hashchange", handleHashChange);
+*/
