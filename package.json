@@ -17,7 +17,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc &&vite build",
     "preview": "vite preview",
     "format": "prettier --write .",
     "lint": "eslint .",
@@ -30,6 +30,7 @@
     "@eslint/js": "^10.0.1",
     "eslint": "^10.11.0",
     "prettier": "^3.9.9",
+    "typescript": "^7.0.2",
     "vite": "^8.3.1"
   }
 }
