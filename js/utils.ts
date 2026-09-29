@@ -63,25 +63,9 @@ export function evidenceMentionsPerson(ev, person) {
     ev.personIds.indexOf(person.name) !== -1
   );
 }*/
-import { state as rawState } from "./state.js";
-
-// Demo 6 için temel Domain verilerinin tiplerini önden hazırlıyoruz
-export interface Evidence {
-  id: string;
-  personIds?: string[];
-  [key: string]: unknown;
-}
-
-export interface Person {
-  id: string;
-  name: string;
-  [key: string]: unknown;
-}
-
-export interface Location {
-  id: string;
-  [key: string]: unknown;
-}
+/*
+import { state as rawState } from "./state";
+import { Evidence, Person, Location } from "./models";
 
 // state.js için kalıp giydiriyoruz ki never[] (id bulunamadı) hatası vermesin:
 interface UtilsState {
@@ -153,5 +137,51 @@ export function evidenceMentionsPerson(ev: Evidence, person: Person): boolean {
     ev.personIds.indexOf(person.id) !== -1 ||
     ev.personIds.indexOf(person.name) !== -1
   );
+}*/
+
+import { state } from "./state";
+import { Evidence, Person, Location } from "./models";
+
+export function formatDate(dateString: string): string {
+  if (!dateString) return "Unknown date";
+  const d = new Date(dateString);
+  if (isNaN(d.getTime())) return dateString;
+
+  // Format: YYYY-MM-DD
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
+export function getStatusBadgeClass(status?: string): string {
+  const s = (status || "").toLowerCase();
+  if (s === "reviewed") return "reviewed";
+  if (s === "flagged") return "flagged";
+  return "unreviewed";
+}
+
+export function getRelevanceBadgeClass(relevance?: string): string {
+  const r = (relevance || "").toLowerCase();
+  if (r === "relevant") return "reviewed";
+  if (r === "irrelevant") return "unreviewed";
+  return "unknown";
+}
+
+export function findEvidenceById(id: string): Evidence | undefined {
+  return state.allEvidence.find((e) => e.id === id);
+}
+
+export function findPersonById(id: string): Person | undefined {
+  return state.allPeople.find((p) => p.id === id);
+}
+
+export function findLocationById(id: string): Location | undefined {
+  return state.allLocations.find((l) => l.id === id);
+}
+
+export function evidenceMentionsPerson(ev: Evidence, person: Person): boolean {
+  // TypeScript sayesinde ev.personIds'in sadece string[] olduğunu biliyoruz
+  const pIds = ev.personIds || [];
+  return pIds.indexOf(person.id) !== -1;
+}

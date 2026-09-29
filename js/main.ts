@@ -1,0 +1,253 @@
+/*const failure = "i never used it";
+import {
+  loadBookmarksFromStorage,
+  loadNotesFromStorage,
+  loadNoteAsync,
+} from "./storage";
+import { loadAllData } from "./state";
+import { handleHashChange, navigateTo } from "./router";
+import {
+  populateEvidenceDropdowns,
+  renderEvidenceList,
+  handleSearchInput,
+  handleSortChange,
+  clearFilters,
+  closeEvidenceDetail,
+  saveCurrentNote,
+} from "./pages/evidence";
+import { populateTimelineDropdowns, renderTimeline } from "./pages/timeline";
+import {
+  populateHypothesisDropdowns,
+  saveHypothesis,
+} from "./pages/workspace";
+import { switchPeopleTab } from "./pages/people";
+
+export function populateAllDropdowns() {
+  populateEvidenceDropdowns();
+  populateTimelineDropdowns();
+  populateHypothesisDropdowns();
+}
+
+function setupEventListeners() {
+  window.addEventListener("hashchange", handleHashChange);
+
+  const navButtons = document.querySelectorAll(".nav-btn");
+  for (let i = 0; i < navButtons.length; i++) {
+    navButtons[i].addEventListener("click", function () {
+      const targetView = navButtons[i].getAttribute("data-view");
+      console.log("nav clicked:", targetView);
+    });
+  }
+
+  document
+    .getElementById("evidenceSearch")
+    .addEventListener("input", handleSearchInput);
+
+  document
+    .getElementById("filterType")
+    .addEventListener("change", renderEvidenceList);
+  document
+    .getElementById("filterPerson")
+    .addEventListener("change", renderEvidenceList);
+  document
+    .getElementById("filterLocation")
+    .addEventListener("change", renderEvidenceList);
+
+  document
+    .getElementById("filterStatus")
+    .addEventListener("change", renderEvidenceList);
+  document
+    .getElementById("filterRelevance")
+    .addEventListener("change", renderEvidenceList);
+
+  document
+    .getElementById("clearFiltersBtn")
+    .addEventListener("click", clearFilters);
+
+  document
+    .getElementById("timelineOrder")
+    .addEventListener("change", renderTimeline);
+  document
+    .getElementById("timelinePersonFilter")
+    .addEventListener("change", renderTimeline);
+  document
+    .getElementById("timelineLocationFilter")
+    .addEventListener("change", renderTimeline);
+  document
+    .getElementById("timelineTypeFilter")
+    .addEventListener("change", renderTimeline);
+
+  document
+    .getElementById("hypConfidence")
+    .addEventListener("input", function (e) {
+      document.getElementById("hypConfidenceValue").textContent =
+        e.target.value;
+    });
+}
+
+function initApp() {
+  loadBookmarksFromStorage();
+  loadNotesFromStorage();
+  setupEventListeners();
+
+  loadAllData().then(function () {
+    handleHashChange();
+    //var firstNote = loadNoteAsync("E01");
+    //console.log("First note preview:", firstNote);
+    loadNoteAsync("E01").then(function (firstNote) {
+      console.log("First note preview:", firstNote);
+    });
+  });
+}
+
+// ---------------------------------------------------------------------
+// GLOBAL KÖPRÜLER (HTML içindeki inline "onclick" vb. için)
+// "Pure refactor" kuralı gereği HTML'i değiştirmemek adına
+// ES Modül fonksiyonlarını global window objesine bağlıyoruz.
+// ---------------------------------------------------------------------
+window.navigateTo = navigateTo;
+window.switchPeopleTab = switchPeopleTab;
+window.saveHypothesis = saveHypothesis;
+window.handleSortChange = handleSortChange;
+window.closeEvidenceDetail = closeEvidenceDetail;
+window.saveCurrentNote = saveCurrentNote;
+window.renderEvidenceList = renderEvidenceList;
+
+// ---------------------------------------------------------------------
+// INIT
+// ---------------------------------------------------------------------
+window.addEventListener("DOMContentLoaded", initApp);
+window.addEventListener("hashchange", handleHashChange);
+*/
+import {
+  loadBookmarksFromStorage,
+  loadNotesFromStorage,
+  loadNoteAsync,
+} from "./storage";
+import { loadAllData } from "./state";
+import { handleHashChange, navigateTo } from "./router";
+import {
+  populateEvidenceDropdowns,
+  renderEvidenceList,
+  handleSearchInput,
+  handleSortChange,
+  clearFilters,
+  closeEvidenceDetail,
+  saveCurrentNote,
+} from "./pages/evidence";
+import { populateTimelineDropdowns, renderTimeline } from "./pages/timeline";
+import {
+  populateHypothesisDropdowns,
+  saveHypothesis,
+} from "./pages/workspace";
+import { switchPeopleTab } from "./pages/people";
+
+// 1. TypeScript'e HTML içinden çağırdığımız Global (window) fonksiyonları tanıtıyoruz
+declare global {
+  interface Window {
+    navigateTo: any;
+    switchPeopleTab: any;
+    saveHypothesis: any;
+    handleSortChange: any;
+    closeEvidenceDetail: any;
+    saveCurrentNote: any;
+    renderEvidenceList: any;
+  }
+}
+
+export function populateAllDropdowns(): void {
+  populateEvidenceDropdowns();
+  populateTimelineDropdowns();
+  populateHypothesisDropdowns();
+}
+
+function setupEventListeners(): void {
+  window.addEventListener("hashchange", handleHashChange);
+
+  const navButtons = document.querySelectorAll<HTMLElement>(".nav-btn");
+  for (let i = 0; i < navButtons.length; i++) {
+    navButtons[i].addEventListener("click", function () {
+      const targetView = navButtons[i].getAttribute("data-view");
+      console.log("nav clicked:", targetView);
+    });
+  }
+
+  // 2. TypeScript'e bu elementlerin kesinlikle var olduğunu (!) söylüyoruz
+  document
+    .getElementById("evidenceSearch")!
+    .addEventListener("input", handleSearchInput);
+
+  document
+    .getElementById("filterType")!
+    .addEventListener("change", renderEvidenceList);
+  document
+    .getElementById("filterPerson")!
+    .addEventListener("change", renderEvidenceList);
+  document
+    .getElementById("filterLocation")!
+    .addEventListener("change", renderEvidenceList);
+
+  document
+    .getElementById("filterStatus")!
+    .addEventListener("change", renderEvidenceList);
+  document
+    .getElementById("filterRelevance")!
+    .addEventListener("change", renderEvidenceList);
+
+  document
+    .getElementById("clearFiltersBtn")!
+    .addEventListener("click", clearFilters);
+
+  document
+    .getElementById("timelineOrder")!
+    .addEventListener("change", renderTimeline);
+  document
+    .getElementById("timelinePersonFilter")!
+    .addEventListener("change", renderTimeline);
+  document
+    .getElementById("timelineLocationFilter")!
+    .addEventListener("change", renderTimeline);
+  document
+    .getElementById("timelineTypeFilter")!
+    .addEventListener("change", renderTimeline);
+
+  document
+    .getElementById("hypConfidence")!
+    .addEventListener("input", function (e: Event) {
+      // 3. TypeScript'e e.target'ın bir Input (metin kutusu) olduğunu belirtiyoruz
+      const target = e.target as HTMLInputElement;
+      document.getElementById("hypConfidenceValue")!.textContent = target.value;
+    });
+}
+
+function initApp(): void {
+  loadBookmarksFromStorage();
+  loadNotesFromStorage();
+  setupEventListeners();
+
+  loadAllData().then(function () {
+    handleHashChange();
+    loadNoteAsync("E01").then(function (firstNote) {
+      console.log("First note preview:", firstNote);
+    });
+  });
+}
+
+// ---------------------------------------------------------------------
+// GLOBAL KÖPRÜLER (HTML içindeki inline "onclick" vb. için)
+// "Pure refactor" kuralı gereği HTML'i değiştirmemek adına
+// ES Modül fonksiyonlarını global window objesine bağlıyoruz.
+// ---------------------------------------------------------------------
+window.navigateTo = navigateTo;
+window.switchPeopleTab = switchPeopleTab;
+window.saveHypothesis = saveHypothesis;
+window.handleSortChange = handleSortChange;
+window.closeEvidenceDetail = closeEvidenceDetail;
+window.saveCurrentNote = saveCurrentNote;
+window.renderEvidenceList = renderEvidenceList;
+
+// ---------------------------------------------------------------------
+// INIT
+// ---------------------------------------------------------------------
+window.addEventListener("DOMContentLoaded", initApp);
+window.addEventListener("hashchange", handleHashChange);

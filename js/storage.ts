@@ -39,7 +39,7 @@ export function loadNoteAsync(evidenceId) {
   });
 }
 */
-import { state as rawState, STORAGE_KEY_BOOKMARKS, STORAGE_KEY_NOTES } from "./state.js";
+import { state as rawState, STORAGE_KEY_BOOKMARKS, STORAGE_KEY_NOTES } from "./state";
 
 // state.js henüz TypeScript'e geçmediği için boş dizileri never[] sanıyor. 
 // Bunu çözmek için içeri aktardığımız state objesine geçici bir tip (kalıp) giydiriyoruz:

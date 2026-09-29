@@ -1,3 +1,4 @@
+/*
 import { renderDashboard } from "./pages/dashboard.js";
 import {
   renderEvidenceList,
@@ -111,7 +112,7 @@ export function loadTimelineData() {
             hideLoadingStep();
         });
 }
-*/
+
 export const loadCorePeopleAndLocations = async () => {
   try {
     const caseRes = await fetch("data/case.json");
@@ -174,6 +175,126 @@ export const loadAllData = async () => {
   await loadCorePeopleAndLocations();
 
   // Üstteki işlem bitince bunlar normal senkron kod gibi çalışacak
+  loadEvidenceData();
+  loadTimelineData();
+};
+*/
+// Diğer modüllerden (henüz JS olan sayfalardan) fonksiyonları içeri aktarıyoruz
+import { renderDashboard } from "./pages/dashboard";
+import {
+  renderEvidenceList,
+  applyStoredBookmarkFlags,
+} from "./pages/evidence";
+import { renderTimeline } from "./pages/timeline";
+import { populateAllDropdowns } from "./main";
+
+// Demo 6'da oluşturduğumuz modelleri içeri aktarıyoruz
+import { Evidence, Person, Location, TimelineEvent, AppState } from "./models";
+
+export const state: AppState = {
+  allEvidence: [],
+  filteredEvidence: [],
+  selectedEvidence: null,
+  bookmarks: [],
+  currentPage: "dashboard",
+  allPeople: [],
+  allLocations: [],
+  allTimeline: [],
+  caseData: {},
+  currentPeopleTab: "people",
+  loadingStepsRemaining: 2,
+  evidenceViewLoading: true,
+  viewRendered: {
+    dashboard: false,
+    evidence: false,
+    people: false,
+    timeline: false,
+    workspace: false,
+  },
+  notesStore: {},
+  modalCloseListenerCount: 0,
+};
+
+export const STORAGE_KEY_BOOKMARKS = "remotion_bookmarks";
+export const STORAGE_KEY_NOTES = "remotion_notes";
+export const STORAGE_KEY_HYPOTHESIS = "remotion_hypothesis";
+
+export function showLoadingOverlay(msg: string): void {
+  const overlay = document.getElementById("loadingOverlay");
+  const text = document.getElementById("loadingText");
+  if (text) text.textContent = msg;
+  if (overlay) overlay.classList.remove("hidden");
+}
+
+export function hideLoadingStep(): void {
+  state.loadingStepsRemaining--;
+  if (state.loadingStepsRemaining <= 0) {
+    const overlay = document.getElementById("loadingOverlay");
+    if (overlay) overlay.classList.add("hidden");
+  }
+}
+
+export const loadCorePeopleAndLocations = async (): Promise<void> => {
+  try {
+    const caseRes = await fetch("data/case.json");
+    state.caseData = await caseRes.json();
+
+    const peopleRes = await fetch("data/people.json");
+    state.allPeople = (await peopleRes.json()) as Person[];
+
+    const locationsRes = await fetch("data/locations.json");
+    state.allLocations = (await locationsRes.json()) as Location[];
+
+    hideLoadingStep();
+    renderDashboard();
+    populateAllDropdowns();
+  } catch (err) {
+    console.error("Core data load error", err);
+  }
+};
+
+export const loadEvidenceData = async (): Promise<void> => {
+  try {
+    const res = await fetch("data/evidence.json");
+    const data = (await res.json()) as Evidence[];
+
+    state.allEvidence = data;
+    applyStoredBookmarkFlags();
+    state.filteredEvidence = state.allEvidence;
+    state.evidenceViewLoading = false;
+
+    renderDashboard();
+    populateAllDropdowns();
+
+    if (state.currentPage === "evidence") renderEvidenceList();
+  } catch (err) {
+    console.error("Failed to load evidence.json", err);
+    alert("Evidence could not be loaded. Some views may be incomplete.");
+  }
+};
+
+export const loadTimelineData = async (): Promise<void> => {
+  try {
+    const res = await fetch("data/timeline.json");
+    const data = (await res.json()) as TimelineEvent[];
+
+    state.allTimeline = data;
+    renderDashboard();
+    if (state.currentPage === "timeline") renderTimeline();
+    populateAllDropdowns();
+  } catch (err) {
+    console.log("timeline load error", err);
+  } finally {
+    hideLoadingStep();
+  }
+};
+
+export const loadAllData = async (): Promise<void> => {
+  showLoadingOverlay("Loading case file…");
+  state.loadingStepsRemaining = 2;
+
+  await loadCorePeopleAndLocations();
+
   loadEvidenceData();
   loadTimelineData();
 };
