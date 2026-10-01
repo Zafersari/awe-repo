@@ -67,7 +67,7 @@ export function evidenceMentionsPerson(ev, person) {
 import { state as rawState } from "./state";
 import { Evidence, Person, Location } from "./models";
 
-// state.js için kalıp giydiriyoruz ki never[] (id bulunamadı) hatası vermesin:
+// Apply a type shape to state.js so it doesn't raise the never[] (id not found) error:
 interface UtilsState {
   allEvidence: Evidence[];
   allPeople: Person[];
@@ -181,7 +181,7 @@ export function findLocationById(id: string): Location | undefined {
 }
 
 export function evidenceMentionsPerson(ev: Evidence, person: Person): boolean {
-  // TypeScript sayesinde ev.personIds'in sadece string[] olduğunu biliyoruz
+  // Thanks to TypeScript we know ev.personIds is only string[]
   const pIds = ev.personIds || [];
   return pIds.indexOf(person.id) !== -1;
 }

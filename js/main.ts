@@ -101,9 +101,9 @@ function initApp() {
 }
 
 // ---------------------------------------------------------------------
-// GLOBAL KÖPRÜLER (HTML içindeki inline "onclick" vb. için)
-// "Pure refactor" kuralı gereği HTML'i değiştirmemek adına
-// ES Modül fonksiyonlarını global window objesine bağlıyoruz.
+// GLOBAL BRIDGES (for inline "onclick" etc. inside the HTML)
+// To keep the HTML unchanged (per the "pure refactor" rule),
+// we attach the ES module functions to the global window object.
 // ---------------------------------------------------------------------
 window.navigateTo = navigateTo;
 window.switchPeopleTab = switchPeopleTab;
@@ -142,7 +142,7 @@ import {
 } from "./pages/workspace";
 import { switchPeopleTab } from "./pages/people";
 
-// 1. TypeScript'e HTML içinden çağırdığımız Global (window) fonksiyonları tanıtıyoruz
+// 1. Declare to TypeScript the global (window) functions we call from the HTML
 declare global {
   interface Window {
     navigateTo: any;
@@ -172,7 +172,7 @@ function setupEventListeners(): void {
     });
   }
 
-  // 2. TypeScript'e bu elementlerin kesinlikle var olduğunu (!) söylüyoruz
+  // 2. Tell TypeScript (with !) that these elements definitely exist
   document
     .getElementById("evidenceSearch")!
     .addEventListener("input", handleSearchInput);
@@ -214,7 +214,7 @@ function setupEventListeners(): void {
   document
     .getElementById("hypConfidence")!
     .addEventListener("input", function (e: Event) {
-      // 3. TypeScript'e e.target'ın bir Input (metin kutusu) olduğunu belirtiyoruz
+      // 3. Tell TypeScript that e.target is an input element (text box)
       const target = e.target as HTMLInputElement;
       document.getElementById("hypConfidenceValue")!.textContent = target.value;
     });
@@ -234,9 +234,9 @@ function initApp(): void {
 }
 
 // ---------------------------------------------------------------------
-// GLOBAL KÖPRÜLER (HTML içindeki inline "onclick" vb. için)
-// "Pure refactor" kuralı gereği HTML'i değiştirmemek adına
-// ES Modül fonksiyonlarını global window objesine bağlıyoruz.
+// GLOBAL BRIDGES (for inline "onclick" etc. inside the HTML)
+// To keep the HTML unchanged (per the "pure refactor" rule),
+// we attach the ES module functions to the global window object.
 // ---------------------------------------------------------------------
 window.navigateTo = navigateTo;
 window.switchPeopleTab = switchPeopleTab;

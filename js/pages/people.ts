@@ -113,11 +113,11 @@ import { evidenceMentionsPerson } from "../utils";
 import { navigateTo } from "../router";
 import { renderEvidenceList } from "./evidence";
 
-// tab parametresinin string olduğunu belirtiyoruz
+// Declare that the tab parameter is a string
 export function switchPeopleTab(tab: string): void {
   state.currentPeopleTab = tab;
 
-  // HTML elementlerinin kesinlikle var olduğunu (!) belirtiyoruz
+  // Assert (with !) that the HTML elements definitely exist
   const peoplePanel = document.getElementById("peoplePanel")!;
   const locationsPanel = document.getElementById("locationsPanel")!;
   const peopleTabBtn = document.getElementById("tabPeopleBtn")!;
@@ -136,7 +136,7 @@ export function switchPeopleTab(tab: string): void {
   }
 }
 
-// Parametreye Person tipini, dönüşe ise number tipini ekledik
+// Added the Person type to the parameter and number as the return type
 export function countEvidenceForPerson(person: Person): number {
   let count = 0;
   for (let i = 0; i < state.allEvidence.length; i++) {
@@ -154,7 +154,7 @@ export function renderPeople(): void {
     const person = state.allPeople[i];
     const count = countEvidenceForPerson(person);
 
-    // Modelimizde olmayan ekstra JSON alanları için (person as any) kullanıyoruz
+    // Use (person as any) for extra JSON fields that are not in our model
     const pAny = person as any;
 
     html += '<div class="person-card">';
@@ -201,7 +201,7 @@ export function renderPeople(): void {
   const links = container.querySelectorAll<HTMLElement>(".evidence-count-link");
   for (let l = 0; l < links.length; l++) {
     links[l].addEventListener("click", function (e: Event) {
-      // Event target'ı HTMLElement olarak belirliyoruz
+      // Treat the event target as an HTMLElement
       const target = e.target as HTMLElement;
       const personId = target.getAttribute("data-person-id");
 
@@ -225,7 +225,7 @@ export function renderLocations(): void {
   let html = "";
   for (let i = 0; i < state.allLocations.length; i++) {
     const loc = state.allLocations[i];
-    const lAny = loc as any; // Modelde olmayan "contains" array'i için
+    const lAny = loc as any; // For the "contains" array, which is not in the model
 
     html += '<div class="location-card">';
     html += "<h3>" + loc.id + " &mdash; " + loc.name + "</h3>";

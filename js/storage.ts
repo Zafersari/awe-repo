@@ -41,8 +41,8 @@ export function loadNoteAsync(evidenceId) {
 */
 import { state as rawState, STORAGE_KEY_BOOKMARKS, STORAGE_KEY_NOTES } from "./state";
 
-// state.js henüz TypeScript'e geçmediği için boş dizileri never[] sanıyor. 
-// Bunu çözmek için içeri aktardığımız state objesine geçici bir tip (kalıp) giydiriyoruz:
+// Since state.js is not migrated to TypeScript yet, empty arrays are inferred as never[]. 
+// To fix this, we apply a temporary type (shape) to the imported state object:
 interface StorageState {
   bookmarks: string[];
   notesStore: Record<string, string>;

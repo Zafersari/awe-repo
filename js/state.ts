@@ -171,15 +171,15 @@ export const loadAllData = async () => {
   showLoadingOverlay("Loading case file…");
   state.loadingStepsRemaining = 2;
 
-  // DEMO 9: .then() yerine await kullandık
+  // DEMO 9: used await instead of .then()
   await loadCorePeopleAndLocations();
 
-  // Üstteki işlem bitince bunlar normal senkron kod gibi çalışacak
+  // Once the operation above finishes, these run like normal synchronous code
   loadEvidenceData();
   loadTimelineData();
 };
 */
-// Diğer modüllerden (henüz JS olan sayfalardan) fonksiyonları içeri aktarıyoruz
+// Import functions from other modules (pages that are still JS)
 import { renderDashboard } from "./pages/dashboard";
 import {
   renderEvidenceList,
@@ -188,7 +188,7 @@ import {
 import { renderTimeline } from "./pages/timeline";
 import { populateAllDropdowns } from "./main";
 
-// Demo 6'da oluşturduğumuz modelleri içeri aktarıyoruz
+// Import the models we created in Demo 6
 import { Evidence, Person, Location, TimelineEvent, AppState } from "./models";
 
 export const state: AppState = {

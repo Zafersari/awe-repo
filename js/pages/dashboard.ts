@@ -115,7 +115,7 @@ export function renderDashboard(): void {
       ? 0
       : Math.round((reviewedCount / state.allEvidence.length) * 100);
 
-  // TypeScript'e caseData'nın içindeki değerlerin metin (string) olduğunu belirtiyoruz
+  // Tell TypeScript that the values inside caseData are strings
   const caseData = state.caseData as Record<string, string>;
 
   let html = "";
@@ -175,7 +175,7 @@ export function renderDashboard(): void {
   for (let t = 0; t < recentTimeline.length; t++) {
     const evt = recentTimeline[t];
 
-    // evt.time özelliği TypeScript modelimizde olmayabilir diye güvenli şekilde çekiyoruz
+    // Read evt.time safely, since it may not exist in our TypeScript model
     const eventTime = (evt.date || (evt as unknown as { time?: string }).time || "") as string; html +=
       '<div class="mini-list-item"><strong>' +
       formatDate(eventTime) +
@@ -190,7 +190,7 @@ export function renderDashboard(): void {
   container.innerHTML = html;
 }
 
-// Parametrelere kesin tipler atadık (number | string)
+// Gave the parameters explicit types (number | string)
 export function statCardHTML(value: number | string, label: string): string {
   return (
     '<div class="stat-card"><div class="stat-value">' +

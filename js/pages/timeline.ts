@@ -279,7 +279,7 @@ export function renderTimeline(): void {
     const lIds = iAny.locationIds || [];
     for (let el = 0; el < lIds.length; el++) {
       const evtLoc = findLocationById(lIds[el]);
-      // DÜZELTME: Eskiden objenin tamamı atılıyordu, şimdi sadece ismini çekiyoruz
+      // FIX: previously the whole object was inserted (showing [object Object]); now we use only its name
       eventLocationNames.push(evtLoc ? evtLoc.name : lIds[el]);
     }
 

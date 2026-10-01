@@ -224,7 +224,7 @@ export function renderBookmarksList(): void {
   }
 }
 
-// Not objeleri için özel bir tip tanımladık
+// Defined a dedicated type for note objects
 interface NoteEntry {
   index: number;
   evidenceId: string;
@@ -325,7 +325,7 @@ export function saveHypothesis(): void {
   }, 2000);
 }
 
-// Parametre tipini 'HTMLSelectElement' olarak garanti ediyoruz
+// Guarantee that the parameter type is 'HTMLSelectElement'
 export function getSelectedOptions(selectEl: HTMLSelectElement): string[] {
   const result: string[] = [];
   for (let i = 0; i < selectEl.options.length; i++) {

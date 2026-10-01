@@ -242,7 +242,7 @@ export function renderEvidenceDetail(ev) {
     html += '<div class="evidence-detail-header">';
     html += "<div><h2>" + ev.title + "</h2>";
     html += '<div class="evidence-meta">' + ev.id + " &middot; " + ev.type + " &middot; " + formatDate(ev.timestamp) + "</div></div>";
-    // Orijinal onclick bırakıldı
+    // Original onclick kept
     html += '<button type="button" class="btn btn-secondary btn-small" onclick="closeEvidenceDetail()">Close</button>';
     html += "</div>";
 
@@ -272,7 +272,7 @@ export function renderEvidenceDetail(ev) {
 
     html += '<div class="detail-field"><strong>Investigator note</strong>';
     html += '<textarea id="evidenceNoteInput" class="note-textarea" rows="3" data-evidence-id="' + ev.id + '" placeholder="Add a private note about this evidence...">' + storedNote + "</textarea>";
-    // Orijinal onclick bırakıldı
+    // Original onclick kept
     html += '<button type="button" class="btn btn-primary btn-small" style="margin-top:6px;" onclick="saveCurrentNote()">Save note</button>';
     html += "</div>";
 
@@ -782,7 +782,7 @@ export const getFilteredEvidence = (): Evidence[] => {
     const item = state.allEvidence[i];
     let matches = true;
 
-    // Güvenli şekilde tags, locationIds ve personIds array'lerine erişim (eğer undefined ise boş array döner)
+    // Safe access to the tags, locationIds and personIds arrays (falls back to an empty array if undefined)
     const tags = (item as any).tags || [];
     const locationIds = item.locationId ? [item.locationId] : ((item as any).locationIds || []);
 

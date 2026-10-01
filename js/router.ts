@@ -16,7 +16,7 @@ export function handleHashChange() {
     hash = "dashboard";
   }
 
-  // State objesini güncelliyoruz
+  // Update the state object
   state.currentPage = hash;
 
   var sections = document.querySelectorAll(".view");
@@ -33,8 +33,8 @@ export function handleHashChange() {
     }
   }
 
-  // Aşağıdaki fonksiyonlar henüz import edilmediği için şimdilik tanımsız (undefined) olacaklar.
-  // View dosyalarını bitirince importlarını ekleyeceğiz.
+  // The functions below are not imported yet, so for now they will be undefined.
+  // We will add their imports once the view files are finished.
   if (hash === "dashboard" && !state.viewRendered.dashboard) {
     renderDashboard();
     state.viewRendered.dashboard = true;
@@ -59,13 +59,13 @@ import { renderPeople, renderLocations } from "./pages/people";
 import { renderTimeline } from "./pages/timeline";
 import { renderWorkspace } from "./pages/workspace";
 
-// Parametreye ': string' tipini ekledik ve geriye bir şey döndürmediği için ': void' yazdık.
+// Added ': string' to the parameter, and ': void' because it returns nothing.
 export function navigateTo(viewName: string): void {
   window.location.hash = viewName;
 }
 
 export function handleHashChange(): void {
-  // Eski 'var' yerine modern 'let' ve 'const' kullanıyoruz
+  // Use modern 'let' and 'const' instead of the old 'var'
   let hash = window.location.hash.replace("#", "");
   const validViews = ["dashboard", "evidence", "people", "timeline", "workspace"];
 
@@ -73,16 +73,16 @@ export function handleHashChange(): void {
     hash = "dashboard";
   }
 
-  // State objesini güncelliyoruz
+  // Update the state object
   state.currentPage = hash;
 
-  // Çektiğimiz elementlerin birer HTML elementi olduğunu belirtiyoruz <HTMLElement>
+  // Declare that the queried elements are HTML elements <HTMLElement>
   const sections = document.querySelectorAll<HTMLElement>(".view");
   for (let i = 0; i < sections.length; i++) {
     sections[i].classList.remove("active");
   }
 
-  // getElementById'nin sonuna ! koyarak TS'e "bu kesin var, null değil" diyoruz
+  // Adding ! after getElementById tells TS "this definitely exists, it is not null"
   document.getElementById("view-" + hash)!.classList.add("active");
 
   const navButtons = document.querySelectorAll<HTMLElement>(".nav-btn");

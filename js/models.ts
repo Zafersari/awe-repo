@@ -15,7 +15,7 @@ export interface Evidence {
     id: string;
     title: string;
     type?: string;
-    personIds?: string[]; // Sadece ID'lerden oluşan bir dizi olmalı!
+    personIds?: string[]; // Must be an array of IDs only!
     locationId?: string;
     status?: string;
     relevance?: string;
