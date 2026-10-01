@@ -147,25 +147,26 @@ export function formatDate(dateString: string): string {
   const d = new Date(dateString);
   if (isNaN(d.getTime())) return dateString;
 
-  // Format: YYYY-MM-DD
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  // Same output as the JavaScript version: locale date + time (e.g. "Oct 15, 2026 14:32")
+  return (
+    d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) +
+    " " +
+    d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })
+  );
 }
 
 export function getStatusBadgeClass(status?: string): string {
   const s = (status || "").toLowerCase();
-  if (s === "reviewed") return "reviewed";
-  if (s === "flagged") return "flagged";
-  return "unreviewed";
+  // Must return the full CSS class name (styles.css defines .badge-reviewed etc.)
+  if (s === "reviewed") return "badge-reviewed";
+  if (s === "flagged") return "badge-flagged";
+  return "badge-unreviewed";
 }
 
 export function getRelevanceBadgeClass(relevance?: string): string {
   const r = (relevance || "").toLowerCase();
-  if (r === "relevant") return "reviewed";
-  if (r === "irrelevant") return "unreviewed";
-  return "unknown";
+  if (r === "relevant") return "badge-relevant";
+  return "badge-unreviewed";
 }
 
 export function findEvidenceById(id: string): Evidence | undefined {
@@ -181,7 +182,6 @@ export function findLocationById(id: string): Location | undefined {
 }
 
 export function evidenceMentionsPerson(ev: Evidence, person: Person): boolean {
-  // Thanks to TypeScript we know ev.personIds is only string[]
-  const pIds = ev.personIds || [];
-  return pIds.indexOf(person.id) !== -1;
+  // Match by ID or by name, like the JavaScript version (E04 uses the name "Nova Byte")
+  return ev.personIds.indexOf(person.id) !== -1 || ev.personIds.indexOf(person.name) !== -1;
 }

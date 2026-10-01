@@ -782,27 +782,24 @@ export const getFilteredEvidence = (): Evidence[] => {
     const item = state.allEvidence[i];
     let matches = true;
 
-    // Safe access to the tags, locationIds and personIds arrays (falls back to an empty array if undefined)
-    const tags = (item as any).tags || [];
-    const locationIds = item.locationId ? [item.locationId] : ((item as any).locationIds || []);
 
     if (searchTerm) {
       const haystack = (
-        (item.title || "") +
+        item.title +
         " " +
-        ((item as any).summary || "") +
+        item.summary +
         " " +
-        tags.join(" ")
+        item.tags.join(" ")
       ).toLowerCase();
       if (haystack.indexOf(searchTerm) === -1) matches = false;
     }
-    if (matches && typeVal && (item.type || "").toLowerCase() !== typeVal)
+    if (matches && typeVal && item.type.toLowerCase() !== typeVal)
       matches = false;
     if (matches && personVal) {
       const person = findPersonById(personVal);
       if (!person || !evidenceMentionsPerson(item, person)) matches = false;
     }
-    if (matches && locationVal && locationIds.indexOf(locationVal) === -1)
+    if (matches && locationVal && item.locationIds.indexOf(locationVal) === -1)
       matches = false;
     if (matches && statusVal && (item.status || "").toLowerCase() !== statusVal)
       matches = false;
@@ -818,13 +815,13 @@ export const getFilteredEvidence = (): Evidence[] => {
 
   const sortValue = (document.getElementById("sortEvidence") as HTMLSelectElement)!.value;
   if (sortValue === "title-asc") {
-    results.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+    results.sort((a, b) => a.title.localeCompare(b.title));
   } else if (sortValue === "title-desc") {
-    results.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
+    results.sort((a, b) => b.title.localeCompare(a.title));
   } else if (sortValue === "date-asc") {
-    results.sort((a, b) => new Date((a as any).timestamp).getTime() - new Date((b as any).timestamp).getTime());
+    results.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
   } else {
-    results.sort((a, b) => new Date((b as any).timestamp).getTime() - new Date((a as any).timestamp).getTime());
+    results.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
   }
 
   state.filteredEvidence = results;
@@ -859,7 +856,7 @@ export const renderEvidenceList = (): void => {
 
 export const renderEvidenceCardHTML = (ev: Evidence): string => {
   const isBookmarked = state.bookmarks.indexOf(ev.id) !== -1;
-  const tags = (ev as any).tags || [];
+  const tags = ev.tags;
 
   let html = '<div class="evidence-card" data-id="' + ev.id + '">';
   html +=
@@ -879,9 +876,9 @@ export const renderEvidenceCardHTML = (ev: Evidence): string => {
     " &middot; " +
     ev.type +
     " &middot; " +
-    formatDate((ev as any).timestamp) +
+    formatDate(ev.timestamp) +
     "</div>";
-  html += '<div class="evidence-summary">' + ((ev as any).summary || "") + "</div>";
+  html += '<div class="evidence-summary">' + ev.summary + "</div>";
 
   if (tags.indexOf("critical") !== -1) {
     html += '<span class="badge badge-critical">Critical</span>';
@@ -928,10 +925,10 @@ export const handleBookmarkClick = (evidenceId: string): void => {
 
   if (state.bookmarks.indexOf(evidenceId) === -1) {
     state.bookmarks.push(evidenceId);
-    (ev as any).bookmarked = true;
+    ev.bookmarked = true;
   } else {
     state.bookmarks = state.bookmarks.filter((id) => id !== evidenceId);
-    (ev as any).bookmarked = false;
+    ev.bookmarked = false;
   }
   saveBookmarksToStorage();
   if (state.currentPage === "evidence") renderEvidenceList();
@@ -939,7 +936,7 @@ export const handleBookmarkClick = (evidenceId: string): void => {
 
 export const applyStoredBookmarkFlags = (): void => {
   for (let i = 0; i < state.allEvidence.length; i++) {
-    (state.allEvidence[i] as any).bookmarked =
+    state.allEvidence[i].bookmarked =
       state.bookmarks.indexOf(state.allEvidence[i].id) !== -1;
   }
 };
@@ -999,21 +996,21 @@ export const renderEvidenceDetail = (ev: Evidence): void => {
   const section = document.getElementById("evidenceDetailSection")!;
 
   const personNames: string[] = [];
-  const evPersonIds = ev.personIds || [];
+  const evPersonIds = ev.personIds;
   for (let p = 0; p < evPersonIds.length; p++) {
     const person = findPersonById(evPersonIds[p]);
     personNames.push(person ? person.name : evPersonIds[p]);
   }
 
   const locationNames: string[] = [];
-  const locationIds = ev.locationId ? [ev.locationId] : ((ev as any).locationIds || []);
+  const locationIds = ev.locationIds;
   for (let l = 0; l < locationIds.length; l++) {
     const loc = findLocationById(locationIds[l]);
     locationNames.push(loc ? loc.id + " - " + loc.name : locationIds[l]);
   }
 
   let tagsHtml = "";
-  const tags = (ev as any).tags || [];
+  const tags = ev.tags;
   for (let t = 0; t < tags.length; t++) {
     tagsHtml += '<span class="tag-chip">' + tags[t] + "</span>";
   }
@@ -1029,7 +1026,7 @@ export const renderEvidenceDetail = (ev: Evidence): void => {
     " &middot; " +
     ev.type +
     " &middot; " +
-    formatDate((ev as any).timestamp) +
+    formatDate(ev.timestamp) +
     "</div></div>";
   html +=
     '<button type="button" class="btn btn-secondary btn-small" onclick="closeEvidenceDetail()">Close</button>';
@@ -1042,9 +1039,9 @@ export const renderEvidenceDetail = (ev: Evidence): void => {
 
   html +=
     '<div class="detail-field"><strong>Summary</strong>' +
-    ((ev as any).summary || "") +
+    ev.summary +
     "</div>";
-  html += '<div class="evidence-detail-content">' + ((ev as any).content || "") + "</div>";
+  html += '<div class="evidence-detail-content">' + ev.content + "</div>";
   html +=
     '<div class="detail-field"><strong>Related people</strong>' +
     personNames.join(", ") +

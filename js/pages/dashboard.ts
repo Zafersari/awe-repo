@@ -175,10 +175,9 @@ export function renderDashboard(): void {
   for (let t = 0; t < recentTimeline.length; t++) {
     const evt = recentTimeline[t];
 
-    // Read evt.time safely, since it may not exist in our TypeScript model
-    const eventTime = (evt.date || (evt as unknown as { time?: string }).time || "") as string; html +=
+    html +=
       '<div class="mini-list-item"><strong>' +
-      formatDate(eventTime) +
+      formatDate(evt.time) +
       "</strong><br>" +
       evt.title +
       "</div>";

@@ -188,7 +188,7 @@ export function renderBookmarksList(): void {
   if (!container) return;
 
   const bookmarkedItems = state.allEvidence.filter(function (ev) {
-    return (ev as any).bookmarked;
+    return ev.bookmarked;
   });
 
   if (bookmarkedItems.length === 0) {

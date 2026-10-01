@@ -154,14 +154,11 @@ export function renderPeople(): void {
     const person = state.allPeople[i];
     const count = countEvidenceForPerson(person);
 
-    // Use (person as any) for extra JSON fields that are not in our model
-    const pAny = person as any;
-
     html += '<div class="person-card">';
     html += '<div class="person-card-header">';
     html +=
       '<img class="person-avatar" src="' +
-      (pAny.avatar || "") +
+      person.avatar +
       '" alt="Portrait of ' +
       person.name +
       '">';
@@ -169,20 +166,20 @@ export function renderPeople(): void {
       "<div><h3>" +
       person.name +
       '</h3><div class="person-role">' +
-      (person.role || "") +
+      person.role +
       "</div></div>";
     html += "</div>";
 
-    html += "<p><strong>Speciality:</strong> " + (pAny.speciality || "Unknown") + "</p>";
+    html += "<p><strong>Speciality:</strong> " + person.speciality + "</p>";
     html += "<ul>";
-    const responsibilities = pAny.responsibilities || [];
+    const responsibilities = person.responsibilities;
     for (let r = 0; r < responsibilities.length; r++) {
       html += "<li>" + responsibilities[r] + "</li>";
     }
     html += "</ul>";
     html +=
       '<div class="person-statement">&ldquo;' +
-      (pAny.statement || "") +
+      person.statement +
       "&rdquo;</div>";
     html +=
       "<p>" +
@@ -225,14 +222,13 @@ export function renderLocations(): void {
   let html = "";
   for (let i = 0; i < state.allLocations.length; i++) {
     const loc = state.allLocations[i];
-    const lAny = loc as any; // For the "contains" array, which is not in the model
 
     html += '<div class="location-card">';
     html += "<h3>" + loc.id + " &mdash; " + loc.name + "</h3>";
-    html += "<p>" + (loc.description || "") + "</p>";
+    html += "<p>" + loc.description + "</p>";
     html += "<p><strong>Contains:</strong></p><ul>";
 
-    const containsList = lAny.contains || [];
+    const containsList = loc.contains;
     for (let c = 0; c < containsList.length; c++) {
       html += "<li>" + containsList[c] + "</li>";
     }

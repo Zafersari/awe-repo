@@ -213,8 +213,8 @@ export function populateTimelineDropdowns(): void {
 
   const types: string[] = [];
   for (let i = 0; i < state.allTimeline.length; i++) {
-    const tType = (state.allTimeline[i] as any).type;
-    if (tType && types.indexOf(tType) === -1) {
+    const tType = state.allTimeline[i].type;
+    if (types.indexOf(tType) === -1) {
       types.push(tType);
     }
   }
@@ -237,31 +237,23 @@ export function renderTimeline(): void {
   let events: TimelineEvent[] = [];
   for (let i = 0; i < state.allTimeline.length; i++) {
     const evt = state.allTimeline[i];
-    const eAny = evt as any;
 
-    const pIds = eAny.personIds || [];
-    const lIds = eAny.locationIds || [];
-
-    if (personFilter && pIds.indexOf(personFilter) === -1) continue;
-    if (locationFilter && lIds.indexOf(locationFilter) === -1) continue;
-    if (typeFilter && eAny.type !== typeFilter) continue;
+    if (personFilter && evt.personIds.indexOf(personFilter) === -1) continue;
+    if (locationFilter && evt.locationIds.indexOf(locationFilter) === -1) continue;
+    if (typeFilter && evt.type !== typeFilter) continue;
     events.push(evt);
   }
 
   events = events.slice().sort(function (a, b) {
-    const timeA = (a as any).time || a.date;
-    const timeB = (b as any).time || b.date;
-    const diff = new Date(timeA).getTime() - new Date(timeB).getTime();
+    const diff = new Date(a.time).getTime() - new Date(b.time).getTime();
     return order === "desc" ? -diff : diff;
   });
 
   let html = "";
   for (let e = 0; e < events.length; e++) {
     const item = events[e];
-    const iAny = item as any;
-
-    const certainty = iAny.certainty || "unknown";
-    const time = iAny.time || item.date;
+    const certainty = item.certainty;
+    const time = item.time;
 
     html += '<div class="timeline-event certainty-' + certainty + '">';
     html +=
@@ -273,10 +265,10 @@ export function renderTimeline(): void {
       certainty +
       "</span></div>";
     html += "<h3>" + item.title + "</h3>";
-    html += "<p>" + (item.description || "") + "</p>";
+    html += "<p>" + item.description + "</p>";
 
     const eventLocationNames: string[] = [];
-    const lIds = iAny.locationIds || [];
+    const lIds = item.locationIds;
     for (let el = 0; el < lIds.length; el++) {
       const evtLoc = findLocationById(lIds[el]);
       // FIX: previously the whole object was inserted (showing [object Object]); now we use only its name
@@ -290,7 +282,7 @@ export function renderTimeline(): void {
         "</p>";
     }
 
-    const eIds = iAny.evidenceIds || item.relatedEvidenceIds || [];
+    const eIds = item.evidenceIds;
     for (let ev2 = 0; ev2 < eIds.length; ev2++) {
       html +=
         '<button type="button" class="evidence-link-btn" data-evidence-id="' +
@@ -344,10 +336,10 @@ export function openEvidenceModal(evidenceId: string): void {
     " &middot; " +
     ev.type +
     " &middot; " +
-    formatDate((ev as any).timestamp) +
+    formatDate(ev.timestamp) +
     "</p>" +
     "<p>" +
-    ((ev as any).summary || "") +
+    ev.summary +
     "</p>" +
     '<button type="button" class="btn btn-primary btn-small" data-open-full="' +
     ev.id +

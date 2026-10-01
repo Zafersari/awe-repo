@@ -1,34 +1,50 @@
+// Domain models — they mirror the shape of the files in public/data/*.json.
+
 export interface Person {
     id: string;
     name: string;
-    role?: string;
-    bio?: string;
+    role: string;
+    speciality: string;
+    background: string;
+    responsibilities: string[];
+    statement: string;
+    avatar: string;
 }
 
 export interface Location {
     id: string;
     name: string;
-    description?: string;
+    description: string;
+    contains: string[];
 }
 
 export interface Evidence {
     id: string;
     title: string;
-    type?: string;
-    personIds?: string[]; // Must be an array of IDs only!
-    locationId?: string;
-    status?: string;
-    relevance?: string;
-    certainty?: string;
+    type: string;
+    timestamp: string;
+    summary: string;
+    content: string;
+    personIds: string[]; // should be IDs, but E04 in evidence.json uses the name "Nova Byte"
+    locationIds: string[];
+    tags: string[];
+    status: string;
+    relevance: string;
+    bookmarked?: boolean; // not in the JSON, set at runtime from the stored bookmarks
 }
 
 export interface TimelineEvent {
     id: string;
-    date: string;
+    time: string;
     title: string;
-    description?: string;
-    relatedEvidenceIds?: string[];
+    description: string;
+    type: string;
+    certainty: string;
+    personIds: string[];
+    locationIds: string[];
+    evidenceIds: string[];
 }
+
 export interface AppState {
     allEvidence: Evidence[];
     filteredEvidence: Evidence[];
