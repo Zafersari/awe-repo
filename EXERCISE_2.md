@@ -113,15 +113,34 @@ ticked. The table above is just a fast overview, tick the boxes inside each demo
 
 **Tasks**
 
-- [ ] Install Vite and configure it for this project (restructure files if needed so Vite can find `index.html`/your modules/the `data/` and `assets/` folders correctly).
-- [ ] Get `vite`'s dev server running the app with the same functionality it had before. Verify every view still works, not just that the page loads.
-- [ ] Trigger Hot Module Replacement at least once: change something in the running app's source and observe the update happen without a full page reload.
+- [x] Install Vite and configure it for this project (restructure files if needed so Vite can find `index.html`/your modules/the `data/` and `assets/` folders correctly).
+
+> Installation via ``npm install vite``.  
+
+- [x] Get `vite`'s dev server running the app with the same functionality it had before. Verify every view still works, not just that the page loads.
+
+> Setup `npm run dev` script for developemnt in [package.json](./package.json)  
+> Added in commit [b22a0ce](https://github.com/Zafersari/awe-repo/commit/b22a0ce2611440a4abb9327e3cf40730e959fddd)  
+
+- [x] Trigger Hot Module Replacement at least once: change something in the running app's source and observe the update happen without a full page reload.
+
+> live demonstration by changing module while having vite run via `npm run dev` in the background.  
 
 **Questions** (depend on the tasks above)
 
-- [ ] What is the difference between how you used to run this app (a plain static file server) and running it through Vite's dev server? Name at least one thing Vite's dev server does that a plain static server doesn't.
-- [ ] What is Hot Module Replacement, and what specifically did you observe happen (and _not_ happen, e.g. to app state) when you triggered it?
-- [ ] Why does an app already split into ES modules (Exercise 1) integrate naturally with a tool like Vite, compared to the original single-`<script>` version?
+- [x] What is the difference between how you used to run this app (a plain static file server) and running it through Vite's dev server? Name at least one thing Vite's dev server does that a plain static server doesn't.
+
+> **Basic file server**: only serves the static files directly to browser as is, without any processing, compilation or transpilation in between or on the fly (in case of changes to the files). For writing modern JS, TS, JSX and so on, a plain server will crash or fail to update properly since build step is required.  
+> **Vite's dev server**: performs on demand compilation and transformation, e.g. writing code in typescript and directly serving would never work without compilation, Vite does this while running as soon as you make/save changes to file.  
+
+- [x] What is Hot Module Replacement, and what specifically did you observe happen (and _not_ happen, e.g. to app state) when you triggered it?
+
+> Feature to exchange/add/remove modules (js, ts, css) on the fly, meaning while the application is running, without requiring full browser reload.  
+> **Observations**: Changes in CSS took effect immediately in the browser, but the page did **not refresh and lose state**.  
+
+- [x] Why does an app already split into ES modules (Exercise 1) integrate naturally with a tool like Vite, compared to the original single-`<script>` version?
+
+> Vite has an easy time to map out dependencies between files when ES-Modules are used and can thus when only a specific module changes it re-fetches that module only, instead of single `<script>` where all code is bundled into one global scope which makes it difficult for Vite to track updates of individual segments.  
 
 ---
 
