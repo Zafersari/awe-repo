@@ -178,7 +178,7 @@ export function renderDashboard(): void {
 
     html +=
       '<div class="mini-list-item"><strong>' +
-      formatDate(evt.time) +
+      formatDate(evt) +
       "</strong><br>" +
       evt.title +
       "</div>";
