@@ -1,4 +1,6 @@
-/*const failure = "i never used it";
+//const failure = "i never used it";
+
+/*
 import {
   loadBookmarksFromStorage,
   loadNotesFromStorage,
@@ -142,13 +144,13 @@ import { switchPeopleTab } from "./pages/people";
 // 1. Declare to TypeScript the global (window) functions we call from the HTML
 declare global {
   interface Window {
-    navigateTo: any;
-    switchPeopleTab: any;
-    saveHypothesis: any;
-    handleSortChange: any;
-    closeEvidenceDetail: any;
-    saveCurrentNote: any;
-    renderEvidenceList: any;
+    navigateTo: (...args: unknown[]) => unknown;
+    switchPeopleTab: (...args: unknown[]) => unknown;
+    saveHypothesis: (...args: unknown[]) => unknown;
+    handleSortChange: (...args: unknown[]) => unknown;
+    closeEvidenceDetail: (...args: unknown[]) => unknown;
+    saveCurrentNote: (...args: unknown[]) => unknown;
+    renderEvidenceList: (...args: unknown[]) => unknown;
   }
 }
 

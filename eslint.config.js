@@ -1,21 +1,5 @@
-/*import pluginJs from "@eslint/js";
-
-export default [
-  {
-    languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
-      globals: {
-        document: "readonly",
-        window: "readonly",
-        console: "readonly",
-        fetch: "readonly",
-      },
-    },
-  },
-  pluginJs.configs.recommended,
-];*/
 import pluginJs from "@eslint/js";
+import tseslint from "typescript-eslint"; // 1. Import typescript-eslint
 
 export default [
   {
@@ -38,4 +22,5 @@ export default [
     },
   },
   pluginJs.configs.recommended,
+  ...tseslint.configs.recommended, // 2. Spread the recommended TS configs here
 ];
