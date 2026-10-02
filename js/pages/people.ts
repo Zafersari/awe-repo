@@ -202,7 +202,9 @@ export function renderPeople(): void {
       const target = e.target as HTMLElement;
       const personId = target.getAttribute("data-person-id");
 
-      const filterPersonSelect = document.getElementById("filterPerson") as HTMLSelectElement;
+      const filterPersonSelect = document.getElementById(
+        "filterPerson",
+      ) as HTMLSelectElement;
       if (filterPersonSelect && personId) {
         filterPersonSelect.value = personId;
       }

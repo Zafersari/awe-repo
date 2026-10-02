@@ -149,7 +149,11 @@ export function formatDate(dateString: string): string {
 
   // Same output as the JavaScript version: locale date + time (e.g. "Oct 15, 2026 14:32")
   return (
-    d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) +
+    d.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    }) +
     " " +
     d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })
   );
@@ -183,5 +187,8 @@ export function findLocationById(id: string): Location | undefined {
 
 export function evidenceMentionsPerson(ev: Evidence, person: Person): boolean {
   // Match by ID or by name, like the JavaScript version (E04 uses the name "Nova Byte")
-  return ev.personIds.indexOf(person.id) !== -1 || ev.personIds.indexOf(person.name) !== -1;
+  return (
+    ev.personIds.indexOf(person.id) !== -1 ||
+    ev.personIds.indexOf(person.name) !== -1
+  );
 }

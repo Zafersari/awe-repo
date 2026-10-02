@@ -181,10 +181,7 @@ export const loadAllData = async () => {
 */
 // Import functions from other modules (pages that are still JS)
 import { renderDashboard } from "./pages/dashboard";
-import {
-  renderEvidenceList,
-  applyStoredBookmarkFlags,
-} from "./pages/evidence";
+import { renderEvidenceList, applyStoredBookmarkFlags } from "./pages/evidence";
 import { renderTimeline } from "./pages/timeline";
 import { populateAllDropdowns } from "./main";
 

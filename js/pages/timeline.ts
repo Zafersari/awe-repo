@@ -185,9 +185,15 @@ import { navigateTo } from "../router";
 import { openEvidenceDetail } from "./evidence";
 
 export function populateTimelineDropdowns(): void {
-  const personSelect = document.getElementById("timelinePersonFilter") as HTMLSelectElement | null;
-  const locationSelect = document.getElementById("timelineLocationFilter") as HTMLSelectElement | null;
-  const typeSelect = document.getElementById("timelineTypeFilter") as HTMLSelectElement | null;
+  const personSelect = document.getElementById(
+    "timelinePersonFilter",
+  ) as HTMLSelectElement | null;
+  const locationSelect = document.getElementById(
+    "timelineLocationFilter",
+  ) as HTMLSelectElement | null;
+  const typeSelect = document.getElementById(
+    "timelineTypeFilter",
+  ) as HTMLSelectElement | null;
 
   if (!personSelect || !locationSelect || !typeSelect) return;
 
@@ -229,17 +235,25 @@ export function renderTimeline(): void {
   const container = document.getElementById("timelineContainer");
   if (!container) return;
 
-  const order = (document.getElementById("timelineOrder") as HTMLSelectElement)!.value;
-  const personFilter = (document.getElementById("timelinePersonFilter") as HTMLSelectElement)!.value;
-  const locationFilter = (document.getElementById("timelineLocationFilter") as HTMLSelectElement)!.value;
-  const typeFilter = (document.getElementById("timelineTypeFilter") as HTMLSelectElement)!.value;
+  const order = (document.getElementById("timelineOrder") as HTMLSelectElement)!
+    .value;
+  const personFilter = (document.getElementById(
+    "timelinePersonFilter",
+  ) as HTMLSelectElement)!.value;
+  const locationFilter = (document.getElementById(
+    "timelineLocationFilter",
+  ) as HTMLSelectElement)!.value;
+  const typeFilter = (document.getElementById(
+    "timelineTypeFilter",
+  ) as HTMLSelectElement)!.value;
 
   let events: TimelineEvent[] = [];
   for (let i = 0; i < state.allTimeline.length; i++) {
     const evt = state.allTimeline[i];
 
     if (personFilter && evt.personIds.indexOf(personFilter) === -1) continue;
-    if (locationFilter && evt.locationIds.indexOf(locationFilter) === -1) continue;
+    if (locationFilter && evt.locationIds.indexOf(locationFilter) === -1)
+      continue;
     if (typeFilter && evt.type !== typeFilter) continue;
     events.push(evt);
   }
@@ -298,7 +312,8 @@ export function renderTimeline(): void {
   }
   container.innerHTML = html;
 
-  const linkButtons = container.querySelectorAll<HTMLElement>(".evidence-link-btn");
+  const linkButtons =
+    container.querySelectorAll<HTMLElement>(".evidence-link-btn");
   for (let b = 0; b < linkButtons.length; b++) {
     linkButtons[b].addEventListener("click", function (e: Event) {
       const target = e.target as HTMLElement;
@@ -349,7 +364,7 @@ export function openEvidenceModal(evidenceId: string): void {
   state.modalCloseListenerCount++;
   console.log(
     "modal opened, active close listeners:",
-    state.modalCloseListenerCount
+    state.modalCloseListenerCount,
   );
 
   modal.addEventListener("click", function (e: Event) {

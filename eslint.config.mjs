@@ -18,25 +18,24 @@ export default [
 import pluginJs from "@eslint/js";
 
 export default [
-    {
-        ignores: ["dist/"]
+  {
+    ignores: ["dist/"],
+  },
+  {
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: {
+        document: "readonly",
+        window: "readonly",
+        console: "readonly",
+        fetch: "readonly",
+        setTimeout: "readonly",
+        localStorage: "readonly",
+        alert: "readonly",
+        MutationObserver: "readonly",
+      },
     },
-    {
-        languageOptions: {
-            ecmaVersion: "latest",
-            sourceType: "module",
-            globals: {
-                document: "readonly",
-                window: "readonly",
-                console: "readonly",
-                fetch: "readonly",
-                setTimeout: "readonly",
-                localStorage: "readonly",
-                alert: "readonly",
-                MutationObserver: "readonly"
-            }
-        }
-    },
-    pluginJs.configs.recommended,
+  },
+  pluginJs.configs.recommended,
 ];
-

@@ -211,7 +211,9 @@ export function renderBookmarksList(): void {
   }
   container.innerHTML = html;
 
-  const openButtons = container.querySelectorAll<HTMLElement>("[data-open-evidence]");
+  const openButtons = container.querySelectorAll<HTMLElement>(
+    "[data-open-evidence]",
+  );
   for (let b = 0; b < openButtons.length; b++) {
     openButtons[b].addEventListener("click", function (e: Event) {
       navigateTo("evidence");
@@ -270,8 +272,12 @@ export function renderNotesList(): void {
 }
 
 export function populateHypothesisDropdowns(): void {
-  const suspectSelect = document.getElementById("hypSuspect") as HTMLSelectElement | null;
-  const evidenceSelect = document.getElementById("hypEvidence") as HTMLSelectElement | null;
+  const suspectSelect = document.getElementById(
+    "hypSuspect",
+  ) as HTMLSelectElement | null;
+  const evidenceSelect = document.getElementById(
+    "hypEvidence",
+  ) as HTMLSelectElement | null;
   if (!suspectSelect || !evidenceSelect) return;
 
   const currentSuspect = suspectSelect.value;
@@ -301,12 +307,20 @@ export function populateHypothesisDropdowns(): void {
 
 export function saveHypothesis(): void {
   const draft = {
-    suspectId: (document.getElementById("hypSuspect") as HTMLSelectElement)!.value,
+    suspectId: (document.getElementById("hypSuspect") as HTMLSelectElement)!
+      .value,
     nature: (document.getElementById("hypNature") as HTMLSelectElement)!.value,
-    evidenceIds: getSelectedOptions(document.getElementById("hypEvidence") as HTMLSelectElement),
-    confidence: (document.getElementById("hypConfidence") as HTMLInputElement)!.value,
-    explanation: (document.getElementById("hypExplanation") as HTMLTextAreaElement)!.value,
-    alternative: (document.getElementById("hypAlternative") as HTMLTextAreaElement)!.value,
+    evidenceIds: getSelectedOptions(
+      document.getElementById("hypEvidence") as HTMLSelectElement,
+    ),
+    confidence: (document.getElementById("hypConfidence") as HTMLInputElement)!
+      .value,
+    explanation: (document.getElementById(
+      "hypExplanation",
+    ) as HTMLTextAreaElement)!.value,
+    alternative: (document.getElementById(
+      "hypAlternative",
+    ) as HTMLTextAreaElement)!.value,
     savedAt: new Date().toISOString(),
   };
 
@@ -340,14 +354,22 @@ export function loadHypothesisFromStorage(): void {
 
   const draft = JSON.parse(raw);
 
-  (document.getElementById("hypSuspect") as HTMLSelectElement)!.value = draft.suspectId || "";
-  (document.getElementById("hypNature") as HTMLSelectElement)!.value = draft.nature || "";
-  (document.getElementById("hypConfidence") as HTMLInputElement)!.value = draft.confidence || "50";
-  document.getElementById("hypConfidenceValue")!.textContent = draft.confidence || "50";
-  (document.getElementById("hypExplanation") as HTMLTextAreaElement)!.value = draft.explanation || "";
-  (document.getElementById("hypAlternative") as HTMLTextAreaElement)!.value = draft.alternative || "";
+  (document.getElementById("hypSuspect") as HTMLSelectElement)!.value =
+    draft.suspectId || "";
+  (document.getElementById("hypNature") as HTMLSelectElement)!.value =
+    draft.nature || "";
+  (document.getElementById("hypConfidence") as HTMLInputElement)!.value =
+    draft.confidence || "50";
+  document.getElementById("hypConfidenceValue")!.textContent =
+    draft.confidence || "50";
+  (document.getElementById("hypExplanation") as HTMLTextAreaElement)!.value =
+    draft.explanation || "";
+  (document.getElementById("hypAlternative") as HTMLTextAreaElement)!.value =
+    draft.alternative || "";
 
-  const evidenceSelect = document.getElementById("hypEvidence") as HTMLSelectElement;
+  const evidenceSelect = document.getElementById(
+    "hypEvidence",
+  ) as HTMLSelectElement;
   const savedIds: string[] = draft.evidenceIds || [];
   for (let i = 0; i < evidenceSelect.options.length; i++) {
     evidenceSelect.options[i].selected =

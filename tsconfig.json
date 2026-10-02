@@ -1,17 +1,14 @@
 {
-    "compilerOptions": {
-        "target": "ESNext",
-        "module": "ESNext",
-        "moduleResolution": "bundler",
-        "strict": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
-        "noEmit": true,
-        "isolatedModules": true,
-        "allowJs": true
-    },
-    "include": [
-        "js/**/*.ts",
-        "js/**/*.js"
-    ]
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "allowJs": true
+  },
+  "include": ["js/**/*.ts", "js/**/*.js"]
 }

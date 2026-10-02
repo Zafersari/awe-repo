@@ -727,9 +727,15 @@ import {
 } from "../storage.js";
 
 export const populateEvidenceDropdowns = (): void => {
-  const typeSelect = document.getElementById("filterType") as HTMLSelectElement | null;
-  const personSelect = document.getElementById("filterPerson") as HTMLSelectElement | null;
-  const locationSelect = document.getElementById("filterLocation") as HTMLSelectElement | null;
+  const typeSelect = document.getElementById(
+    "filterType",
+  ) as HTMLSelectElement | null;
+  const personSelect = document.getElementById(
+    "filterPerson",
+  ) as HTMLSelectElement | null;
+  const locationSelect = document.getElementById(
+    "filterLocation",
+  ) as HTMLSelectElement | null;
 
   if (!typeSelect || !personSelect || !locationSelect) return;
 
@@ -769,19 +775,29 @@ export const populateEvidenceDropdowns = (): void => {
 };
 
 export const getFilteredEvidence = (): Evidence[] => {
-  const searchBox = document.getElementById("evidenceSearch") as HTMLInputElement | null;
+  const searchBox = document.getElementById(
+    "evidenceSearch",
+  ) as HTMLInputElement | null;
   const searchTerm = searchBox ? searchBox.value.toLowerCase().trim() : "";
-  const typeVal = (document.getElementById("filterType") as HTMLSelectElement)!.value;
-  const personVal = (document.getElementById("filterPerson") as HTMLSelectElement)!.value;
-  const locationVal = (document.getElementById("filterLocation") as HTMLSelectElement)!.value;
-  const statusVal = (document.getElementById("filterStatus") as HTMLSelectElement)!.value;
-  const relevanceVal = (document.getElementById("filterRelevance") as HTMLSelectElement)!.value;
+  const typeVal = (document.getElementById("filterType") as HTMLSelectElement)!
+    .value;
+  const personVal = (document.getElementById(
+    "filterPerson",
+  ) as HTMLSelectElement)!.value;
+  const locationVal = (document.getElementById(
+    "filterLocation",
+  ) as HTMLSelectElement)!.value;
+  const statusVal = (document.getElementById(
+    "filterStatus",
+  ) as HTMLSelectElement)!.value;
+  const relevanceVal = (document.getElementById(
+    "filterRelevance",
+  ) as HTMLSelectElement)!.value;
 
   const results: Evidence[] = [];
   for (let i = 0; i < state.allEvidence.length; i++) {
     const item = state.allEvidence[i];
     let matches = true;
-
 
     if (searchTerm) {
       const haystack = (
@@ -813,15 +829,23 @@ export const getFilteredEvidence = (): Evidence[] => {
     if (matches) results.push(item);
   }
 
-  const sortValue = (document.getElementById("sortEvidence") as HTMLSelectElement)!.value;
+  const sortValue = (document.getElementById(
+    "sortEvidence",
+  ) as HTMLSelectElement)!.value;
   if (sortValue === "title-asc") {
     results.sort((a, b) => a.title.localeCompare(b.title));
   } else if (sortValue === "title-desc") {
     results.sort((a, b) => b.title.localeCompare(a.title));
   } else if (sortValue === "date-asc") {
-    results.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+    results.sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+    );
   } else {
-    results.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    results.sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+    );
   }
 
   state.filteredEvidence = results;
@@ -1102,14 +1126,20 @@ export const renderEvidenceDetail = (ev: Evidence): void => {
     });
 };
 
-export const statusOptionHTML = (current: string | undefined, value: string, label: string): string => {
+export const statusOptionHTML = (
+  current: string | undefined,
+  value: string,
+  label: string,
+): string => {
   const currentLower = (current || "").toLowerCase();
   const selected = currentLower === value ? " selected" : "";
   return '<option value="' + value + '"' + selected + ">" + label + "</option>";
 };
 
 export const saveCurrentNote = (): void => {
-  const textarea = document.getElementById("evidenceNoteInput") as HTMLTextAreaElement | null;
+  const textarea = document.getElementById(
+    "evidenceNoteInput",
+  ) as HTMLTextAreaElement | null;
   if (!textarea) return;
   const evidenceId = textarea.getAttribute("data-evidence-id");
   if (!evidenceId) return;

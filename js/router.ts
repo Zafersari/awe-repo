@@ -67,7 +67,13 @@ export function navigateTo(viewName: string): void {
 export function handleHashChange(): void {
   // Use modern 'let' and 'const' instead of the old 'var'
   let hash = window.location.hash.replace("#", "");
-  const validViews = ["dashboard", "evidence", "people", "timeline", "workspace"];
+  const validViews = [
+    "dashboard",
+    "evidence",
+    "people",
+    "timeline",
+    "workspace",
+  ];
 
   if (validViews.indexOf(hash) === -1) {
     hash = "dashboard";
@@ -110,4 +116,3 @@ export function handleHashChange(): void {
     renderWorkspace();
   }
 }
-

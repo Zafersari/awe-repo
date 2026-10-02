@@ -136,10 +136,7 @@ import {
   saveCurrentNote,
 } from "./pages/evidence";
 import { populateTimelineDropdowns, renderTimeline } from "./pages/timeline";
-import {
-  populateHypothesisDropdowns,
-  saveHypothesis,
-} from "./pages/workspace";
+import { populateHypothesisDropdowns, saveHypothesis } from "./pages/workspace";
 import { switchPeopleTab } from "./pages/people";
 
 // 1. Declare to TypeScript the global (window) functions we call from the HTML
