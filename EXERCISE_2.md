@@ -190,15 +190,40 @@ ticked. The table above is just a fast overview, tick the boxes inside each demo
 
 **Tasks**
 
-- [ ] Install and configure a linter (e.g. ESLint) and a formatter (e.g. Prettier) for this TypeScript/JS project.
-- [ ] Add these scripts to `package.json`: `dev`, `build`, `lint`, `lint:fix`, `format`. Each one must actually do something real when run, not just print a placeholder.
-- [ ] Run `lint` and show it catching at least one real issue in your code (introduce one on purpose if you have to). Run `lint:fix` and/or `format` and show it actually changing a file.
+- [x] Install and configure a linter (e.g. ESLint) and a formatter (e.g. Prettier) for this TypeScript/JS project.
+
+> see commit [50deae5](https://github.com/Zafersari/awe-repo/commit/50deae53cfe8f00e5b7d3ccdd334f1e0ef2fdb2a)  
+> configuration done via [eslint.config.mjs](./eslint.config.mjs) and [.prettierrc](./.prettierrc)
+
+- [x] Add these scripts to `package.json`: `dev`, `build`, `lint`, `lint:fix`, `format`. Each one must actually do something real when run, not just print a placeholder.
+
+> see commit [50deae5](https://github.com/Zafersari/awe-repo/commit/50deae53cfe8f00e5b7d3ccdd334f1e0ef2fdb2a)  
+> alterantively in latest commit the same scripts are also available
+
+- [x] Run `lint` and show it catching at least one real issue in your code (introduce one on purpose if you have to). Run `lint:fix` and/or `format` and show it actually changing a file.
+
+> see commit [50deae5](https://github.com/Zafersari/awe-repo/commit/50deae53cfe8f00e5b7d3ccdd334f1e0ef2fdb2a)  
+> run `npm run lint` and an error in main.js will occur for a variable which is never used  
+> change the formatting in main.js for a code/function block by removing the indentation for example  
+> run `npm format` and re-open the edited main.js file to verify and show that indentation was fixed by prettier
 
 **Questions** (depend on the tasks above)
 
-- [ ] What's the difference between what a linter checks/fixes and what a formatter checks/fixes? Give one concrete finding from each tool on this codebase.
-- [ ] Why are `lint` and `lint:fix` two separate scripts instead of one script that always auto-fixes? When would you deliberately want the non-fixing version?
-- [ ] What does `npm run lint` (or `pnpm lint`) actually do under the hood? Where does npm/pnpm look for the `lint` command, and would it work if your linter weren't installed as a project dependency (only globally on your machine)?
+- [x] What's the difference between what a linter checks/fixes and what a formatter checks/fixes? Give one concrete finding from each tool on this codebase.
+
+> **linter**: checks/fixes the code quality, logic and correctness (syntax errors, potential bugs, broken rules)
+> **formatter**: checks/fixces the code style formatting and visual appearance (how the code looks not the logic)
+
+- [x] Why are `lint` and `lint:fix` two separate scripts instead of one script that always auto-fixes? When would you deliberately want the non-fixing version?
+
+> Auto fixing code is not always safe, sometimes a automatic fix can result in messy Git diffs which make changes hard to read (not so critical) or make unexpected changes to the code, or mask underlying issues with logic and bugs (critical).  
+> For CI/CD you would want non-fixing versions, which should throw an error and fail the build but not automatically fix something which you aren't aware of and only notice once it's already upstream. Rather you want to manually fix and weigh the issue.
+
+- [x] What does `npm run lint` (or `pnpm lint`) actually do under the hood? Where does npm/pnpm look for the `lint` command, and would it work if your linter weren't installed as a project dependency (only globally on your machine)?
+
+> **npm** reads `package.json` and looks for script mapped to `lint`.  
+> (temporarily) adds project local binary path to system shell environment and executes linting tool via node
+> **npm** looks for the tool within `./node_modules/.bin/` and hence it must be configured/installed as a project dependency.
 
 ---
 
