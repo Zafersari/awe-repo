@@ -1,5 +1,4 @@
-const failure = "i never used it";
-/*
+/*const failure = "i never used it";
 import {
   loadBookmarksFromStorage,
   loadNotesFromStorage,
