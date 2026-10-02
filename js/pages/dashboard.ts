@@ -147,7 +147,8 @@ export function renderDashboard(): void {
 
   html += '<div class="dashboard-columns">';
 
-  html += '<div class="dashboard-panel"><h3>Recent evidence</h3>';
+  html +=
+    '<div class="dashboard-panel"><h3>Recent evidence --first try for demo9--</h3>';
   const recentEvidence = state.allEvidence.slice(-5).reverse();
   if (recentEvidence.length === 0) {
     html += "<p>No evidence loaded yet.</p>";
