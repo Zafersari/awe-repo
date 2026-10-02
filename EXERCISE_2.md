@@ -55,19 +55,57 @@ ticked. The table above is just a fast overview, tick the boxes inside each demo
 
 **Tasks**
 
-- [ ] Choose **npm** or **pnpm** and record why you picked it over the other.
-- [ ] Initialize `package.json` for the project (name, version, description, etc. filled in properly).
-- [ ] Add a `.gitignore` entry for `node_modules` (and any other tool output you generate in later demos, e.g. `dist/`).
-- [ ] Install one real dependency (you'll add more in later demos) and show the resulting lockfile (`package-lock.json` or `pnpm-lock.yaml`) committed to the repo.
+- [x] Choose **npm** or **pnpm** and record why you picked it over the other.
+
+> Picked **npm** due to it's status as the industry standard tool with extensive resources and support 
+> available online. Also it comes already installed with nodejs, less installs/configurations to worry 
+> about, immediately get started.  
+
+- [x] Initialize `package.json` for the project (name, version, description, etc. filled in properly).
+
+> See file [package.json](./package.json)  
+> Added in commit: [7388d07](https://github.com/Zafersari/awe-repo/commit/7388d07df648be2f70719711813160b3e27cc3a6)  
+> `git show 7388d07df648be2f70719711813160b3e27cc3a6 -- package.json`  
+
+- [x] Add a `.gitignore` entry for `node_modules` (and any other tool output you generate in later demos, e.g. `dist/`).
+
+> See file [.gitignore](./.gitignore)  
+> Added in commit: [7388d07](https://github.com/Zafersari/awe-repo/commit/7388d07df648be2f70719711813160b3e27cc3a6)  
+> `git show 7388d07df648be2f70719711813160b3e27cc3a6 -- .gitignore`  
+
+- [x] Install one real dependency (you'll add more in later demos) and show the resulting lockfile (`package-lock.json` or `pnpm-lock.yaml`) committed to the repo.
+
+> Added Package `date-fns`  
+> See file [package-lock.json](./package-lock.json)  
+> Added in commit: [7388d07](https://github.com/Zafersari/awe-repo/commit/7388d07df648be2f70719711813160b3e27cc3a6)  
+> `git show 7388d07df648be2f70719711813160b3e27cc3a6 -- package-lock.json`  
 
 **Questions** (depend on the tasks above)
 
-- [ ] What problem does a package manager actually solve that "download the library and put it in a folder yourself" doesn't? Be specific.
-- [ ] What's the difference between `dependencies` and `devDependencies` in `package.json`? Which
+- [x] What problem does a package manager actually solve that "download the library and put it in a folder yourself" doesn't? Be specific.
+
+> **Dependency Hell**: Libs rely on dozens of other libs, need to download, track and update all sub-dependencies manually.  
+> **Version Management**: Whenever a security patch or feature update happens, manual update of manually downloaded lib required. Versions must be tracked manually and not only of current lib -> dependencies also -> Dependency Hell again.  
+> **Conflict Resolution**: Different versions of same lib required for different other libs -> good luck doing that manually.  
+> **Reproducibility**: When someone else needs to work on your code, or collaboration as a team, the workload of all the above mentioned points is distributed to every team member all over again, package manager: share package.json package-lock.json and everyone is on the same page.  
+
+- [x] What's the difference between `dependencies` and `devDependencies` in `package.json`? Which
       category will Vite, your linter/formatter, and TypeScript belong to, and why?
-- [ ] What is a lockfile for, and what could go wrong for your teammates (or CI) if it weren't
+
+> **dependencies**: Packages required by users for running the app in production (at runtime).  
+> **devDependencies**: Packages needed during development only, these are not included in final production app and are not needed by users to run the app. These are used for development, testing and building for e.g.  
+> **Vite, linter & TypeScript** all belong in devDependencies, because **Vite** -> for building; **linter** -> don't have part in running app, only for syntax and style; **TypeScript** -> ``.ts`` compiled to javascript, only js served at runtime.  
+
+- [x] What is a lockfile for, and what could go wrong for your teammates (or CI) if it weren't
       committed to the repo?
-- [ ] If you chose pnpm: what does it do differently from npm regarding how `node_modules` is laid out and how disk space/install time is shared across projects? If you chose npm: what would you gain or lose by switching to pnpm on a larger project?
+
+> A lockfile fixes packages to specific version, creating a "snapshot" of the exact dependency tree when generated.  
+> If the lockfile were missing, packages with allowed version ranges could lead to different machines/users having slightly different version, enough (or the right) version changes could cause the application to have subtle bugs, incompatible sub-dependencies and possibly not build at all.  
+
+- [x] If you chose pnpm: what does it do differently from npm regarding how `node_modules` is laid out and how disk space/install time is shared across projects? If you chose npm: what would you gain or lose by switching to pnpm on a larger project?
+
+> **npm**: switching to **pnpm** brings improved performance and efficiency, as packages which are used across different projects don't need to be duplicated for each project (this works using symlinks to the desired packages).  
+> What's lost: leverage which is possible with npm when dealing with phantom dependencies  
 
 ---
 
