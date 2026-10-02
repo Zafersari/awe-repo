@@ -1,0 +1,7 @@
+# Always use LF line endings (what Prettier and the Linux CI runner expect),
+# even on Windows with core.autocrlf=true
+* text=auto eol=lf
+
+# Binary files: never touch
+*.png binary
+*.jpg binary
