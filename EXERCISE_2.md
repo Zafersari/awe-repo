@@ -57,28 +57,28 @@ ticked. The table above is just a fast overview, tick the boxes inside each demo
 
 - [x] Choose **npm** or **pnpm** and record why you picked it over the other.
 
-> Picked **npm** due to it's status as the industry standard tool with extensive resources and support 
-> available online. Also it comes already installed with nodejs, less installs/configurations to worry 
-> about, immediately get started.  
+> Picked **npm** due to it's status as the industry standard tool with extensive resources and support
+> available online. Also it comes already installed with nodejs, less installs/configurations to worry
+> about, immediately get started.
 
 - [x] Initialize `package.json` for the project (name, version, description, etc. filled in properly).
 
 > See file [package.json](./package.json)  
 > Added in commit: [7388d07](https://github.com/Zafersari/awe-repo/commit/7388d07df648be2f70719711813160b3e27cc3a6)  
-> `git show 7388d07df648be2f70719711813160b3e27cc3a6 -- package.json`  
+> `git show 7388d07df648be2f70719711813160b3e27cc3a6 -- package.json`
 
 - [x] Add a `.gitignore` entry for `node_modules` (and any other tool output you generate in later demos, e.g. `dist/`).
 
 > See file [.gitignore](./.gitignore)  
 > Added in commit: [7388d07](https://github.com/Zafersari/awe-repo/commit/7388d07df648be2f70719711813160b3e27cc3a6)  
-> `git show 7388d07df648be2f70719711813160b3e27cc3a6 -- .gitignore`  
+> `git show 7388d07df648be2f70719711813160b3e27cc3a6 -- .gitignore`
 
 - [x] Install one real dependency (you'll add more in later demos) and show the resulting lockfile (`package-lock.json` or `pnpm-lock.yaml`) committed to the repo.
 
 > Added Package `date-fns`  
 > See file [package-lock.json](./package-lock.json)  
 > Added in commit: [7388d07](https://github.com/Zafersari/awe-repo/commit/7388d07df648be2f70719711813160b3e27cc3a6)  
-> `git show 7388d07df648be2f70719711813160b3e27cc3a6 -- package-lock.json`  
+> `git show 7388d07df648be2f70719711813160b3e27cc3a6 -- package-lock.json`
 
 **Questions** (depend on the tasks above)
 
@@ -87,25 +87,25 @@ ticked. The table above is just a fast overview, tick the boxes inside each demo
 > **Dependency Hell**: Libs rely on dozens of other libs, need to download, track and update all sub-dependencies manually.  
 > **Version Management**: Whenever a security patch or feature update happens, manual update of manually downloaded lib required. Versions must be tracked manually and not only of current lib -> dependencies also -> Dependency Hell again.  
 > **Conflict Resolution**: Different versions of same lib required for different other libs -> good luck doing that manually.  
-> **Reproducibility**: When someone else needs to work on your code, or collaboration as a team, the workload of all the above mentioned points is distributed to every team member all over again, package manager: share package.json package-lock.json and everyone is on the same page.  
+> **Reproducibility**: When someone else needs to work on your code, or collaboration as a team, the workload of all the above mentioned points is distributed to every team member all over again, package manager: share package.json package-lock.json and everyone is on the same page.
 
 - [x] What's the difference between `dependencies` and `devDependencies` in `package.json`? Which
       category will Vite, your linter/formatter, and TypeScript belong to, and why?
 
 > **dependencies**: Packages required by users for running the app in production (at runtime).  
 > **devDependencies**: Packages needed during development only, these are not included in final production app and are not needed by users to run the app. These are used for development, testing and building for e.g.  
-> **Vite, linter & TypeScript** all belong in devDependencies, because **Vite** -> for building; **linter** -> don't have part in running app, only for syntax and style; **TypeScript** -> ``.ts`` compiled to javascript, only js served at runtime.  
+> **Vite, linter & TypeScript** all belong in devDependencies, because **Vite** -> for building; **linter** -> don't have part in running app, only for syntax and style; **TypeScript** -> `.ts` compiled to javascript, only js served at runtime.
 
 - [x] What is a lockfile for, and what could go wrong for your teammates (or CI) if it weren't
       committed to the repo?
 
 > A lockfile fixes packages to specific version, creating a "snapshot" of the exact dependency tree when generated.  
-> If the lockfile were missing, packages with allowed version ranges could lead to different machines/users having slightly different version, enough (or the right) version changes could cause the application to have subtle bugs, incompatible sub-dependencies and possibly not build at all.  
+> If the lockfile were missing, packages with allowed version ranges could lead to different machines/users having slightly different version, enough (or the right) version changes could cause the application to have subtle bugs, incompatible sub-dependencies and possibly not build at all.
 
 - [x] If you chose pnpm: what does it do differently from npm regarding how `node_modules` is laid out and how disk space/install time is shared across projects? If you chose npm: what would you gain or lose by switching to pnpm on a larger project?
 
 > **npm**: switching to **pnpm** brings improved performance and efficiency, as packages which are used across different projects don't need to be duplicated for each project (this works using symlinks to the desired packages).  
-> What's lost: leverage which is possible with npm when dealing with phantom dependencies  
+> What's lost: leverage which is possible with npm when dealing with phantom dependencies
 
 ---
 
@@ -115,32 +115,32 @@ ticked. The table above is just a fast overview, tick the boxes inside each demo
 
 - [x] Install Vite and configure it for this project (restructure files if needed so Vite can find `index.html`/your modules/the `data/` and `assets/` folders correctly).
 
-> Installation via ``npm install vite``.  
+> Installation via `npm install vite`.
 
 - [x] Get `vite`'s dev server running the app with the same functionality it had before. Verify every view still works, not just that the page loads.
 
 > Setup `npm run dev` script for developemnt in [package.json](./package.json)  
-> Added in commit [b22a0ce](https://github.com/Zafersari/awe-repo/commit/b22a0ce2611440a4abb9327e3cf40730e959fddd)  
+> Added in commit [b22a0ce](https://github.com/Zafersari/awe-repo/commit/b22a0ce2611440a4abb9327e3cf40730e959fddd)
 
 - [x] Trigger Hot Module Replacement at least once: change something in the running app's source and observe the update happen without a full page reload.
 
-> live demonstration by changing module while having vite run via `npm run dev` in the background.  
+> live demonstration by changing module while having vite run via `npm run dev` in the background.
 
 **Questions** (depend on the tasks above)
 
 - [x] What is the difference between how you used to run this app (a plain static file server) and running it through Vite's dev server? Name at least one thing Vite's dev server does that a plain static server doesn't.
 
 > **Basic file server**: only serves the static files directly to browser as is, without any processing, compilation or transpilation in between or on the fly (in case of changes to the files). For writing modern JS, TS, JSX and so on, a plain server will crash or fail to update properly since build step is required.  
-> **Vite's dev server**: performs on demand compilation and transformation, e.g. writing code in typescript and directly serving would never work without compilation, Vite does this while running as soon as you make/save changes to file.  
+> **Vite's dev server**: performs on demand compilation and transformation, e.g. writing code in typescript and directly serving would never work without compilation, Vite does this while running as soon as you make/save changes to file.
 
 - [x] What is Hot Module Replacement, and what specifically did you observe happen (and _not_ happen, e.g. to app state) when you triggered it?
 
 > Feature to exchange/add/remove modules (js, ts, css) on the fly, meaning while the application is running, without requiring full browser reload.  
-> **Observations**: Changes in CSS took effect immediately in the browser, but the page did **not refresh and lose state**.  
+> **Observations**: Changes in CSS took effect immediately in the browser, but the page did **not refresh and lose state**.
 
 - [x] Why does an app already split into ES modules (Exercise 1) integrate naturally with a tool like Vite, compared to the original single-`<script>` version?
 
-> Vite has an easy time to map out dependencies between files when ES-Modules are used and can thus when only a specific module changes it re-fetches that module only, instead of single `<script>` where all code is bundled into one global scope which makes it difficult for Vite to track updates of individual segments.  
+> Vite has an easy time to map out dependencies between files when ES-Modules are used and can thus when only a specific module changes it re-fetches that module only, instead of single `<script>` where all code is bundled into one global scope which makes it difficult for Vite to track updates of individual segments.
 
 ---
 
@@ -148,15 +148,41 @@ ticked. The table above is just a fast overview, tick the boxes inside each demo
 
 **Tasks**
 
-- [ ] Run the production build (`vite build`) and inspect the generated `dist/` folder.
-- [ ] Serve that build locally with `vite preview` (not the dev server) and confirm the app still works end-to-end from the built output.
-- [ ] Compare the dev-mode source with the built output for at least one file: note what changed (filenames, size, formatting/minification).
+- [x] Run the production build (`vite build`) and inspect the generated `dist/` folder.
+
+> See commit [a8829dd](https://github.com/Zafersari/awe-repo/commit/a8829dd4bf8ac55835f1bfb856131f5ef8f475cf)  
+> `npm run build` script was added in order to run `vite build`.  
+> After running `npm run build` the `./dist` folder can be inspected which contains the compiled .js, .css and the final index.html for serving in production. (ES Modules - TypeScript files are bundled into single JS file the browser can understand)
+
+- [x] Serve that build locally with `vite preview` (not the dev server) and confirm the app still works end-to-end from the built output.
+
+> See commit [a8829dd](https://github.com/Zafersari/awe-repo/commit/a8829dd4bf8ac55835f1bfb856131f5ef8f475cf)  
+> `npm run preview` script was added in order to run `vite preview`.  
+> After running `npm run preview` (prerequisite is running `vite build` first, e.g. by using the `build` npm script configured in package.json), the files from `./dist` are served and the application is running and working as expected.
+
+- [x] Compare the dev-mode source with the built output for at least one file: note what changed (filenames, size, formatting/minification).
+
+> See commit [a8829dd](https://github.com/Zafersari/awe-repo/commit/a8829dd4bf8ac55835f1bfb856131f5ef8f475cf)  
+> Check the index-*.js file of the `./dist` folder with any of the js files.
 
 **Questions** (depend on the tasks above)
 
-- [ ] Name at least three concrete transformations Vite applied to your source when building for production (e.g. bundling, minification, hashed filenames. Pick the ones you actually observed).
-- [ ] Why do production filenames typically include a content hash? What problem does that solve for real deployments?
-- [ ] Why would you never want to deploy the dev server itself (`vite dev`/`vite`) to real users, even though it "works"?
+- [x] Name at least three concrete transformations Vite applied to your source when building for production (e.g. bundling, minification, hashed filenames. Pick the ones you actually observed).
+
+> See commit [a8829dd](https://github.com/Zafersari/awe-repo/commit/a8829dd4bf8ac55835f1bfb856131f5ef8f475cf)  
+> See file `./dist/assets/index-*.js` specifically  
+> **Observation 1**: all the different modules/files were compiled into one single `.js` file.  
+> **Observation 2**: opening the file shows that the entire JS code was minified into one single line.  
+> **Observation 3**: the file name of the now single main JS file is hashed.
+
+- [x] Why do production filenames typically include a content hash? What problem does that solve for real deployments?
+
+> A real problem with non-hashed filenames is that some clients could have a stale cached version of the code and on occasions this can cause bugs with the new server. Including a hash in the filename overcomes this aggressive caching by forcing an update of the file whenever the slightes change is made to the code in production.
+
+- [x] Why would you never want to deploy the dev server itself (`vite dev`/`vite`) to real users, even though it "works"?
+
+> **Performance**: Dev server compiles code on demand which is handy for development as you can dynamically view the changes you make, but for the productive server you want whatever is in production to be backed into pre-packaged static files, so that the server doesn't transpile for thousands of users at a time, on the fly.  
+> **Security**: Since dev servers are meant for development, they often also expose verbose error stacks and logs as well as the internal filesystem paths which can be used for exploitation.
 
 ---
 
