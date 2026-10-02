@@ -1,5 +1,8 @@
 //const failure = "i never used it";
 /*
+
+legacy code from original before ts transition
+
 import {
   loadBookmarksFromStorage,
   loadNotesFromStorage,
