@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import type { Evidence, Location, Person, TimelineEvent } from "../../js/models";
+import type {
+  Evidence,
+  Location,
+  Person,
+  TimelineEvent,
+} from "../../js/models";
 
 interface CaseData {
   title: string;
@@ -67,7 +72,9 @@ function CaseSummary({ data }: { data: CaseData }) {
     <section className="case-summary-card">
       <h3>{data.title || "Case"}</h3>
       <p>
-        <span className="badge badge-flagged">{(data.status || "unknown").toUpperCase()}</span>
+        <span className="badge badge-flagged">
+          {(data.status || "unknown").toUpperCase()}
+        </span>
       </p>
       <p>{data.summary}</p>
     </section>
@@ -83,7 +90,13 @@ function StatCard({ value, label }: { value: number; label: string }) {
   );
 }
 
-function ReviewProgress({ reviewed, total }: { reviewed: number; total: number }) {
+function ReviewProgress({
+  reviewed,
+  total,
+}: {
+  reviewed: number;
+  total: number;
+}) {
   const percentage = total === 0 ? 0 : Math.round((reviewed / total) * 100);
 
   return (
@@ -97,7 +110,10 @@ function ReviewProgress({ reviewed, total }: { reviewed: number; total: number }
         aria-valuemax={100}
         aria-valuenow={percentage}
       >
-        <div className="progress-bar-inner" style={{ width: `${percentage}%` }} />
+        <div
+          className="progress-bar-inner"
+          style={{ width: `${percentage}%` }}
+        />
       </div>
       <p>{percentage}% of evidence reviewed</p>
     </section>
@@ -152,10 +168,20 @@ function DashboardPage({
 }) {
   // Show the request state before trying to render data-dependent content.
   if (error) {
-    return <section className="view active"><h2>Case Dashboard</h2><p role="alert">{error}</p></section>;
+    return (
+      <section className="view active">
+        <h2>Case Dashboard</h2>
+        <p role="alert">{error}</p>
+      </section>
+    );
   }
   if (!data) {
-    return <section className="view active"><h2>Case Dashboard</h2><p>Loading case data...</p></section>;
+    return (
+      <section className="view active">
+        <h2>Case Dashboard</h2>
+        <p>Loading case data...</p>
+      </section>
+    );
   }
 
   // Derive counts and recent items from the loaded datasets during render.
@@ -199,7 +225,12 @@ function EvidencePage() {
 }
 
 function PeopleLocationsPage() {
-  return <StubPage title="People & Locations" detail="People and locations view stub." />;
+  return (
+    <StubPage
+      title="People & Locations"
+      detail="People and locations view stub."
+    />
+  );
 }
 
 function TimelinePage() {
@@ -207,7 +238,9 @@ function TimelinePage() {
 }
 
 function WorkspacePage() {
-  return <StubPage title="Investigator Workspace" detail="Workspace view stub." />;
+  return (
+    <StubPage title="Investigator Workspace" detail="Workspace view stub." />
+  );
 }
 
 // This table defines valid routes, their labels, and the page each route renders.
@@ -253,7 +286,9 @@ function viewFromHash(): ViewId {
 export default function App() {
   // React state tracks the route and drives the rendered page and active nav item.
   const [currentView, setCurrentView] = useState<ViewId>(viewFromHash);
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null,
+  );
   const [dashboardError, setDashboardError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -299,7 +334,9 @@ export default function App() {
       .catch((loadError: unknown) => {
         if (!cancelled) {
           setDashboardError(
-            loadError instanceof Error ? loadError.message : "Could not load case data.",
+            loadError instanceof Error
+              ? loadError.message
+              : "Could not load case data.",
           );
         }
       });
