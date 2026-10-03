@@ -1,4 +1,5 @@
-const failure = "i never used it";
+// demo:
+// const failure = "i never used it";
 /*
 import {
   loadBookmarksFromStorage,
