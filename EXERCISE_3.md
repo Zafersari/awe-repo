@@ -43,12 +43,21 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 
 **Tasks**
 
-- [ ] Give a concise explanation of how web applications evolved over the years and place the app from the exercises on the timeline. Justify where you put it.
+- [x] Give a concise explanation of how web applications evolved over the years and place the app from the exercises on the timeline. Justify where you put it.
+
+> **Evolution of web applications**: mostly static pages in the beginning to server-rendered pages whose contents would change after each request, then to richer pages that could fetch data and update parts of UI without reloading. This led to single-page applications where JS handles navigation and updates inside single document, with modern frameworks and build tools making structuring and maintaining those applications easier.
+> **This application**: Single Page Application (SPA) style webapp, where the browser loads one HTML document where views are configured, JS entry point is loaded and navigation changes URL hash with switching from one view to the other without full page reload. Fits into period of AJAX-to-SPA period (single page application with partial page updates).
 
 **Questions** (depend on the tasks above)
 
-- [ ] What specific problem was AJAX (and libraries like jQuery) solving that plain server-rendered pages couldn't? What new problems did that approach introduce, that SPA frameworks then tried to solve?
-- [ ] This app currently uses hash-based routing (`#dashboard`, `#evidence`, ...) with no full page reload between views. Which era does that pattern belong to, and what does it tell you about when this architectural choice became common?
+- [x] What specific problem was AJAX (and libraries like jQuery) solving that plain server-rendered pages couldn't? What new problems did that approach introduce, that SPA frameworks then tried to solve?
+
+> **AJAX** let page request data in background and update only parts of page instead of asking server for entire page.
+> **JQuery** helped developers in using those browser features, by providing simpler more consistent API.
+
+- [x] This app currently uses hash-based routing (`#dashboard`, `#evidence`, ...) with no full page reload between views. Which era does that pattern belong to, and what does it tell you about when this architectural choice became common?
+
+> Belongs to Single-Page-Application era during the web 2.0/AJAX period. The pattern shows that this type of architectural choice became common when apps started to implement client-side navigation rather than multi-page navigation.  
 
 ---
 
