@@ -358,15 +358,33 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 
 **Tasks**
 
-- [ ] Rebuild the Dashboard view as React components (using your hierarchy from Demo 7 as a starting point), rendering the case summary, stat cards, review progress, and the recent
-      evidence/timeline lists. Reading from the same data your app already loads.
-- [ ] Confirm it renders correctly with real data, and that navigating away and back doesn't lose or corrupt anything.
+- [x] Rebuild the Dashboard view as React components (using your hierarchy from Demo 7 as a starting point), rendering the case summary, stat cards, review progress, and the recent evidence/timeline lists. Reading from the same data your app already loads.
+
+> Implemented in [`App.tsx`](./sandbox/react-intro/App.tsx). It loads the same JSON datasets, reads saved bookmarks, and renders the case summary, stats, progress, recent evidence, and timeline as React components. Dashboard data is kept in the app shell while navigating between views.
+
+- [x] Confirm it renders correctly with real data, and that navigating away and back doesn't lose or corrupt anything.
+
+> Confirm via: ``npm run dev`` (starting vite dev server) and navigating to ``http://localhost:5173/sandbox/react-intro/#dashboard``, navigating away to other view, and then back to dashboard shows data is still present and in tact.
 
 **Questions** (depend on the tasks above)
 
-- [ ] Where does the Dashboard's data (case info, evidence, timeline) come from in your React version, and how does it get to the components that render it? Is this the final architecture you intend to keep, or a placeholder you know you'll change in a later exercise?
-- [ ] The old vanilla dashboard had a real bug where it could show stale numbers because it only re-rendered on a view's _first_ visit (a manual render-cache flag). Does your React version have an equivalent risk? Why or why not, given how React re-renders?
-- [ ] What, if anything, does your React Dashboard do differently from the vanilla one in terms of _when_ it recalculates derived values (like the review-progress percentage)?
+- [x] Where does the Dashboard's data (case info, evidence, timeline) come from in your React version, and how does it get to the components that render it? Is this the final architecture you intend to keep, or a placeholder you know you'll change in a later exercise?
+
+> The React shell currently fetches JSON files and passes the data to child components through props. Later, a shared data/API layer could fetch from a backend backed by a database; React would call the API, not connect directly to the database. This keeps the current setup simple while allowing persistent, centrally managed case data later.
+
+- [x] The old vanilla dashboard had a real bug where it could show stale numbers because it only re-rendered on a view's _first_ visit (a manual render-cache flag). Does your React version have an equivalent risk? Why or why not, given how React re-renders?
+
+> It has no first-visit render flag. A stale count could still happen if we mutate the existing data and set the same object back into state:
+> ```ts
+> dashboardData.evidence[0].status = "reviewed";
+> setDashboardData(dashboardData); // same object reference; React may skip the render
+> ```
+> Then the reviewed count and progress bar may stay stale. Update immutably instead, creating a new dashboard object and evidence array so React sees a changed state value.
+> tldr: changing the data and setting the same object again (trying to update it like this) will not work, as react might not update it because the same object reference could be interpreted by react as "nothing changed"
+
+- [x] What, if anything, does your React Dashboard do differently from the vanilla one in terms of _when_ it recalculates derived values (like the review-progress percentage)?
+
+> It derives reviewed count and recent items during Dashboard render, then computes the percentage in `ReviewProgress`. React recalculates these when the relevant state or props cause a render, rather than relying on the vanilla app's manual render calls.
 
 ---
 
