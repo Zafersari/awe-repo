@@ -1,41 +1,28 @@
-/*import pluginJs from "@eslint/js";
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
 
-export default [
+const browserGlobals = {
+  document: "readonly",
+  window: "readonly",
+  console: "readonly",
+  fetch: "readonly",
+  setTimeout: "readonly",
+  localStorage: "readonly",
+  alert: "readonly",
+  MutationObserver: "readonly",
+};
+
+export default tseslint.config(
+  { ignores: ["dist/**"] },
   {
+    files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
     languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
-      globals: {
-        document: "readonly",
-        window: "readonly",
-        console: "readonly",
-        fetch: "readonly",
-      },
+      globals: browserGlobals,
     },
   },
-  pluginJs.configs.recommended,
-];*/
-import pluginJs from "@eslint/js";
-
-export default [
   {
-    ignores: ["dist/"],
+    ...js.configs.recommended,
+    files: ["**/*.{js,mjs,cjs}"],
   },
-  {
-    languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
-      globals: {
-        document: "readonly",
-        window: "readonly",
-        console: "readonly",
-        fetch: "readonly",
-        setTimeout: "readonly",
-        localStorage: "readonly",
-        alert: "readonly",
-        MutationObserver: "readonly",
-      },
-    },
-  },
-  pluginJs.configs.recommended,
-];
+  ...tseslint.configs.recommended,
+);
