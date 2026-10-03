@@ -65,14 +65,27 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 
 **Tasks**
 
-- [ ] Present a short comparison table for Server-Side Rendering and Client-Side Rendering. Explain what the server sends on first request, what the browser has to do before the user sees content, and what happens on subsequent navigation.
-- [ ] Pick one real, publicly known website and argue whether it's (primarily) SSR or CSR, using
-observable evidence (view source, network tab, etc.).
+- [x] Present a short comparison table for Server-Side Rendering and Client-Side Rendering. Explain what the server sends on first request, what the browser has to do before the user sees content, and what happens on subsequent navigation.
+
+> | | Server-Side Rendering (SSR) | Client-Side Rendering (CSR) |
+> |---|---|---|
+> | First response | Server returns HTML containing the requested page's content, often with CSS and JavaScript assets. | Server returns an HTML shell plus JavaScript; data may arrive separately from API/JSON requests. |
+> | Before content is visible | Browser parses and paints the HTML. JavaScript may later hydrate it to add interactivity. | Browser downloads and executes JavaScript, obtains required data, then builds/updates the page DOM. |
+> | Subsequent navigation | Often requests another HTML document from the server, though hybrid apps may navigate client-side. | Usually changes the view in the existing document without a full reload; it may fetch more data. |
+
+- [x] Pick one real, publicly known website and argue whether it's (primarily) SSR or CSR, using observable evidence (view source, network tab, etc.).
+
+> **Example: Wikipedia article page**, [Server-side scripting](https://en.wikipedia.org/wiki/Server-side_scripting). In the browser, open **View Page Source** and search for `id="mw-content-text"` or the first sentence of the article. The initial HTML response contains the article paragraphs inside that content element, and the article is visible on page load. That is evidence of server-rendered content. Wikipedia also runs client-side JavaScript for interactive features, so this describes its initial article rendering, not an absence of client-side code. I verified the article text in the page source and the rendered page.
 
 **Questions** (depend on the tasks above)
 
-- [ ] Explain why this exercise application is SSR or CSR and why. Walk through, step by step, what happens between the browser requesting the page and the Dashboard actually being visible.
-- [ ] Name one real cost of what the architecture pays for that choice (think about what a user with JavaScript disabled, or a slow connection, or a search engine crawler would see) and why.
+- [x] Explain why this exercise application is SSR or CSR and why. Walk through, step by step, what happens between the browser requesting the page and the Dashboard actually being visible.
+
+> This is **primarily CSR for its data-driven dashboard**, with a static HTML shell. On the initial request, `index.html` already supplies the header, navigation, dashboard heading and introduction, but the `#dashboardContent` area is empty. The browser then loads the module entry point. On `DOMContentLoaded`, `initApp()` restores local preferences, installs event listeners and starts `loadAllData()`. The app fetches case, people and location JSON, then separately starts evidence and timeline fetches. `renderDashboard()` builds the dashboard markup in the browser and assigns it to `#dashboardContent`; it is called again as more data arrives. Finally, the router activates the dashboard view. So the shell is present in the first HTML response, but the case summary, statistics, progress and recent lists are generated client-side.
+
+- [x] Name one real cost of what the architecture pays for that choice (think about what a user with JavaScript disabled, or a slow connection, or a search engine crawler would see) and why.
+
+> If JavaScript is disabled, a user can still receive the static headings and introductory HTML, but the case-specific dashboard content stays empty and the app's navigation and controls do not work. On a slow connection, users wait for the JavaScript and JSON requests before seeing the populated dashboard. A crawler that does not execute JavaScript may likewise index only the shell rather than the data-driven case content. These are costs of rendering this content in the browser instead of including it in the initial HTML response.
 
 ---
 
