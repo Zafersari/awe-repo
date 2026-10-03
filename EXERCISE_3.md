@@ -240,14 +240,62 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 
 **Tasks**
 
-- [ ] Design and diagram a proposed component hierarchy for the **entire application**, not just the part you're building this exercise. E.g. pages (one per current view) and the reusable components you expect to extract (cards, badges, buttons, form controls, etc.), even though most of them won't be built until Exercises 4 and 5.
-- [ ] For at least 5 components in your diagram, briefly note what data/props each one would need and where that data comes from.
+- [x] Design and diagram a proposed component hierarchy for the **entire application**, not just the part you're building this exercise. E.g. pages (one per current view) and the reusable components you expect to extract (cards, badges, buttons, form controls, etc.), even though most of them won't be built until Exercises 4 and 5.
+
+> ```text
+> App
+> ├─ LoadingOverlay
+> ├─ AppHeader
+> │  ├─ Brand
+> │  └─ MainNavigation
+> ├─ SharedComponents
+> │  ├─ StatusBadge
+> │  ├─ RelevanceBadge
+> │  ├─ BookmarkButton
+> │  ├─ EvidenceMeta (EvidenceCard, EvidenceDetail, EvidenceModal)
+> │  └─ TagList (EvidenceCard, EvidenceDetail)
+> ├─ ViewRouter
+> │  ├─ DashboardPage
+> │  │  ├─ CaseSummary, StatGrid, ReviewProgress
+> │  │  └─ RecentEvidenceList (uses StatusBadge), RecentTimelineList
+> │  ├─ EvidencePage
+> │  │  ├─ EvidenceFilters, EvidenceList
+> │  │  ├─ EvidenceCard (uses shared badges, BookmarkButton, EvidenceMeta, TagList)
+> │  │  └─ EvidenceDetail ─ EvidenceDetailField, NoteEditor (uses EvidenceMeta, TagList)
+> │  ├─ PeopleLocationsPage
+> │  │  ├─ PeopleTabs ─ PersonCard
+> │  │  └─ LocationCard
+> │  ├─ TimelinePage ─ TimelineFilters, TimelineEventCard, EvidenceModal
+> │  └─ WorkspacePage ─ BookmarkList, NotesList, HypothesisForm
+> └─ AppFooter
+> ```
+
+- [x] For at least 5 components in your diagram, briefly note what data/props each one would need and where that data comes from.
+
+> - `CaseSummary`: case title, status, summary from `case.json` / `state.caseData`.
+> - `StatGrid`: evidence, people, location and bookmark counts derived from app state.
+> - `EvidenceCard`: an `Evidence` item and bookmark action from `state.allEvidence` and `state.bookmarks`.
+> - `EvidenceMeta`: evidence ID, type and timestamp from an `Evidence` item; formats the timestamp for cards, details and the timeline quick-view modal.
+> - `TagList`: tags from an `Evidence` item, used by its card and detail view.
+> - `EvidenceDetailField`: a label and content for one labeled row in the evidence detail view.
+> - `PersonCard`: a `Person` and related-evidence count from `people.json` and evidence state.
+> - `LocationCard`: a `Location` from `locations.json`.
+> - `TimelineEventCard`: a `TimelineEvent` plus related location/evidence data from timeline, location and evidence state.
+> - `HypothesisForm`: people, evidence options and saved draft from app state and `localStorage`.
 
 **Questions** (depend on the tasks above)
 
-- [ ] What criteria did you use to decide something should be its own component versus staying inline inside a bigger one?
-- [ ] Pick one component in your diagram that appears in more than one place in the app. What made you extract it instead of duplicating its markup, and how does that compare to how the original vanilla app handled (or didn't handle) that same duplication?
-- [ ] Your diagram includes components you won't build until later exercises. Why is it useful to design the whole hierarchy now rather than only diagramming what you're about to build?
+- [x] What criteria did you use to decide something should be its own component versus staying inline inside a bigger one?
+
+> I’d extract UI that repeats, has its own behavior/data, or can change independently. One-off simple markup can stay inline.
+
+- [x] Pick one component in your diagram that appears in more than one place in the app. What made you extract it instead of duplicating its markup, and how does that compare to how the original vanilla app handled (or didn't handle) that same duplication?
+
+> `StatusBadge` is used in dashboard evidence rows and evidence cards. The vanilla app reused a helper for the CSS class, but built the badge markup in each renderer; a component would centralize both markup and presentation.
+
+- [x] Your diagram includes components you won't build until later exercises. Why is it useful to design the whole hierarchy now rather than only diagramming what you're about to build?
+
+> Planning the whole hierarchy shows how the views and shared components fit together, helping keep data flow and UI consistent as later views are migrated.
 
 ---
 
