@@ -174,7 +174,7 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 - [x] Read enough of the React docs (or equivalent) to write, from scratch, a single tiny component (it can live in a throwaway sandbox, not necessarily this project yet) that renders a piece of static data as JSX. No state, no props even, just to prove you can write and reason about JSX.
 
 > A tiny static component written in a React sandbox:
-> Implemented in [sandbox/react-intro/CaseStatus.jsx](sandbox/react-intro/CaseStatus.jsx). It is intentionally not imported by the app.
+> Implemented in [sandbox/react-intro/CaseStatus.tsx](sandbox/react-intro/CaseStatus.tsx). It is intentionally not imported by the app.
 
 - [x] Identify, in your own words, what "component" means in React, and how it differs from a plain JavaScript function that happens to return an HTML string (which is essentially what several functions in the old `app.js` did, e.g. `renderEvidenceCardHTML()`).
 
@@ -201,16 +201,38 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 
 **Tasks**
 
-- [ ] Add React and TypeScript support to the existing Vite project from Exercise 2 (the right Vite plugin, `tsx` support, React types).
-- [ ] Create a minimal entry point (e.g. a root `<App />` component mounted into the page) that
+- [x] Add React and TypeScript support to the existing Vite project from Exercise 2 (the right Vite plugin, `tsx` support, React types).
+
+> Installed `react` and `react-dom` for runtime rendering, `@types/react` and `@types/react-dom` for TypeScript declarations, and `@vitejs/plugin-react` for React development features such as Fast Refresh. 
+> Vite 8 already recognizes `.tsx` files and transforms their JSX with its built-in Oxc transformer
+
+- [x] Create a minimal entry point (e.g. a root `<App />` component mounted into the page) that
       renders _something_ visible, without removing the working vanilla app yet.
-- [ ] Decide and document how the two versions coexist during the migration (e.g. a separate route/ flag to view the React version, or a full swap-over. Your call, but be ready to justify it).
+
+> The sandbox page loads [`main.tsx`](./sandbox/react-intro/main.tsx), which calls `createRoot()` on `#root` and renders `<CaseStatus />` from [`CaseStatus.tsx`](./sandbox/react-intro/CaseStatus.tsx). The main app still loads its original vanilla entry point.
+
+- [x] Decide and document how the two versions coexist during the migration (e.g. a separate route/ flag to view the React version, or a full swap-over. Your call, but be ready to justify it).
+
+> **Coexistence decision:** keep the current vanilla application at `/` and serve the React sandbox separately at `/sandbox/react-intro/`. This lets us experiment without replacing or mixing with the working app; the sandbox HTML is not linked from the main entry and is not part of the production bundle's import graph. The dedicated [`tsconfig.sandbox.json`](./tsconfig.sandbox.json) type-checks its TSX without adding the sandbox to the main app's TypeScript build.
+
+> **Accessing the sandbox** via the browser: navigate to ``http://localhost:5173/sandbox/react-intro/`` which will load the files used in sandbox.  
 
 **Questions** (depend on the tasks above)
 
-- [ ] What did you actually have to install and configure to get JSX compiling through Vite? What is each piece responsible for?
-- [ ] How does your `<App />` component get from source code onto the actual page? Trace the path from your `.tsx` file to the DOM.
-- [ ] What decision did you make about how the vanilla and React versions coexist during migration, and why? What would go wrong with an opposite choice?
+- [x] What did you actually have to install and configure to get JSX compiling through Vite? What is each piece responsible for?
+
+> React (package `react`) and React DOM (package `react-dom`) render the UI; their type packages (`@types/react` and `@types/react-dom`) support TypeScript. 
+> Vite 8's Oxc transformer handles `.tsx` syntax
+> `jsx: "react-jsx"` in [`tsconfig.sandbox.json`](./tsconfig.sandbox.json) selects React's automatic JSX runtime
+> Vite React plugin adds Fast Refresh in development.
+
+- [x] How does your `<App />` component get from source code onto the actual page? Trace the path from your `.tsx` file to the DOM.
+
+> The sandbox HTML loads [`main.tsx`](./sandbox/react-intro/main.tsx), which imports [`CaseStatus`](./sandbox/react-intro/CaseStatus.tsx) and mounts it with `createRoot()` into `#root`. Vite transforms the TSX; in the browser, React runs the component and creates the `<p>` in the DOM.
+
+- [x] What decision did you make about how the vanilla and React versions coexist during migration, and why? What would go wrong with an opposite choice?
+
+> The vanilla app stays at `/`; React runs separately at `/sandbox/react-intro/`. That lets us test React without disrupting existing views; replacing the main app now could remove working features before their React versions are ready.
 
 ---
 
