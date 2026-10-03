@@ -124,14 +124,46 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 
 **Tasks**
 
-- [ ] Diagram or illustrate live how navigation currently works in this app: what triggers a view change, what code runs, and what does _not_ happen (that would happen in a classic multi-page site).
-- [ ] List every piece of state in the current app that would be lost on a full page reload, versus what's preserved (hint: check what's in `localStorage` versus what's only in memory).
+- [x] Diagram or illustrate live how navigation currently works in this app: what triggers a view change, what code runs, and what does _not_ happen (that would happen in a classic multi-page site).
+
+> ```mermaid
+> flowchart TD
+>   A[Click navigation button] --> B[window.navigateTo view]
+>   B --> C[Set window.location.hash]
+>   C --> D[Browser updates URL and history]
+>   D --> E[hashchange event]
+>   E --> F[handleHashChange in js/router.ts]
+>   F --> G[Update currentPage and active CSS classes]
+>   G --> H[Render the selected view if needed]
+>   H --> I[Same HTML document remains loaded]
+> ```
+>
+> For a live walkthrough, click between two navigation buttons and watch the address bar: only the hash changes. `navigateTo()` sets it, the browser emits `hashchange`, and `handleHashChange()` updates `state.currentPage`, toggles the view/navigation classes, and renders the view as needed. No new HTML document is requested and the JavaScript runtime is not restarted, unlike a traditional multi-page navigation. Data loading occurs during app startup, not on each hash change.
+
+- [x] List every piece of state in the current app that would be lost on a full page reload, versus what's preserved (hint: check what's in `localStorage` versus what's only in memory).
+
+> **Preserved by `localStorage` and restored by the app:**
+> - `remotion_bookmarks`: bookmarked evidence IDs.
+> - `remotion_notes`: saved notes keyed by evidence ID. A note is persisted when Save is used; an unsaved edit in the note textarea is not.
+> - `remotion_hypothesis`: the hypothesis draft fields and selected evidence, persisted when Save hypothesis is used. Unsaved form edits are not.
+>
+> **Preserved in the URL/browser history:** the current hash (for example `#timeline`) and hash-history entries. On reload, the app reads the hash and routes back to that view; `state.currentPage` itself is reinitialized and set again by the router.
+>
+> **Lost on reload, then reset or reconstructed:** the in-memory `AppState` values `selectedEvidence`, `filteredEvidence`, `currentPeopleTab`, `loadingStepsRemaining`, `evidenceViewLoading`, all `viewRendered` flags, and `modalCloseListenerCount`, plus the evidence module's `latestSearchRequestId` and any pending simulated-search timer. `caseData`, `allEvidence`, `allPeople`, `allLocations`, and `allTimeline` are fetched again from JSON; unsaved in-memory changes to evidence `status` or `relevance` are therefore lost. The browser DOM is recreated, so transient evidence search/filter/sort values, timeline filters/order, the selected People/Locations tab, an open detail/modal, and any unsaved note or hypothesis input are not preserved by the app. The bookmark and notes arrays/objects also start fresh in memory, but their saved contents are reloaded from `localStorage`. Browser form-restoration behavior can vary; the app itself does not persist those transient control values.
 
 **Questions** (depend on the tasks above)
 
-- [ ] In a traditional multi-page app, where does "the current page's data" live between requests? Where does it live in this SPA instead, and what are the consequences of that difference (for good and for bad)?
-- [ ] This app currently implements routing by hand (`handleHashChange()`, a `switch`-like chain of `if`s, and manually toggling CSS classes). What is a router library actually responsible for that this hand-rolled version does _not_ handle?
-- [ ] If the user hits the browser's back button right now, what happens in this app, and why?
+- [x] In a traditional multi-page app, where does "the current page's data" live between requests? Where does it live in this SPA instead, and what are the consequences of that difference (for good and for bad)?
+
+> In an multi page app, the server rebuilds each page from database/session data. Here, working state lives in browser memory, with selected data saved in `localStorage`; navigation is fast, but unsaved state is lost on reload.
+
+- [x] This app currently implements routing by hand (`handleHashChange()`, a `switch`-like chain of `if`s, and manually toggling CSS classes). What is a router library actually responsible for that this hand-rolled version does _not_ handle?
+
+> A router library maps URLs to views and provides reusable handling for route parameters, nested routes, not-found pages, and browser history. This app only matches a few hashes and toggles views itself.
+
+- [x] If the user hits the browser's back button right now, what happens in this app, and why?
+
+> Back restores the previous hash, firing `hashchange`. `handleHashChange()` then activates that view without reloading the page.
 
 ---
 
