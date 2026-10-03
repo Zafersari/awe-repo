@@ -17,22 +17,22 @@ This exercise corresponds to the following chapters in the course manuscript:
 ## Self-Check
 
 The exercise is organized into 10 individual tasks with corresponding questions, that are
-presented in class. 
+presented in class.
 
 These checkboxes are for self-checking. Don't forget to do the actual checking of tasks you are able to present in the Moodle course. **Before class, tick only what you can genuinely demonstrate or answer on the spot, live.**
 
-| # | Demo | Ready? |
-|---|---|---|
-| 1 | Historical view of the web | ☐ |
-| 2 | SSR vs. CSR | ☐ |
-| 3 | The virtual DOM | ☐ |
-| 4 | SPA vs. MPA: state & routing | ☐ |
-| 5 | React introduction | ☐ |
-| 6 | React + TypeScript entry point in the Vite project | ☐ |
-| 7 | Component hierarchy for the whole app | ☐ |
-| 8 | Architecture Decision Record: why SPA/React | ☐ |
-| 9 | Migrate the application shell | ☐ |
-| 10 | Migrate the Dashboard view | ☐ |
+| #   | Demo                                               | Ready? |
+| --- | -------------------------------------------------- | ------ |
+| 1   | Historical view of the web                         | ☐      |
+| 2   | SSR vs. CSR                                        | ☐      |
+| 3   | The virtual DOM                                    | ☐      |
+| 4   | SPA vs. MPA: state & routing                       | ☐      |
+| 5   | React introduction                                 | ☐      |
+| 6   | React + TypeScript entry point in the Vite project | ☐      |
+| 7   | Component hierarchy for the whole app              | ☐      |
+| 8   | Architecture Decision Record: why SPA/React        | ☐      |
+| 9   | Migrate the application shell                      | ☐      |
+| 10  | Migrate the Dashboard view                         | ☐      |
 
 A demo only counts as "Ready" once **every** task and question checkbox inside it (below) is
 ticked — the table above is just a fast overview, tick the boxes inside each demo first.
@@ -57,7 +57,7 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 
 - [x] This app currently uses hash-based routing (`#dashboard`, `#evidence`, ...) with no full page reload between views. Which era does that pattern belong to, and what does it tell you about when this architectural choice became common?
 
-> Belongs to Single-Page-Application era during the web 2.0/AJAX period. The pattern shows that this type of architectural choice became common when apps started to implement client-side navigation rather than multi-page navigation.  
+> Belongs to Single-Page-Application era during the web 2.0/AJAX period. The pattern shows that this type of architectural choice became common when apps started to implement client-side navigation rather than multi-page navigation.
 
 ---
 
@@ -67,11 +67,11 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 
 - [x] Present a short comparison table for Server-Side Rendering and Client-Side Rendering. Explain what the server sends on first request, what the browser has to do before the user sees content, and what happens on subsequent navigation.
 
-> | | Server-Side Rendering (SSR) | Client-Side Rendering (CSR) |
-> |---|---|---|
-> | First response | Server returns HTML containing the requested page's content, often with CSS and JavaScript assets. | Server returns an HTML shell plus JavaScript; data may arrive separately from API/JSON requests. |
-> | Before content is visible | Browser parses and paints the HTML. JavaScript may later hydrate it to add interactivity. | Browser downloads and executes JavaScript, obtains required data, then builds/updates the page DOM. |
-> | Subsequent navigation | Often requests another HTML document from the server, though hybrid apps may navigate client-side. | Usually changes the view in the existing document without a full reload; it may fetch more data. |
+> |                           | Server-Side Rendering (SSR)                                                                        | Client-Side Rendering (CSR)                                                                         |
+> | ------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+> | First response            | Server returns HTML containing the requested page's content, often with CSS and JavaScript assets. | Server returns an HTML shell plus JavaScript; data may arrive separately from API/JSON requests.    |
+> | Before content is visible | Browser parses and paints the HTML. JavaScript may later hydrate it to add interactivity.          | Browser downloads and executes JavaScript, obtains required data, then builds/updates the page DOM. |
+> | Subsequent navigation     | Often requests another HTML document from the server, though hybrid apps may navigate client-side. | Usually changes the view in the existing document without a full reload; it may fetch more data.    |
 
 - [x] Pick one real, publicly known website and argue whether it's (primarily) SSR or CSR, using observable evidence (view source, network tab, etc.).
 
@@ -93,14 +93,30 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 
 **Tasks**
 
-- [ ] In your own words (a few sentences, not a copied definition), explain what the virtual DOM is and what problem it solves.
-- [ ] Find one concrete example in the *original* vanilla `app.js` (from before Exercise 1) where a small state change (e.g. toggling one bookmark) caused a large chunk of real DOM to be recreated via `innerHTML`, even though only a tiny part of it actually needed to change.
+- [x] In your own words (a few sentences, not a copied definition), explain what the virtual DOM is and what problem it solves.
+
+> A virtual DOM is a lightweight, in-memory description of what a UI should look like. When state changes, a UI library can make a new description, compare it with the previous one, and apply the necessary changes to the browser DOM. This gives the UI a structured way to stay in sync with application state without manually rebuilding every affected section ourselves.
+
+- [x] Find one concrete example in the _original_ vanilla `app.js` (from before Exercise 1) where a small state change (e.g. toggling one bookmark) caused a large chunk of real DOM to be recreated via `innerHTML`, even though only a tiny part of it actually needed to change.
+
+> **Bookmarking an evidence item:** In the Evidence view, click the bookmark button on one card. `handleBookmarkClick(evidenceId)` changes that item's bookmark state and saves the bookmarks, then calls `renderEvidenceList()` while the Evidence view is active. That function rebuilds HTML for every currently filtered evidence card and assigns the result to `#evidenceList.innerHTML`. As a result, all card elements in the list are replaced, even though only the selected card's bookmark icon and active styling needed to change. To demonstrate it, open DevTools Elements, inspect a card, click its bookmark, and observe that the list's card DOM is rebuilt. See `app.js`: `handleBookmarkClick()`, `renderEvidenceList()`, and `renderEvidenceCardHTML()`.
+
+> To demonstrate, best would be to checkout: `git checkout 6b96434d11c613c142a02eb5ce235836b9bdc763`, run live server for the `index.html`, then go to **"Evidence"**, inspect the document (HTML), press the bookmark (star) icon on any of the cards and notice how the others all update as well.
 
 **Questions** (depend on the tasks above)
 
-- [ ] Using the example you found: how would a virtual-DOM-based approach (conceptually, not necessarily React-specific) avoid recreating the parts that didn't change?
-- [ ] Is the virtual DOM a "faster" way to update the real DOM than directly calling `innerHTML`? Explain precisely what's actually being traded off (think about the diffing work itself).
-- [ ] Does using a virtual DOM library automatically make your app fast? What could still make a React app slow despite it?
+- [x] Using the example you found: how would a virtual-DOM-based approach (conceptually, not necessarily React-specific) avoid recreating the parts that didn't change?
+
+> After the bookmark state changes, the UI would be described again and compared with its previous description. The comparison would show that the evidence list and other cards are unchanged; only the selected card's bookmark button has a different active class and star icon. The renderer could update those button details in the existing DOM node and leave the other card nodes intact.
+
+- [x] Is the virtual DOM a "faster" way to update the real DOM than directly calling `innerHTML`? Explain precisely what's actually being traded off (think about the diffing work itself).
+
+> Whether it is "faster" depends entirely on the contents and the work necessary to update the entire DOM. For smaller UI's like this one, the diffing might outweigh the saved mutations when redoing the entire section.
+> **What's traded off?**: bookkeeping and comparison work (when diffing) vs. number and cost of actual DOM changes (direct innerHTML call)
+
+- [x] Does using a virtual DOM library automatically make your app fast? What could still make a React app slow despite it?
+
+> No. A virtual DOM is a rendering strategy, not an automatic performance guarantee. A React app can still be slow if it needlessly re-renders large component subtrees, performs expensive calculations during rendering, uses unstable or missing keys in lists, triggers excessive state updates, or loads and processes too much JavaScript or data. Poor network performance, large assets, and expensive layout or paint work can also dominate. Measure the actual bottleneck and then reduce unnecessary rendering or work; adding memoization without evidence can add complexity without helping.
 
 ---
 
@@ -108,13 +124,13 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 
 **Tasks**
 
-- [ ] Diagram or illustrate live how navigation currently works in this app: what triggers a view change, what code runs, and what does *not* happen (that would happen in a classic multi-page site).
+- [ ] Diagram or illustrate live how navigation currently works in this app: what triggers a view change, what code runs, and what does _not_ happen (that would happen in a classic multi-page site).
 - [ ] List every piece of state in the current app that would be lost on a full page reload, versus what's preserved (hint: check what's in `localStorage` versus what's only in memory).
 
 **Questions** (depend on the tasks above)
 
 - [ ] In a traditional multi-page app, where does "the current page's data" live between requests? Where does it live in this SPA instead, and what are the consequences of that difference (for good and for bad)?
-- [ ] This app currently implements routing by hand (`handleHashChange()`, a `switch`-like chain of `if`s, and manually toggling CSS classes). What is a router library actually responsible for that this hand-rolled version does *not* handle?
+- [ ] This app currently implements routing by hand (`handleHashChange()`, a `switch`-like chain of `if`s, and manually toggling CSS classes). What is a router library actually responsible for that this hand-rolled version does _not_ handle?
 - [ ] If the user hits the browser's back button right now, what happens in this app, and why?
 
 ---
@@ -131,7 +147,7 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 - [ ] What is JSX, actually? What does it compile to?
 - [ ] Compare your tiny component to the old `renderEvidenceCardHTML(ev)` function (string concatenation returning an HTML string). What is fundamentally different about how each one's output becomes real DOM?
 - [ ] What does it mean that "components are just functions" in React? What would break if a
-component's function body had a side effect (e.g. mutated a global variable) every time it rendered?
+      component's function body had a side effect (e.g. mutated a global variable) every time it rendered?
 
 ---
 
@@ -141,7 +157,7 @@ component's function body had a side effect (e.g. mutated a global variable) eve
 
 - [ ] Add React and TypeScript support to the existing Vite project from Exercise 2 (the right Vite plugin, `tsx` support, React types).
 - [ ] Create a minimal entry point (e.g. a root `<App />` component mounted into the page) that
-renders *something* visible, without removing the working vanilla app yet.
+      renders _something_ visible, without removing the working vanilla app yet.
 - [ ] Decide and document how the two versions coexist during the migration (e.g. a separate route/ flag to view the React version, or a full swap-over. Your call, but be ready to justify it).
 
 **Questions** (depend on the tasks above)
@@ -171,12 +187,12 @@ renders *something* visible, without removing the working vanilla app yet.
 
 **Tasks**
 
-- [ ] Argue whether an SPA built with React is actually the right architecture for *this specific app*, given what it does.
+- [ ] Argue whether an SPA built with React is actually the right architecture for _this specific app_, given what it does.
 - [ ] Include honest trade-offs or downsides of the SPA/React choice for this app, not just the benefits.
 
 **Questions** (depend on the tasks above)
 
-- [ ] What would you lose by keeping this app as server-rendered vanilla HTML/JS instead? What would you lose by choosing React specifically over a *different* SPA approach (e.g. vanilla JS with a router, or a lighter library)?
+- [ ] What would you lose by keeping this app as server-rendered vanilla HTML/JS instead? What would you lose by choosing React specifically over a _different_ SPA approach (e.g. vanilla JS with a router, or a lighter library)?
 - [ ] If this app needed to support users on very low-end devices or poor connections as a hard requirement, would you stick with SPA or change the architecture? Why or why not?
 
 ---
@@ -191,7 +207,7 @@ renders *something* visible, without removing the working vanilla app yet.
 **Questions** (depend on the tasks above)
 
 - [ ] How does "the current view" get tracked in your React shell? Compare this directly to how `currentPage` and `handleHashChange()` did it in the vanilla version? What's actually
-different, and what's superficially different but conceptually the same?
+      different, and what's superficially different but conceptually the same?
 - [ ] What happens in your shell if a user navigates to a view that doesn't exist? How does that compare to the vanilla app's fallback-to-dashboard behavior?
 
 ---
@@ -201,17 +217,17 @@ different, and what's superficially different but conceptually the same?
 **Tasks**
 
 - [ ] Rebuild the Dashboard view as React components (using your hierarchy from Demo 7 as a starting point), rendering the case summary, stat cards, review progress, and the recent
-evidence/timeline lists. Reading from the same data your app already loads.
+      evidence/timeline lists. Reading from the same data your app already loads.
 - [ ] Confirm it renders correctly with real data, and that navigating away and back doesn't lose or corrupt anything.
 
 **Questions** (depend on the tasks above)
 
 - [ ] Where does the Dashboard's data (case info, evidence, timeline) come from in your React version, and how does it get to the components that render it? Is this the final architecture you intend to keep, or a placeholder you know you'll change in a later exercise?
-- [ ] The old vanilla dashboard had a real bug where it could show stale numbers because it only re-rendered on a view's *first* visit (a manual render-cache flag). Does your React version have an equivalent risk? Why or why not, given how React re-renders?
-- [ ] What, if anything, does your React Dashboard do differently from the vanilla one in terms of *when* it recalculates derived values (like the review-progress percentage)?
+- [ ] The old vanilla dashboard had a real bug where it could show stale numbers because it only re-rendered on a view's _first_ visit (a manual render-cache flag). Does your React version have an equivalent risk? Why or why not, given how React re-renders?
+- [ ] What, if anything, does your React Dashboard do differently from the vanilla one in terms of _when_ it recalculates derived values (like the review-progress percentage)?
 
 ---
 
 ## What to bring to class
 
-For each of the 10 demos: your changed code/diagrams/documents (ideally as commits you can show live), and the ticked checkboxes above reflecting what you can genuinely demonstrate and answer *right now*.
+For each of the 10 demos: your changed code/diagrams/documents (ideally as commits you can show live), and the ticked checkboxes above reflecting what you can genuinely demonstrate and answer _right now_.
