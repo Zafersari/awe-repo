@@ -171,15 +171,29 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 
 **Tasks**
 
-- [ ] Read enough of the React docs (or equivalent) to write, from scratch, a single tiny component (it can live in a throwaway sandbox, not necessarily this project yet) that renders a piece of static data as JSX. No state, no props even, just to prove you can write and reason about JSX.
-- [ ] Identify, in your own words, what "component" means in React, and how it differs from a plain JavaScript function that happens to return an HTML string (which is essentially what several functions in the old `app.js` did, e.g. `renderEvidenceCardHTML()`).
+- [x] Read enough of the React docs (or equivalent) to write, from scratch, a single tiny component (it can live in a throwaway sandbox, not necessarily this project yet) that renders a piece of static data as JSX. No state, no props even, just to prove you can write and reason about JSX.
+
+> A tiny static component written in a React sandbox:
+> Implemented in [sandbox/react-intro/CaseStatus.jsx](sandbox/react-intro/CaseStatus.jsx). It is intentionally not imported by the app.
+
+- [x] Identify, in your own words, what "component" means in React, and how it differs from a plain JavaScript function that happens to return an HTML string (which is essentially what several functions in the old `app.js` did, e.g. `renderEvidenceCardHTML()`).
+
+> A React component is a function that describes a piece of UI by returning React elements (often written as JSX). Unlike a function that returns an HTML string, React uses that description to manage updates to the DOM when the UI changes.
 
 **Questions** (depend on the tasks above)
 
-- [ ] What is JSX, actually? What does it compile to?
-- [ ] Compare your tiny component to the old `renderEvidenceCardHTML(ev)` function (string concatenation returning an HTML string). What is fundamentally different about how each one's output becomes real DOM?
-- [ ] What does it mean that "components are just functions" in React? What would break if a
+- [x] What is JSX, actually? What does it compile to?
+
+> JSX is JavaScript syntax for describing UI; browsers do not understand it directly. A JSX transform turns `<p>Case status: Under review</p>` into JavaScript that creates a React element (with the modern transform, a helper call such as `_jsx("p", { children: "Case status: Under review" })`). React then uses that element description to update the DOM.
+
+- [x] Compare your tiny component to the old `renderEvidenceCardHTML(ev)` function (string concatenation returning an HTML string). What is fundamentally different about how each one's output becomes real DOM?
+
+> `renderEvidenceCardHTML()` returns a string that the app inserts with `innerHTML`. A React component returns an element description; React compares it with the previous render and updates the necessary DOM nodes.
+
+- [x] What does it mean that "components are just functions" in React? What would break if a
       component's function body had a side effect (e.g. mutated a global variable) every time it rendered?
+
+> React calls a component function to describe the UI for the current state and props. Keep it pure: side effects during render may repeat when React renders again, causing duplicated or unpredictable changes.
 
 ---
 

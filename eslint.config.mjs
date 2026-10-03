@@ -15,14 +15,22 @@ const browserGlobals = {
 export default tseslint.config(
   { ignores: ["dist/**"] },
   {
-    files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
+    files: ["**/*.{js,jsx,mjs,cjs,ts,mts,cts}"],
     languageOptions: {
       globals: browserGlobals,
     },
   },
   {
     ...js.configs.recommended,
-    files: ["**/*.{js,mjs,cjs}"],
+    files: ["**/*.{js,jsx,mjs,cjs}"],
+  },
+  {
+    files: ["sandbox/**/*.jsx"],
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+    },
   },
   ...tseslint.configs.recommended,
 );
