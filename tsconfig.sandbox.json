@@ -3,5 +3,8 @@
   "compilerOptions": {
     "jsx": "react-jsx"
   },
-  "include": ["sandbox/react-intro/**/*.tsx"]
+  "include": [
+    "sandbox/react-intro/**/*.tsx",
+    "sandbox/react-intro/vite-env.d.ts"
+  ]
 }

@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
-import CaseStatus from "./CaseStatus";
+import App from "./App";
+import "../../styles.css";
 
 const rootElement = document.getElementById("root");
 
@@ -7,4 +8,4 @@ if (!rootElement) {
   throw new Error('React sandbox mount element "#root" was not found.');
 }
 
-createRoot(rootElement).render(<CaseStatus />);
+createRoot(rootElement).render(<App />);

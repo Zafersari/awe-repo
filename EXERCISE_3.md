@@ -327,14 +327,30 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 
 **Tasks**
 
-- [ ] Build the header/branding, the navigation bar, and a routing skeleton (even a minimal one, a full router library is not required yet) in React + TypeScript.
-- [ ] Wire it up so navigating between (stub) pages actually changes what's rendered, mirroring the current five views even though only the Dashboard will have real content this exercise.
+- [x] Build the header/branding, the navigation bar, and a routing skeleton (even a minimal one, a full router library is not required yet) in React + TypeScript.
+
+> Implemented in [`App.tsx`](./sandbox/react-intro/App.tsx): the branded shell reuses the app stylesheet, and the hash selects one of five React views. 
+
+> Sandbox is available via ``npm run dev`` under ``http://localhost:5173/sandbox/react-intro/index.html``
+
+- [x] Wire it up so navigating between (stub) pages actually changes what's rendered, mirroring the current five views even though only the Dashboard will have real content this exercise.
+
+> The five routes render separate page components. Dashboard remains a placeholder for Demo 10; Evidence, People & Locations, Timeline, and Workspace are stubs. 
+> Running the sandbox and pressing the navigation buttons will show the content changes for stub pages.
+
+> Sandbox is available via ``npm run dev`` under ``http://localhost:5173/sandbox/react-intro/index.html``
 
 **Questions** (depend on the tasks above)
 
-- [ ] How does "the current view" get tracked in your React shell? Compare this directly to how `currentPage` and `handleHashChange()` did it in the vanilla version? What's actually
-      different, and what's superficially different but conceptually the same?
-- [ ] What happens in your shell if a user navigates to a view that doesn't exist? How does that compare to the vanilla app's fallback-to-dashboard behavior?
+- [x] How does "the current view" get tracked in your React shell? Compare this directly to how `currentPage` and `handleHashChange()` did it in the vanilla version? What's actually different, and what's superficially different but conceptually the same?
+
+> `currentView` is React state initialized and synchronized from the URL hash. Like vanilla `currentPage`, it represents the selected route; React renders the matching page and active button from state instead of manually changing DOM classes.
+
+> See code in [`App.tsx`](./sandbox/react-intro/App.tsx) for details about implementation.
+
+- [x] What happens in your shell if a user navigates to a view that doesn't exist? How does that compare to the vanilla app's fallback-to-dashboard behavior?
+
+> An unknown hash falls back to Dashboard and is normalized to `#dashboard`, matching the vanilla fallback while also correcting the URL.
 
 ---
 
