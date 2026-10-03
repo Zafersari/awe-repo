@@ -12,7 +12,7 @@
   },
   "license": "ISC",
   "author": "zafer",
-  "type": "commonjs",
+  "type": "module",
   "main": "js/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
