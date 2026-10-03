@@ -303,13 +303,23 @@ ticked — the table above is just a fast overview, tick the boxes inside each d
 
 **Tasks**
 
-- [ ] Argue whether an SPA built with React is actually the right architecture for _this specific app_, given what it does.
-- [ ] Include honest trade-offs or downsides of the SPA/React choice for this app, not just the benefits.
+- [x] Argue whether an SPA built with React is actually the right architecture for _this specific app_, given what it does.
+
+> **Decision:** An SPA is a reasonable fit because investigators repeatedly filter, inspect, bookmark, and cross-link case data across five views. React can make these interactive views and shared UI easier to organize, though it is not essential for an app of this size and using a "heavy" framework for this kind of application might be overkill. But it all depends on how this app is expected to expand in the future, already migrating to React during it's "small" phase could help in structuring and improving a future, larger and more complex, application.
+
+- [x] Include honest trade-offs or downsides of the SPA/React choice for this app, not just the benefits.
+
+> React adds JavaScript download/runtime cost, build and dependency complexity, and a learning/migration burden. The app also relies on JavaScript to show case data, so first load and no-JavaScript access are weaker than with server-rendered pages. For this small project, React could be more tooling than the current feature set strictly needs (slightly overengineered).
 
 **Questions** (depend on the tasks above)
 
-- [ ] What would you lose by keeping this app as server-rendered vanilla HTML/JS instead? What would you lose by choosing React specifically over a _different_ SPA approach (e.g. vanilla JS with a router, or a lighter library)?
-- [ ] If this app needed to support users on very low-end devices or poor connections as a hard requirement, would you stick with SPA or change the architecture? Why or why not?
+- [x] What would you lose by keeping this app as server-rendered vanilla HTML/JS instead? What would you lose by choosing React specifically over a _different_ SPA approach (e.g. vanilla JS with a router, or a lighter library)?
+
+> Server-rendered vanilla pages would make each navigation simpler but usually reload the document. React provides reusable components and state-driven updates; compared with a lighter SPA, it costs more JavaScript and tooling in exchange for that structure.
+
+- [x] If this app needed to support users on very low-end devices or poor connections as a hard requirement, would you stick with SPA or change the architecture? Why or why not?
+
+> I’d favor server-rendered or hybrid pages: deliver useful case content as HTML first and keep JavaScript small. That reduces the work and waiting before content appears and makes it easier for low-end devices to access the content as the burden wouldn't be so much on the client.
 
 ---
 
