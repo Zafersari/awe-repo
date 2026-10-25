@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import type { Location, Person } from "../../../../js/models";
 import type { DashboardData } from "../../app/types";
 
@@ -27,7 +27,9 @@ function PersonCard({ person }: { person: Person }) {
           alt={`Portrait of ${person.name}`}
         />
         <div>
-          <h3>{person.name}</h3>
+          <h3>
+            <Link to={`/team/people/${person.id}`}>{person.name}</Link>
+          </h3>
           <div className="person-role">{person.role}</div>
         </div>
       </div>

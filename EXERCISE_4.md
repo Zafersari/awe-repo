@@ -211,6 +211,7 @@ navigable, bookmarkable routes (e.g. `/team/people` and `/team/locations`) inste
 component state) matter for the user? Name a concrete capability the user gains.
 
 > Each tab has its own URL, so users can bookmark or share the People or Locations view and return to it directly.
+
 - [x] What does your router do when the URL doesn't match any route you've defined? Compare this to how the vanilla app's `handleHashChange()` fell back to the dashboard for an invalid hash.
 
 > The wildcard route redirects unknown paths to the Dashboard. Like the vanilla hash handler, it falls back to Dashboard, but React Router handles unmatched paths through an explicit route instead of validating a hash change.
@@ -221,15 +222,19 @@ component state) matter for the user? Name a concrete capability the user gains.
 
 **Tasks**
 
-- [ ] Add at least one route that takes a parameter (e.g. a person or location id in the URL, such as `/team/people/:personId`), and use that parameter inside the corresponding component to determine what to render.
-- [ ] Make at least one place in the app link to that parameterized route (not just typing the URL by hand). For example, a person's name in a related-evidence context, or a "view on team page" link.
+- [x] Add at least one route that takes a parameter (e.g. a person or location id in the URL, such as `/team/people/:personId`), and use that parameter inside the corresponding component to determine what to render.
+- [x] Make at least one place in the app link to that parameterized route (not just typing the URL by hand). For example, a person's name in a related-evidence context, or a "view on team page" link.
 
 **Questions** (depend on the tasks above)
 
-- [ ] How do you read a route parameter's value inside your component, and what type is it as far as TypeScript is concerned by default? What did you have to do to use it safely (e.g. what if the id in the URL doesn't match any real person)?
-- [ ] What's the practical difference, for the user, between `/team/people/nova-byte` (a route
+- [x] How do you read a route parameter's value inside your component, and what type is it as far as TypeScript is concerned by default? What did you have to do to use it safely (e.g. what if the id in the URL doesn't match any real person)?
+
+> ``useParams`` reads ``personId`` from the route; it may be ``undefined``. It is looked up in the people data and a not-found message is shown if there is no matching person.
+
+- [x] What's the practical difference, for the user, between `/team/people/nova-byte` (a route
 param) and `/team/people?person=nova-byte` (a query param)? Why is one more appropriate than
-the other for this specific case?
+
+> A route parameter identifies which person's detail page to show, while a query parameter usually modifies or filters a collection view. Since this URL represents one specific person, the route parameter is the better fit.
 
 ---
 

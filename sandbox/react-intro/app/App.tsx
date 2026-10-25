@@ -13,6 +13,7 @@ import type {
   TimelineEvent,
 } from "../../../js/models";
 import DashboardPage from "../features/dashboard/DashboardPage";
+import PersonDetailPage from "../features/people-locations/PersonDetailPage";
 import PeopleLocationsPage from "../features/people-locations/PeopleLocationsPage";
 import TimelinePage from "../features/timeline/TimelinePage";
 import StubPage from "../shared/StubPage";
@@ -171,6 +172,15 @@ export default function App() {
               element={
                 <PeopleLocationsPage
                   section="people"
+                  data={dashboardData}
+                  error={dashboardError}
+                />
+              }
+            />
+            <Route
+              path="/team/people/:personId"
+              element={
+                <PersonDetailPage
                   data={dashboardData}
                   error={dashboardError}
                 />
