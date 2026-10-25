@@ -45,16 +45,29 @@ These checkboxes are for self-checking. Don't forget to do the actual checking o
 
 **Tasks**
 
-- [ ] Build at least 3 small components for the People & Locations or Timeline views using JSX,
+- [x] Build at least 3 small components for the People & Locations or Timeline views using JSX,
 each with an explicitly typed props interface/type (no untyped or `any` props).
-- [ ] Build at least one component that takes `children` (composition) rather than a data prop, and use it in a real place in the app (e.g. a generic card/panel wrapper).
+- [x] Build at least one component that takes `children` (composition) rather than a data prop, and use it in a real place in the app (e.g. a generic card/panel wrapper).
 
 **Questions** (depend on the tasks above)
 
-- [ ] Show one JSX expression in your code that embeds a JavaScript value or expression (not just static markup). For example `{person.name}` or a computed value. What can and can't go inside `{...}` in JSX?
-- [ ] For one component's typed props: what would TypeScript catch if you passed the wrong shape of data to it? Demonstrate a real type error by passing something wrong on purpose.
-- [ ] What's the difference between passing data as a named prop versus passing it as `children`? Why did you choose `children` for the component you built with it?
-- [ ] Why does direct DOM manipulation (as the old vanilla `app.js` did constantly, e.g. `innerHTML`, `classList.add/remove`, manually building elements) conflict with React's rendering model? What assumption does React make about who "owns" the DOM that direct manipulation breaks?
+- [x] Show one JSX expression in your code that embeds a JavaScript value or expression (not just static markup). For example `{person.name}` or a computed value. What can and can't go inside `{...}` in JSX?
+
+> In [App.tsx](./sandbox/react-intro/App.tsx) for "People & Locations" view, ``{data.people.length}`` is passed as ``count`` prop.
+> Braces let JSX evaluate JS-Expression and use result, but statements like ``if``, ``for`` or variable declarations cannot go into the braces.
+
+- [x] For one component's typed props: what would TypeScript catch if you passed the wrong shape of data to it? Demonstrate a real type error by passing something wrong on purpose.
+
+> Example: ``DatasetCount`` requires ``number`` and ``string`` for ``count`` and ``label`` respectively. Passing values of wrong type would give Typescript error.
+
+- [x] What's the difference between passing data as a named prop versus passing it as `children`? Why did you choose `children` for the component you built with it?
+
+> Named props pass specific data or options (see ``DatasetCount``) while ``children`` passes JSX nested between a component's opening/closing tags (see ``PeopleLocationsPanel``).
+> This way ``PeopleLocationsPanel`` can hold both People and Locations summaries by wrapping the caller provided contents.
+
+- [x] Why does direct DOM manipulation (as the old vanilla `app.js` did constantly, e.g. `innerHTML`, `classList.add/remove`, manually building elements) conflict with React's rendering model? What assumption does React make about who "owns" the DOM that direct manipulation breaks?
+
+> React expects to own and update DOM based on JSX which components return. If DOM is changed directly, it can get out of sync with React's view and later React updates may overwrite the changes made.
 
 ---
 

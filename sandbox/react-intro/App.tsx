@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import type {
   Evidence,
   Location,
@@ -224,12 +225,71 @@ function EvidencePage() {
   return <StubPage title="Evidence Catalogue" detail="Evidence view stub." />;
 }
 
-function PeopleLocationsPage() {
+interface PeopleLocationsPanelProps {
+  title: string;
+  children: ReactNode;
+}
+
+function PeopleLocationsPanel({ title, children }: PeopleLocationsPanelProps) {
   return (
-    <StubPage
-      title="People & Locations"
-      detail="People and locations view stub."
-    />
+    <section className="dashboard-panel">
+      <h3>{title}</h3>
+      {children}
+    </section>
+  );
+}
+
+interface DatasetCountProps {
+  count: number;
+  label: string;
+}
+
+function DatasetCount({ count, label }: DatasetCountProps) {
+  return <p>{count} {label}</p>;
+}
+
+interface PeopleLocationsPageProps {
+  data: DashboardData | null;
+  error: string | null;
+}
+
+function PeopleLocationsPage({
+  data,
+  error,
+}: PeopleLocationsPageProps) {
+  if (error) {
+    return (
+      <section className="view active">
+        <h2>People & Locations</h2>
+        <p role="alert">{error}</p>
+      </section>
+    );
+  }
+
+  if (!data) {
+    return (
+      <section className="view active">
+        <h2>People & Locations</h2>
+        <p>Loading people and locations...</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className="view active" aria-labelledby="people-locations-title">
+      <h2 id="people-locations-title">People & Locations</h2>
+      <div className="dashboard-columns">
+        <PeopleLocationsPanel title="People">
+          <DatasetCount count={data.people.length} label="people in the case file" />
+        </PeopleLocationsPanel>
+        <PeopleLocationsPanel title="Locations">
+          <DatasetCount
+            count={data.locations.length}
+            label="locations in the case file"
+          />
+        </PeopleLocationsPanel>
+      </div>
+    </section>
   );
 }
 
@@ -269,7 +329,7 @@ function RoutePage({
     case "evidence":
       return <EvidencePage />;
     case "people":
-      return <PeopleLocationsPage />;
+      return <PeopleLocationsPage data={data} error={error} />;
     case "timeline":
       return <TimelinePage />;
     case "workspace":
