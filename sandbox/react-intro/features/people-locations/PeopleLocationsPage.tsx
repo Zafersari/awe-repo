@@ -89,10 +89,20 @@ export default function PeopleLocationsPage({
     <section className="view active" aria-labelledby="people-locations-title">
       <h2 id="people-locations-title">People & Locations</h2>
       <div className="tab-bar" aria-label="People and locations">
-        <NavLink className="tab-btn" to="/team/people">
+        <NavLink
+          className={({ isActive }) =>
+            `tab-btn${isActive ? " active" : ""}`
+          }
+          to="/team/people"
+        >
           People
         </NavLink>
-        <NavLink className="tab-btn" to="/team/locations">
+        <NavLink
+          className={({ isActive }) =>
+            `tab-btn${isActive ? " active" : ""}`
+          }
+          to="/team/locations"
+        >
           Locations
         </NavLink>
       </div>
