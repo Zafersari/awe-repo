@@ -75,13 +75,18 @@ each with an explicitly typed props interface/type (no untyped or `any` props).
 
 **Tasks**
 
-- [ ] Implement at least two real conditional-rendering cases in the views you're migrating. For example: an empty state (e.g. "no timeline events match" if applicable), and a state-dependent style/label (e.g. the active People/Locations tab, or a certainty badge's variant on a timeline event).
-- [ ] Use at least two different conditional-rendering techniques (e.g. a ternary, `&&`, early-return, or a lookup/mapping function) and be ready to justify which you used where.
+- [x] Implement at least two real conditional-rendering cases in the views you're migrating. For example: an empty state (e.g. "no timeline events match" if applicable), and a state-dependent style/label (e.g. the active People/Locations tab, or a certainty badge's variant on a timeline event).
+- [x] Use at least two different conditional-rendering techniques (e.g. a ternary, `&&`, early-return, or a lookup/mapping function) and be ready to justify which you used where.
 
 **Questions** (depend on the tasks above)
 
-- [ ] Show one place where you used `condition && <Component />}` instead of a ternary. What would go wrong if `condition` were a number like `0` instead of a boolean and does that risk apply to your actual code?
-- [ ] Why might returning `null` from a component be preferable to returning an empty `<div>` in some cases? Did you use either, and why?
+- [x] Show one place where you used `condition && <Component />}` instead of a ternary. What would go wrong if `condition` were a number like `0` instead of a boolean and does that risk apply to your actual code?
+
+> In ``TimelinePage``, ``data.timeline.length === 0 && <p>...`` renders the empty message. If the left side were ``0``, React would render the number ``0`` instead of nothing. This risk does not apply here because the comparison evaluates to a boolean.
+
+- [x] Why might returning `null` from a component be preferable to returning an empty `<div>` in some cases? Did you use either, and why?
+
+> ``null`` renders nothing and avoids adding an unnecessary DOM element, unlike an empty ``<div>``. Neither was used in these cases; the component renders the appropriate message conditionally.
 
 ---
 

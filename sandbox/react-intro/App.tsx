@@ -242,10 +242,11 @@ function PeopleLocationsPanel({ title, children }: PeopleLocationsPanelProps) {
 interface DatasetCountProps {
   count: number;
   label: string;
+  emptyMessage: string;
 }
 
-function DatasetCount({ count, label }: DatasetCountProps) {
-  return <p>{count} {label}</p>;
+function DatasetCount({ count, label, emptyMessage }: DatasetCountProps) {
+  return count === 0 ? <p>{emptyMessage}</p> : <p>{count} {label}</p>;
 }
 
 interface PeopleLocationsPageProps {
@@ -280,12 +281,17 @@ function PeopleLocationsPage({
       <h2 id="people-locations-title">People & Locations</h2>
       <div className="dashboard-columns">
         <PeopleLocationsPanel title="People">
-          <DatasetCount count={data.people.length} label="people in the case file" />
+          <DatasetCount
+            count={data.people.length}
+            label="people in the case file"
+            emptyMessage="No people are listed."
+          />
         </PeopleLocationsPanel>
         <PeopleLocationsPanel title="Locations">
           <DatasetCount
             count={data.locations.length}
             label="locations in the case file"
+            emptyMessage="No locations are listed."
           />
         </PeopleLocationsPanel>
       </div>
@@ -293,8 +299,42 @@ function PeopleLocationsPage({
   );
 }
 
-function TimelinePage() {
-  return <StubPage title="Timeline" detail="Timeline view stub." />;
+interface TimelinePageProps {
+  data: DashboardData | null;
+  error: string | null;
+}
+
+function TimelinePage({ data, error }: TimelinePageProps) {
+  if (error) {
+    return (
+      <section className="view active">
+        <h2>Timeline</h2>
+        <p role="alert">{error}</p>
+      </section>
+    );
+  }
+
+  if (!data) {
+    return (
+      <section className="view active">
+        <h2>Timeline</h2>
+        <p>Loading timeline...</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className="view active" aria-labelledby="timeline-title">
+      <h2 id="timeline-title">Timeline</h2>
+      <section className="dashboard-panel">
+        <h3>Events</h3>
+        {data.timeline.length === 0 && <p>No timeline events to display.</p>}
+        {data.timeline.length > 0 && (
+          <p>{data.timeline.length} timeline events available.</p>
+        )}
+      </section>
+    </section>
+  );
 }
 
 function WorkspacePage() {
@@ -331,7 +371,7 @@ function RoutePage({
     case "people":
       return <PeopleLocationsPage data={data} error={error} />;
     case "timeline":
-      return <TimelinePage />;
+      return <TimelinePage data={data} error={error} />;
     case "workspace":
       return <WorkspacePage />;
   }
