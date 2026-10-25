@@ -135,13 +135,22 @@ each with an explicitly typed props interface/type (no untyped or `any` props).
 
 **Tasks**
 
-- [ ] Classify every component you've built so far as either "presentational" or "feature/container". Explain why.
-- [ ] Find at least one component that's currently doing more than one job, and split it into two components with a clear boundary between them.
+- [x] Classify every component you've built so far as either "presentational" or "feature/container". Explain why.
+
+> ``App``, ``RoutePage``, ``DashboardPage``, ``PeopleLocationsPage``, and ``TimelinePage`` are feature/container components because they coordinate routing, data loading, derived values, or view states. ``DashboardContent``, ``CaseSummary``, ``StatCard``, ``ReviewProgress``, ``RecentEvidenceList``, ``RecentTimelineList``, ``StubPage``, ``EvidencePage``, ``WorkspacePage``, ``PeopleLocationsPanel``, ``PersonCard``, ``LocationCard``, and ``TimelineEventCard`` are presentational because they render supplied props or fixed content.
+
+- [x] Find at least one component that's currently doing more than one job, and split it into two components with a clear boundary between them.
+
 
 **Questions** (depend on the tasks above)
 
-- [ ] For the component you split: what was the single responsibility of each half after the split? If an implementation detail in one half changed, would that change affect the other half? Why or why not?
-- [ ] Give one concrete rule you used to decide "this belongs in a presentational component" versus "this belongs in a feature component."
+- [x] For the component you split: what was the single responsibility of each half after the split? If an implementation detail in one half changed, would that change affect the other half? Why or why not?
+
+> ``DashboardPage`` handles loading/error states and derives the dashboard values. ``DashboardContent`` renders the layout from typed props. A layout change need not affect request handling or calculations because those responsibilities are separated.
+
+- [x] Give one concrete rule you used to decide "this belongs in a presentational component" versus "this belongs in a feature component."
+
+> If a component coordinates data, routing, or view state, it belongs in the feature/container layer; if it only displays the props it receives, it is presentational.
 
 ---
 

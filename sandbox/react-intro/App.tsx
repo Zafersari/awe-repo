@@ -160,6 +160,39 @@ function RecentTimelineList({ items }: { items: TimelineEvent[] }) {
   );
 }
 
+interface DashboardContentProps {
+  data: DashboardData;
+  reviewed: number;
+  recentEvidence: Evidence[];
+  recentTimeline: TimelineEvent[];
+}
+
+function DashboardContent({
+  data,
+  reviewed,
+  recentEvidence,
+  recentTimeline,
+}: DashboardContentProps) {
+  return (
+    <section className="view active" aria-labelledby="dashboard-title">
+      <h2 id="dashboard-title">Case Dashboard</h2>
+      <CaseSummary data={data.caseData} />
+      <div className="stat-grid">
+        <StatCard value={data.evidence.length} label="Evidence items" />
+        <StatCard value={data.people.length} label="People" />
+        <StatCard value={data.locations.length} label="Locations" />
+        <StatCard value={data.bookmarks.length} label="Bookmarked" />
+        <StatCard value={reviewed} label="Reviewed" />
+      </div>
+      <ReviewProgress reviewed={reviewed} total={data.evidence.length} />
+      <div className="dashboard-columns">
+        <RecentEvidenceList items={recentEvidence} />
+        <RecentTimelineList items={recentTimeline} />
+      </div>
+    </section>
+  );
+}
+
 function DashboardPage({
   data,
   error,
@@ -193,22 +226,12 @@ function DashboardPage({
   const recentTimeline = data.timeline.slice(-5).reverse();
 
   return (
-    <section className="view active" aria-labelledby="dashboard-title">
-      <h2 id="dashboard-title">Case Dashboard</h2>
-      <CaseSummary data={data.caseData} />
-      <div className="stat-grid">
-        <StatCard value={data.evidence.length} label="Evidence items" />
-        <StatCard value={data.people.length} label="People" />
-        <StatCard value={data.locations.length} label="Locations" />
-        <StatCard value={data.bookmarks.length} label="Bookmarked" />
-        <StatCard value={reviewed} label="Reviewed" />
-      </div>
-      <ReviewProgress reviewed={reviewed} total={data.evidence.length} />
-      <div className="dashboard-columns">
-        <RecentEvidenceList items={recentEvidence} />
-        <RecentTimelineList items={recentTimeline} />
-      </div>
-    </section>
+    <DashboardContent
+      data={data}
+      reviewed={reviewed}
+      recentEvidence={recentEvidence}
+      recentTimeline={recentTimeline}
+    />
   );
 }
 
@@ -244,8 +267,6 @@ interface PersonCardProps {
 }
 
 function PersonCard({ person }: PersonCardProps) {
-  const [followUp, setFollowUp] = useState(false);
-
   return (
     <article className="person-card">
       <div className="person-card-header">
@@ -262,9 +283,6 @@ function PersonCard({ person }: PersonCardProps) {
       <p><strong>Speciality:</strong> {person.speciality}</p>
       <p>{person.background}</p>
       <div className="person-statement">{person.statement}</div>
-      <button type="button" onClick={() => setFollowUp(!followUp)}>
-        {followUp ? "Follow-up marked" : "Mark for follow-up"}
-      </button>
     </article>
   );
 }
@@ -306,8 +324,6 @@ function PeopleLocationsPage({
   data,
   error,
 }: PeopleLocationsPageProps) {
-  const [reversedPeople, setReversedPeople] = useState(false);
-
   if (error) {
     return (
       <section className="view active">
@@ -334,26 +350,11 @@ function PeopleLocationsPage({
           {data.people.length === 0 ? (
             <p>No people are listed.</p>
           ) : (
-            <>
-              <button
-                type="button"
-                onClick={() => setReversedPeople(!reversedPeople)}
-              >
-                Reverse people
-              </button>
-              <div className="people-grid">
-                {(reversedPeople ? [...data.people].reverse() : data.people).map(
-                  (person, index) => (
-                    <PersonCard key={index} person={person} />
-                  ),
-                )}
-                {/* Stable-key alternative: replace the map above with this one.
-                {(reversedPeople ? [...data.people].reverse() : data.people).map(
-                  (person) => <PersonCard key={person.id} person={person} />,
-                )}
-                */}
-              </div>
-            </>
+            <div className="people-grid">
+              {data.people.map((person) => (
+                <PersonCard key={person.id} person={person} />
+              ))}
+            </div>
           )}
         </PeopleLocationsPanel>
         <PeopleLocationsPanel title="Locations">
