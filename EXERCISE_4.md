@@ -200,16 +200,20 @@ folder of files). Including the Dashboard and shell from Exercise 3.
 
 **Tasks**
 
-- [ ] Install a routing library (React Router or an equivalent of your choice, justified) and
+- [x] Install a routing library (React Router or an equivalent of your choice, justified) and
 replace the shell's placeholder navigation from Exercise 3 with real routes for at least Dashboard, People & Locations, and Timeline.
-- [ ] Convert the People/Locations tab toggle from local component state into two real,
+- [x] Convert the People/Locations tab toggle from local component state into two real,
 navigable, bookmarkable routes (e.g. `/team/people` and `/team/locations`) instead of a click handler that only changes what's shown without changing the URL.
 
 **Questions** (depend on the tasks above)
 
-- [ ] Why does making the People/Locations tab a real route (versus keeping it as internal
+- [x] Why does making the People/Locations tab a real route (versus keeping it as internal
 component state) matter for the user? Name a concrete capability the user gains.
-- [ ] What does your router do when the URL doesn't match any route you've defined? Compare this to how the vanilla app's `handleHashChange()` fell back to the dashboard for an invalid hash.
+
+> Each tab has its own URL, so users can bookmark or share the People or Locations view and return to it directly.
+- [x] What does your router do when the URL doesn't match any route you've defined? Compare this to how the vanilla app's `handleHashChange()` fell back to the dashboard for an invalid hash.
+
+> The wildcard route redirects unknown paths to the Dashboard. Like the vanilla hash handler, it falls back to Dashboard, but React Router handles unmatched paths through an explicit route instead of validating a hash change.
 
 ---
 

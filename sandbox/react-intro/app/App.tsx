@@ -1,4 +1,11 @@
 import { useEffect, useState } from "react";
+import {
+  BrowserRouter,
+  Navigate,
+  NavLink,
+  Route,
+  Routes,
+} from "react-router-dom";
 import type {
   Evidence,
   Location,
@@ -12,8 +19,7 @@ import StubPage from "../shared/StubPage";
 import type { CaseData, DashboardData } from "./types";
 
 async function fetchJson<T>(fileName: string): Promise<T> {
-  const url = new URL(`../../data/${fileName}`, window.location.href);
-  const response = await fetch(url);
+  const response = await fetch(`/data/${fileName}`);
   if (!response.ok) {
     throw new Error(`Could not load ${fileName} (${response.status}).`);
   }
@@ -33,71 +39,11 @@ function loadBookmarks(): string[] {
   }
 }
 
-const views = [
-  { id: "dashboard", label: "Dashboard" },
-  { id: "evidence", label: "Evidence" },
-  { id: "people", label: "People & Locations" },
-  { id: "timeline", label: "Timeline" },
-  { id: "workspace", label: "Workspace" },
-] as const;
-
-type ViewId = (typeof views)[number]["id"];
-
-function viewFromHash(): ViewId {
-  const hash = window.location.hash.slice(1);
-  return views.find((view) => view.id === hash)?.id ?? "dashboard";
-}
-
-function RoutePage({
-  view,
-  data,
-  error,
-}: {
-  view: ViewId;
-  data: DashboardData | null;
-  error: string | null;
-}) {
-  switch (view) {
-    case "dashboard":
-      return <DashboardPage data={data} error={error} />;
-    case "evidence":
-      return (
-        <StubPage title="Evidence Catalogue" detail="Evidence view stub." />
-      );
-    case "people":
-      return <PeopleLocationsPage data={data} error={error} />;
-    case "timeline":
-      return <TimelinePage data={data} error={error} />;
-    case "workspace":
-      return (
-        <StubPage
-          title="Investigator Workspace"
-          detail="Workspace view stub."
-        />
-      );
-  }
-}
-
 export default function App() {
-  const [currentView, setCurrentView] = useState<ViewId>(viewFromHash);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
     null,
   );
   const [dashboardError, setDashboardError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const syncView = () => {
-      const nextView = viewFromHash();
-      if (window.location.hash !== `#${nextView}`) {
-        window.location.hash = nextView;
-      }
-      setCurrentView(nextView);
-    };
-
-    window.addEventListener("hashchange", syncView);
-    syncView();
-    return () => window.removeEventListener("hashchange", syncView);
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -136,49 +82,132 @@ export default function App() {
   }, []);
 
   return (
-    <>
-      <header className="app-header">
-        <div className="header-inner">
-          <div className="brand">
-            <img
-              src="../../assets/logo/logo.svg"
-              alt=""
-              className="brand-logo"
-            />
-            <div>
-              <h1>Project ReMotion</h1>
-              <p className="subtitle">
-                Investigate the failure of an AI-assisted rehabilitation robot.
-              </p>
+    <BrowserRouter basename="/sandbox/react-intro">
+      <>
+        <header className="app-header">
+          <div className="header-inner">
+            <div className="brand">
+              <img src="/assets/logo/logo.svg" alt="" className="brand-logo" />
+              <div>
+                <h1>Project ReMotion</h1>
+                <p className="subtitle">
+                  Investigate the failure of an AI-assisted rehabilitation
+                  robot.
+                </p>
+              </div>
             </div>
-          </div>
-          <nav className="main-nav" aria-label="Main navigation">
-            {views.map((view) => (
-              <button
-                key={view.id}
-                type="button"
-                className={`nav-btn${currentView === view.id ? " active" : ""}`}
-                aria-current={currentView === view.id ? "page" : undefined}
-                onClick={() => {
-                  window.location.hash = view.id;
-                }}
+            <nav className="main-nav" aria-label="Main navigation">
+              <NavLink
+                to="/"
+                end
+                className={({ isActive }) =>
+                  `nav-btn${isActive ? " active" : ""}`
+                }
               >
-                {view.label}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </header>
-      <main className="app-main">
-        <RoutePage
-          view={currentView}
-          data={dashboardData}
-          error={dashboardError}
-        />
-      </main>
-      <footer className="app-footer">
-        Project ReMotion Investigation Portal
-      </footer>
-    </>
+                Dashboard
+              </NavLink>
+              <NavLink
+                to="/evidence"
+                className={({ isActive }) =>
+                  `nav-btn${isActive ? " active" : ""}`
+                }
+              >
+                Evidence
+              </NavLink>
+              <NavLink
+                to="/team/people"
+                className={({ isActive }) =>
+                  `nav-btn${isActive ? " active" : ""}`
+                }
+              >
+                People
+              </NavLink>
+              <NavLink
+                to="/team/locations"
+                className={({ isActive }) =>
+                  `nav-btn${isActive ? " active" : ""}`
+                }
+              >
+                Locations
+              </NavLink>
+              <NavLink
+                to="/timeline"
+                className={({ isActive }) =>
+                  `nav-btn${isActive ? " active" : ""}`
+                }
+              >
+                Timeline
+              </NavLink>
+              <NavLink
+                to="/workspace"
+                className={({ isActive }) =>
+                  `nav-btn${isActive ? " active" : ""}`
+                }
+              >
+                Workspace
+              </NavLink>
+            </nav>
+          </div>
+        </header>
+        <main className="app-main">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <DashboardPage data={dashboardData} error={dashboardError} />
+              }
+            />
+            <Route
+              path="/evidence"
+              element={
+                <StubPage
+                  title="Evidence Catalogue"
+                  detail="Evidence view stub."
+                />
+              }
+            />
+            <Route
+              path="/team/people"
+              element={
+                <PeopleLocationsPage
+                  section="people"
+                  data={dashboardData}
+                  error={dashboardError}
+                />
+              }
+            />
+            <Route
+              path="/team/locations"
+              element={
+                <PeopleLocationsPage
+                  section="locations"
+                  data={dashboardData}
+                  error={dashboardError}
+                />
+              }
+            />
+            <Route
+              path="/timeline"
+              element={
+                <TimelinePage data={dashboardData} error={dashboardError} />
+              }
+            />
+            <Route
+              path="/workspace"
+              element={
+                <StubPage
+                  title="Investigator Workspace"
+                  detail="Workspace view stub."
+                />
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+        <footer className="app-footer">
+          Project ReMotion Investigation Portal
+        </footer>
+      </>
+    </BrowserRouter>
   );
 }

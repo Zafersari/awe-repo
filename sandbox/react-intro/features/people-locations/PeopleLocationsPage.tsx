@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { NavLink } from "react-router-dom";
 import type { Location, Person } from "../../../../js/models";
 import type { DashboardData } from "../../app/types";
 
@@ -54,11 +55,13 @@ function LocationCard({ location }: { location: Location }) {
 }
 
 interface PeopleLocationsPageProps {
+  section: "people" | "locations";
   data: DashboardData | null;
   error: string | null;
 }
 
 export default function PeopleLocationsPage({
+  section,
   data,
   error,
 }: PeopleLocationsPageProps) {
@@ -83,29 +86,40 @@ export default function PeopleLocationsPage({
   return (
     <section className="view active" aria-labelledby="people-locations-title">
       <h2 id="people-locations-title">People & Locations</h2>
+      <div className="tab-bar" aria-label="People and locations">
+        <NavLink className="tab-btn" to="/team/people">
+          People
+        </NavLink>
+        <NavLink className="tab-btn" to="/team/locations">
+          Locations
+        </NavLink>
+      </div>
       <div className="dashboard-columns">
-        <PeopleLocationsPanel title="People">
-          {data.people.length === 0 ? (
-            <p>No people are listed.</p>
-          ) : (
-            <div className="people-grid">
-              {data.people.map((person) => (
-                <PersonCard key={person.id} person={person} />
-              ))}
-            </div>
-          )}
-        </PeopleLocationsPanel>
-        <PeopleLocationsPanel title="Locations">
-          {data.locations.length === 0 ? (
-            <p>No locations are listed.</p>
-          ) : (
-            <div className="locations-grid">
-              {data.locations.map((location) => (
-                <LocationCard key={location.id} location={location} />
-              ))}
-            </div>
-          )}
-        </PeopleLocationsPanel>
+        {section === "people" ? (
+          <PeopleLocationsPanel title="People">
+            {data.people.length === 0 ? (
+              <p>No people are listed.</p>
+            ) : (
+              <div className="people-grid">
+                {data.people.map((person) => (
+                  <PersonCard key={person.id} person={person} />
+                ))}
+              </div>
+            )}
+          </PeopleLocationsPanel>
+        ) : (
+          <PeopleLocationsPanel title="Locations">
+            {data.locations.length === 0 ? (
+              <p>No locations are listed.</p>
+            ) : (
+              <div className="locations-grid">
+                {data.locations.map((location) => (
+                  <LocationCard key={location.id} location={location} />
+                ))}
+              </div>
+            )}
+          </PeopleLocationsPanel>
+        )}
       </div>
     </section>
   );
