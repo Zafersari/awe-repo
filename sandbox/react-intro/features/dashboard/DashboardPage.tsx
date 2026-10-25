@@ -1,15 +1,18 @@
 import type { Evidence, TimelineEvent } from "../../../../js/models";
 import { formatDate } from "../../shared/formatDate";
 import type { DashboardData } from "../../app/types";
+import StatusBadge, {
+  type StatusBadgeTone,
+} from "../../shared/components/StatusBadge";
 
-function statusBadgeClass(status: string): string {
+function statusBadgeTone(status: string): StatusBadgeTone {
   switch (status.toLowerCase()) {
     case "reviewed":
-      return "badge-reviewed";
+      return "reviewed";
     case "flagged":
-      return "badge-flagged";
+      return "flagged";
     default:
-      return "badge-unreviewed";
+      return "unreviewed";
   }
 }
 
@@ -18,9 +21,10 @@ function CaseSummary({ data }: { data: DashboardData["caseData"] }) {
     <section className="case-summary-card">
       <h3>{data.title || "Case"}</h3>
       <p>
-        <span className="badge badge-flagged">
-          {(data.status || "unknown").toUpperCase()}
-        </span>
+        <StatusBadge
+          label={(data.status || "unknown").toUpperCase()}
+          tone="flagged"
+        />
       </p>
       <p>{data.summary}</p>
     </section>
@@ -76,9 +80,10 @@ function RecentEvidenceList({ items }: { items: Evidence[] }) {
         items.map((item) => (
           <div className="mini-list-item" key={item.id}>
             <strong>{item.id}</strong> &mdash; {item.title}{" "}
-            <span className={`badge ${statusBadgeClass(item.status || "")}`}>
-              {item.status || "unknown"}
-            </span>
+            <StatusBadge
+              label={item.status || "unknown"}
+              tone={statusBadgeTone(item.status || "")}
+            />
           </div>
         ))
       )}

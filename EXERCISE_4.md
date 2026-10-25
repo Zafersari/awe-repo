@@ -182,12 +182,17 @@ folder of files). Including the Dashboard and shell from Exercise 3.
 
 **Tasks**
 
-- [ ] Extract at least one presentational component that is genuinely reused in **two or more different places** in the app (e.g. a badge, a card shell, a button variant), with a typed props API that makes it flexible enough for both uses without becoming a special-cased mess.
+- [x] Extract at least one presentational component that is genuinely reused in **two or more different places** in the app (e.g. a badge, a card shell, a button variant), with a typed props API that makes it flexible enough for both uses without becoming a special-cased mess.
 
 **Questions** (depend on the tasks above)
 
-- [ ] Show the two (or more) places your reusable component is used. What varies between them via props, and what stays fixed inside the component itself? How did you decide where that line goes?
-- [ ] The original vanilla app had duplicated HTML-template code (the same card markup written out twice, slightly differently, in two functions). Compare that directly to what you just built. What does a reusable component give you that copy-pasted template strings didn't?
+- [x] Show the two (or more) places your reusable component is used. What varies between them via props, and what stays fixed inside the component itself? How did you decide where that line goes?
+
+> ``StatusBadge`` is used in ``CaseSummary`` and ``RecentEvidenceList``. The ``label`` and ``tone`` vary through typed props; the badge element and class structure stay fixed. I kept the API to the values that genuinely differ between these uses.
+
+- [x] The original vanilla app had duplicated HTML-template code (the same card markup written out twice, slightly differently, in two functions). Compare that directly to what you just built. What does a reusable component give you that copy-pasted template strings didn't?
+
+> A reusable component keeps the shared markup in one place and lets each caller supply only its differences as props. Unlike duplicated template strings, a change to the badge structure or styling is made once, reducing drift between uses.
 
 ---
 
