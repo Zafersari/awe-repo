@@ -94,11 +94,13 @@ each with an explicitly typed props interface/type (no untyped or `any` props).
 
 **Tasks**
 
-- [ ] Render the people list, the locations list, and the timeline events list, each as a mapped collection of components, each with a proper `key` prop.
+- [x] Render the people list, the locations list, and the timeline events list, each as a mapped collection of components, each with a proper `key` prop.
 
 **Questions** (depend on the tasks above)
 
-- [ ] What does React actually use `key` for internally?
+- [x] What does React actually use `key` for internally?
+
+> React uses ``key`` to match list items between renders, so it can tell which items were added, removed, or moved and preserve the right component identity. Here the people, locations, and timeline events use their stable IDs as keys.
 
 ---
 

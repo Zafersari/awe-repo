@@ -239,14 +239,57 @@ function PeopleLocationsPanel({ title, children }: PeopleLocationsPanelProps) {
   );
 }
 
-interface DatasetCountProps {
-  count: number;
-  label: string;
-  emptyMessage: string;
+interface PersonCardProps {
+  person: Person;
 }
 
-function DatasetCount({ count, label, emptyMessage }: DatasetCountProps) {
-  return count === 0 ? <p>{emptyMessage}</p> : <p>{count} {label}</p>;
+function PersonCard({ person }: PersonCardProps) {
+  return (
+    <article className="person-card">
+      <div className="person-card-header">
+        <img
+          className="person-avatar"
+          src={`/${person.avatar}`}
+          alt={`Portrait of ${person.name}`}
+        />
+        <div>
+          <h3>{person.name}</h3>
+          <div className="person-role">{person.role}</div>
+        </div>
+      </div>
+      <p><strong>Speciality:</strong> {person.speciality}</p>
+      <p>{person.background}</p>
+      <div className="person-statement">{person.statement}</div>
+    </article>
+  );
+}
+
+interface LocationCardProps {
+  location: Location;
+}
+
+function LocationCard({ location }: LocationCardProps) {
+  return (
+    <article className="location-card">
+      <h3>{location.id} &mdash; {location.name}</h3>
+      <p>{location.description}</p>
+      <p><strong>Contains:</strong> {location.contains.join(", ")}</p>
+    </article>
+  );
+}
+
+interface TimelineEventCardProps {
+  event: TimelineEvent;
+}
+
+function TimelineEventCard({ event }: TimelineEventCardProps) {
+  return (
+    <article className="timeline-event">
+      <div className="timeline-time">{formatDate(event.time)}</div>
+      <h3>{event.title}</h3>
+      <p>{event.description}</p>
+    </article>
+  );
 }
 
 interface PeopleLocationsPageProps {
@@ -281,18 +324,26 @@ function PeopleLocationsPage({
       <h2 id="people-locations-title">People & Locations</h2>
       <div className="dashboard-columns">
         <PeopleLocationsPanel title="People">
-          <DatasetCount
-            count={data.people.length}
-            label="people in the case file"
-            emptyMessage="No people are listed."
-          />
+          {data.people.length === 0 ? (
+            <p>No people are listed.</p>
+          ) : (
+            <div className="people-grid">
+              {data.people.map((person) => (
+                <PersonCard key={person.id} person={person} />
+              ))}
+            </div>
+          )}
         </PeopleLocationsPanel>
         <PeopleLocationsPanel title="Locations">
-          <DatasetCount
-            count={data.locations.length}
-            label="locations in the case file"
-            emptyMessage="No locations are listed."
-          />
+          {data.locations.length === 0 ? (
+            <p>No locations are listed.</p>
+          ) : (
+            <div className="locations-grid">
+              {data.locations.map((location) => (
+                <LocationCard key={location.id} location={location} />
+              ))}
+            </div>
+          )}
         </PeopleLocationsPanel>
       </div>
     </section>
@@ -326,13 +377,15 @@ function TimelinePage({ data, error }: TimelinePageProps) {
   return (
     <section className="view active" aria-labelledby="timeline-title">
       <h2 id="timeline-title">Timeline</h2>
-      <section className="dashboard-panel">
-        <h3>Events</h3>
-        {data.timeline.length === 0 && <p>No timeline events to display.</p>}
-        {data.timeline.length > 0 && (
-          <p>{data.timeline.length} timeline events available.</p>
-        )}
-      </section>
+      {data.timeline.length === 0 ? (
+        <p>No timeline events to display.</p>
+      ) : (
+        <div className="timeline-container">
+          {data.timeline.map((event) => (
+            <TimelineEventCard key={event.id} event={event} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }
