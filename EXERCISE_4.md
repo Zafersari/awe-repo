@@ -108,13 +108,26 @@ each with an explicitly typed props interface/type (no untyped or `any` props).
 
 **Tasks**
 
-- [ ] Deliberately use `key={index}` in one throwaway example, then demonstrate (e.g. by reordering or filtering the underlying array) a case where it produces a visibly wrong result, before replacing it with a real stable id.
+- [x] Deliberately use `key={index}` in one throwaway example, then demonstrate (e.g. by reordering or filtering the underlying array) a case where it produces a visibly wrong result, before replacing it with a real stable id.
+
+> Checkout tag: exercise-4-demo-4, with ``git checkout exercise-4-demo-4``, because the example is removed in later commits (only temporary for demonstration).
+
+> Demonstration is in ``PeopleLocationsPage`` function, see ``Reverse people`` button.
+> Negative-Example: using ``key={index}``, Positive-Example: replace map with map from comment using stable key
 
 **Questions** (depend on the tasks above)
 
-- [ ] What goes wrong, concretely, when keys are missing, duplicated, or based on array index for a list that can reorder or filter?
-- [ ] The *original* vanilla version of this app had a real bug where one feature used an array index as an identifier instead of a stable id. Would that same mistake, ported directly into React as `key={index}`, have caused a symptom a user could notice, or only a console warning? Explain why.
-- [ ] All of this app's real data (people, locations, timeline events) already has stable ids. Is there ever a legitimate reason to use `key={index}` anyway? When?
+- [x] What goes wrong, concretely, when keys are missing, duplicated, or based on array index for a list that can reorder or filter?
+
+> Missing keys make React fall back to positional matching and trigger a warning; duplicate keys make matching ambiguous. Index keys can attach component state to the wrong item after a reorder or filter because positions stay the same while items move.
+
+- [x] The *original* vanilla version of this app had a real bug where one feature used an array index as an identifier instead of a stable id. Would that same mistake, ported directly into React as `key={index}`, have caused a symptom a user could notice, or only a console warning? Explain why.
+
+> In the original notes list, the index was used only to create a note preview's DOM ID; the note itself was looked up by evidence ID. Porting that index as ``key={index}`` would likely cause no visible symptom here because the rows have no item-specific state and the key is not used as the record ID. React does not warn just because a key is an array index.
+
+- [x] All of this app's real data (people, locations, timeline events) already has stable ids. Is there ever a legitimate reason to use `key={index}` anyway? When?
+
+> Yes, for a static list that will never be reordered, filtered, inserted into, or removed from, especially when its items have no stable IDs and no item-specific state.
 
 ---
 

@@ -244,6 +244,8 @@ interface PersonCardProps {
 }
 
 function PersonCard({ person }: PersonCardProps) {
+  const [followUp, setFollowUp] = useState(false);
+
   return (
     <article className="person-card">
       <div className="person-card-header">
@@ -260,6 +262,9 @@ function PersonCard({ person }: PersonCardProps) {
       <p><strong>Speciality:</strong> {person.speciality}</p>
       <p>{person.background}</p>
       <div className="person-statement">{person.statement}</div>
+      <button type="button" onClick={() => setFollowUp(!followUp)}>
+        {followUp ? "Follow-up marked" : "Mark for follow-up"}
+      </button>
     </article>
   );
 }
@@ -301,6 +306,8 @@ function PeopleLocationsPage({
   data,
   error,
 }: PeopleLocationsPageProps) {
+  const [reversedPeople, setReversedPeople] = useState(false);
+
   if (error) {
     return (
       <section className="view active">
@@ -327,11 +334,26 @@ function PeopleLocationsPage({
           {data.people.length === 0 ? (
             <p>No people are listed.</p>
           ) : (
-            <div className="people-grid">
-              {data.people.map((person) => (
-                <PersonCard key={person.id} person={person} />
-              ))}
-            </div>
+            <>
+              <button
+                type="button"
+                onClick={() => setReversedPeople(!reversedPeople)}
+              >
+                Reverse people
+              </button>
+              <div className="people-grid">
+                {(reversedPeople ? [...data.people].reverse() : data.people).map(
+                  (person, index) => (
+                    <PersonCard key={index} person={person} />
+                  ),
+                )}
+                {/* Stable-key alternative: replace the map above with this one.
+                {(reversedPeople ? [...data.people].reverse() : data.people).map(
+                  (person) => <PersonCard key={person.id} person={person} />,
+                )}
+                */}
+              </div>
+            </>
           )}
         </PeopleLocationsPanel>
         <PeopleLocationsPanel title="Locations">
