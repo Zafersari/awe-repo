@@ -5,19 +5,21 @@ import {
   NavLink,
   Route,
   Routes,
+  useLocation,
 } from "react-router-dom";
 import type {
   Evidence,
   Location,
   Person,
   TimelineEvent,
-} from "../../../js/models";
+} from "../../js/models";
 import DashboardPage from "../features/dashboard/DashboardPage";
+import EvidencePage from "../features/evidence/EvidencePage";
 import PersonDetailPage from "../features/people-locations/PersonDetailPage";
 import PeopleLocationsPage from "../features/people-locations/PeopleLocationsPage";
 import TimelinePage from "../features/timeline/TimelinePage";
-import StubPage from "../shared/StubPage";
-import type { CaseData, DashboardData } from "./types";
+import WorkspacePage from "../features/workspace/WorkspacePage";
+import type { CaseData, DashboardData, HypothesisDraft } from "./types";
 
 async function fetchJson<T>(fileName: string): Promise<T> {
   const response = await fetch(`/data/${fileName}`);
@@ -25,6 +27,19 @@ async function fetchJson<T>(fileName: string): Promise<T> {
     throw new Error(`Could not load ${fileName} (${response.status}).`);
   }
   return response.json() as Promise<T>;
+}
+
+function PeopleLocationsNavLink() {
+  const { pathname } = useLocation();
+
+  return (
+    <NavLink
+      to="/team/people"
+      className={`nav-btn${pathname.startsWith("/team/") ? " active" : ""}`}
+    >
+      People &amp; Locations
+    </NavLink>
+  );
 }
 
 function loadBookmarks(): string[] {
@@ -37,6 +52,55 @@ function loadBookmarks(): string[] {
       : [];
   } catch {
     return [];
+  }
+}
+
+function loadNotes(): Record<string, string> {
+  try {
+    const value: unknown = JSON.parse(
+      window.localStorage.getItem("remotion_notes") ?? "{}",
+    );
+    if (typeof value !== "object" || value === null || Array.isArray(value)) {
+      return {};
+    }
+    return Object.fromEntries(
+      Object.entries(value).filter(
+        (entry): entry is [string, string] => typeof entry[1] === "string",
+      ),
+    );
+  } catch {
+    return {};
+  }
+}
+
+function loadHypothesisDraft(): HypothesisDraft | null {
+  try {
+    const value: unknown = JSON.parse(
+      window.localStorage.getItem("remotion_hypothesis") ?? "null",
+    );
+    if (typeof value !== "object" || value === null || Array.isArray(value)) {
+      return null;
+    }
+
+    const draft = value as Record<string, unknown>;
+    return {
+      suspectId: typeof draft.suspectId === "string" ? draft.suspectId : "",
+      nature: typeof draft.nature === "string" ? draft.nature : "",
+      evidenceIds: Array.isArray(draft.evidenceIds)
+        ? draft.evidenceIds.filter((id): id is string => typeof id === "string")
+        : [],
+      confidence:
+        typeof draft.confidence === "string" ||
+        typeof draft.confidence === "number"
+          ? String(draft.confidence)
+          : "50",
+      explanation:
+        typeof draft.explanation === "string" ? draft.explanation : "",
+      alternative:
+        typeof draft.alternative === "string" ? draft.alternative : "",
+    };
+  } catch {
+    return null;
   }
 }
 
@@ -65,6 +129,8 @@ export default function App() {
           locations,
           timeline,
           bookmarks: loadBookmarks(),
+          notes: loadNotes(),
+          hypothesisDraft: loadHypothesisDraft(),
         });
       })
       .catch((loadError: unknown) => {
@@ -83,12 +149,16 @@ export default function App() {
   }, []);
 
   return (
-    <BrowserRouter basename="/sandbox/react-intro">
+    <BrowserRouter>
       <>
         <header className="app-header">
           <div className="header-inner">
             <div className="brand">
-              <img src="/assets/logo/logo.svg" alt="" className="brand-logo" />
+              <img
+                src="/assets/logo/logo.svg"
+                alt="Project ReMotion logo"
+                className="brand-logo"
+              />
               <div>
                 <h1>Project ReMotion</h1>
                 <p className="subtitle">
@@ -115,22 +185,7 @@ export default function App() {
               >
                 Evidence
               </NavLink>
-              <NavLink
-                to="/team/people"
-                className={({ isActive }) =>
-                  `nav-btn${isActive ? " active" : ""}`
-                }
-              >
-                People
-              </NavLink>
-              <NavLink
-                to="/team/locations"
-                className={({ isActive }) =>
-                  `nav-btn${isActive ? " active" : ""}`
-                }
-              >
-                Locations
-              </NavLink>
+              <PeopleLocationsNavLink />
               <NavLink
                 to="/timeline"
                 className={({ isActive }) =>
@@ -161,10 +216,7 @@ export default function App() {
             <Route
               path="/evidence"
               element={
-                <StubPage
-                  title="Evidence Catalogue"
-                  detail="Evidence view stub."
-                />
+                <EvidencePage data={dashboardData} error={dashboardError} />
               }
             />
             <Route
@@ -180,10 +232,7 @@ export default function App() {
             <Route
               path="/team/people/:personId"
               element={
-                <PersonDetailPage
-                  data={dashboardData}
-                  error={dashboardError}
-                />
+                <PersonDetailPage data={dashboardData} error={dashboardError} />
               }
             />
             <Route
@@ -205,17 +254,15 @@ export default function App() {
             <Route
               path="/workspace"
               element={
-                <StubPage
-                  title="Investigator Workspace"
-                  detail="Workspace view stub."
-                />
+                <WorkspacePage data={dashboardData} error={dashboardError} />
               }
             />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
         <footer className="app-footer">
-          Project ReMotion Investigation Portal
+          Project ReMotion Investigation Portal &mdash; Research Center AI,
+          Software and IT-Security of HCW (fictional case study)
         </footer>
       </>
     </BrowserRouter>

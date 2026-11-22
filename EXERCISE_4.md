@@ -53,7 +53,7 @@ each with an explicitly typed props interface/type (no untyped or `any` props).
 
 - [x] Show one JSX expression in your code that embeds a JavaScript value or expression (not just static markup). For example `{person.name}` or a computed value. What can and can't go inside `{...}` in JSX?
 
-> In [App.tsx](./sandbox/react-intro/App.tsx) for "People & Locations" view, ``{data.people.length}`` is passed as ``count`` prop.
+> In [App.tsx](./src/app/App.tsx) for "People & Locations" view, ``{data.people.length}`` is passed as ``count`` prop.
 > Braces let JSX evaluate JS-Expression and use result, but statements like ``if``, ``for`` or variable declarations cannot go into the braces.
 
 - [x] For one component's typed props: what would TypeScript catch if you passed the wrong shape of data to it? Demonstrate a real type error by passing something wrong on purpose.

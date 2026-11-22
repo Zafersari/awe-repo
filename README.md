@@ -10,9 +10,10 @@ loaded the wrong calibration profile and triggered its emergency stop. This appl
 investigator review the evidence, people, locations, and timeline surrounding the incident, and
 build up a working hypothesis about what happened.
 
-This repository contains an existing vanilla-JavaScript (no frameworks used) investigation application. The system is
-functional but has accumulated technical debt and inconsistent implementation decisions. Your task
-during the course will be to analyse, maintain, refactor, migrate, and extend it.
+The investigation portal is built with React and TypeScript, with case data loaded
+from local JSON files. The repository also retains the original JavaScript modules
+used throughout the migration exercises. The course work analyses, maintains,
+refactors, migrates, and extends this application.
 
 ## Running the application
 
@@ -20,20 +21,21 @@ This application uses `fetch()` to load its case data from local JSON files, so 
 over HTTP — opening `index.html` directly from the filesystem (`file://`) will not work in most
 browsers.
 
-Any static file server will do. For example, from the project root:
+Install the dependencies and start the Vite development server from the project root:
 
 ```bash
-# Python 3
-python -m http.server 8080
-
-# Node.js (no install required)
-npx serve .
-
-# VS Code
-# Use the "Live Server" extension
+npm install
+npm run dev
 ```
 
-Then open `http://localhost:8080` (or whatever port your server prints) in your browser.
+Create the production build with:
+
+```bash
+npm run build
+```
+
+Vite prints the local development URL after startup. The generated production
+application is written to `dist/`.
 
 ## Features
 

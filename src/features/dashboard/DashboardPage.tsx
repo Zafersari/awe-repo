@@ -1,9 +1,10 @@
-import type { Evidence, TimelineEvent } from "../../../../js/models";
+import type { Evidence, TimelineEvent } from "../../../js/models";
 import { formatDate } from "../../shared/formatDate";
 import type { DashboardData } from "../../app/types";
 import StatusBadge, {
   type StatusBadgeTone,
 } from "../../shared/components/StatusBadge";
+import { Link } from "react-router-dom";
 
 function statusBadgeTone(status: string): StatusBadgeTone {
   switch (status.toLowerCase()) {
@@ -110,6 +111,63 @@ function RecentTimelineList({ items }: { items: TimelineEvent[] }) {
   );
 }
 
+function DashboardIntro() {
+  return (
+    <div className="intro-card">
+      <h3>How to use this portal</h3>
+      <p>
+        Everything gathered on the case so far is organised into four working
+        views. Use the navigation bar at the top to move between them at any
+        time.
+      </p>
+      <div className="howto-grid">
+        <div className="howto-item">
+          <h4>1. Evidence Catalogue</h4>
+          <p>
+            Search, filter, and sort every evidence item. Open one for full
+            details, related people and locations, and to add a private note.
+          </p>
+          <Link className="btn btn-secondary btn-small" to="/evidence">
+            Go to Evidence
+          </Link>
+        </div>
+        <div className="howto-item">
+          <h4>2. People &amp; Locations</h4>
+          <p>
+            Read profiles and statements from the six team members involved, and
+            look up the six key locations in the investigation.
+          </p>
+          <Link className="btn btn-secondary btn-small" to="/team/people">
+            Go to People &amp; Locations
+          </Link>
+        </div>
+        <div className="howto-item">
+          <h4>3. Timeline</h4>
+          <p>
+            Walk through events in chronological order, filter by person,
+            location, or type, and jump straight to the evidence behind any
+            event.
+          </p>
+          <Link className="btn btn-secondary btn-small" to="/timeline">
+            Go to Timeline
+          </Link>
+        </div>
+        <div className="howto-item">
+          <h4>4. Investigator Workspace</h4>
+          <p>
+            Your bookmarked evidence and notes collect here. Draft a hypothesis:
+            who you suspect, why, and how confident you are. It is saved
+            automatically in your browser.
+          </p>
+          <Link className="btn btn-secondary btn-small" to="/workspace">
+            Go to Workspace
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface DashboardContentProps {
   data: DashboardData;
   reviewed: number;
@@ -126,6 +184,7 @@ function DashboardContent({
   return (
     <section className="view active" aria-labelledby="dashboard-title">
       <h2 id="dashboard-title">Case Dashboard</h2>
+      <DashboardIntro />
       <CaseSummary data={data.caseData} />
       <div className="stat-grid">
         <StatCard value={data.evidence.length} label="Evidence items" />
@@ -153,6 +212,7 @@ export default function DashboardPage({ data, error }: DashboardPageProps) {
     return (
       <section className="view active">
         <h2>Case Dashboard</h2>
+        <DashboardIntro />
         <p role="alert">{error}</p>
       </section>
     );
@@ -161,6 +221,7 @@ export default function DashboardPage({ data, error }: DashboardPageProps) {
     return (
       <section className="view active">
         <h2>Case Dashboard</h2>
+        <DashboardIntro />
         <p>Loading case data...</p>
       </section>
     );
