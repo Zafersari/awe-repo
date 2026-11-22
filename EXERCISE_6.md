@@ -220,12 +220,31 @@ what happens if you do nothing special about it. Does the UI ever show a result 
 
 **Tasks**
 
-- [ ] Illustrate the full data flow for one piece of data, end to end: the JSON file -> your backend endpoint -> the API-access layer -> your custom hook -> the component -> what's on screen.
-- [ ] Explain a short, honest justification for one loading/error/empty-state UX decision you made (e.g. what your loading indicator looks like, how errors are worded, what "empty" looks like) and note one thing you'd do differently with more time.
+- [x] Illustrate the full data flow for one piece of data, end to end: the JSON file -> your backend endpoint -> the API-access layer -> your custom hook -> the component -> what's on screen.
+- [x] Explain a short, honest justification for one loading/error/empty-state UX decision you made (e.g. what your loading indicator looks like, how errors are worded, what "empty" looks like) and note one thing you'd do differently with more time.
+
+```mermaid
+flowchart LR
+	JSON["public/data/evidence.json"] --> API["GET /api/evidence"]
+	API --> ACCESS["getDataUrl + fetchJson<br/>src/shared/api.ts"]
+	ACCESS --> HOOK["useFetchJson<br/>loading, error, data"]
+	HOOK --> APP["App composes DashboardData"]
+	APP --> VIEW["EvidencePage"]
+	VIEW --> UI["Evidence cards"]
+	HOOK -. "pending / failed / empty" .-> STATES["Spinner / error / empty UI"]
+	PROD["Production: /data/evidence.json"] --> ACCESS
+```
+
+> The spinner makes waiting visible; with more time I would add a per-view retry rather than treating the five initial requests as one load.
 
 **Questions** (depend on the tasks above)
 
-- [ ] Walk through your diagram/illustration live, and for one step, explain what would break (and how you'd notice) if that step silently stopped happening.
-- [ ] Across Exercises 3–6, this app went from "read static files instantly" to "fetch from a real, sometimes-slow, sometimes-failing server". What did that change force you to add that wasn't needed before and was any of it needed *conceptually* even back when the data source was a static file, just less visible?
+- [x] Walk through your diagram/illustration live, and for one step, explain what would break (and how you'd notice) if that step silently stopped happening.
+
+> If `getDataUrl` points to the wrong endpoint, the request fails and `useFetchJson` stores the error; the Evidence page shows its error banner instead of cards. The failed network request is also visible in browser developer tools.
+
+- [x] Across Exercises 3–6, this app went from "read static files instantly" to "fetch from a real, sometimes-slow, sometimes-failing server". What did that change force you to add that wasn't needed before and was any of it needed *conceptually* even back when the data source was a static file, just less visible?
+
+> Network loading required explicit loading, error, and cancellation handling. The UI states were conceptually relevant for static files too, but their fast, predictable responses made them less noticeable; network delays and failures made them essential to handle explicitly.
 
 ---
