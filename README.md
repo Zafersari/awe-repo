@@ -10,10 +10,9 @@ loaded the wrong calibration profile and triggered its emergency stop. This appl
 investigator review the evidence, people, locations, and timeline surrounding the incident, and
 build up a working hypothesis about what happened.
 
-The investigation portal is built with React and TypeScript, with case data loaded
-from local JSON files. The repository also retains the original JavaScript modules
-used throughout the migration exercises. The course work analyses, maintains,
-refactors, migrates, and extends this application.
+The investigation portal is built with React and TypeScript. During development,
+case data is read from a small local Node API; production builds continue to read
+the same JSON files as static assets.
 
 ## Running the application
 
@@ -27,6 +26,20 @@ Install the dependencies and start the Vite development server from the project 
 npm install
 npm run dev
 ```
+
+In a second terminal, start the read-only development API:
+
+```bash
+npm run dev:api
+```
+
+The API is development-only and is not included in the GitHub Pages deployment.
+Vite proxies `/api` requests to `http://127.0.0.1:3001`, so no CORS configuration
+is needed. It serves `GET /api/case`, `/api/evidence`, `/api/people`,
+`/api/locations`, and `/api/timeline`. Add `?delay=1500` to delay a request in
+milliseconds, or `?error=1` to return a simulated 500 response. The delay can
+also be set for all API requests with `API_DELAY_MS`; the port can be changed
+with `API_PORT`.
 
 Create the production build with:
 

@@ -23,7 +23,10 @@ import WorkspacePage from "../features/workspace/WorkspacePage";
 import type { CaseData, DashboardData, HypothesisDraft } from "./types";
 
 async function fetchJson<T>(fileName: string): Promise<T> {
-  const response = await fetch(`/data/${fileName}`);
+  const endpoint = import.meta.env.DEV
+    ? `/api/${fileName.replace(/\.json$/, "")}`
+    : `/data/${fileName}`;
+  const response = await fetch(endpoint);
   if (!response.ok) {
     throw new Error(`Could not load ${fileName} (${response.status}).`);
   }
@@ -41,6 +44,29 @@ function PeopleLocationsNavLink() {
       People &amp; Locations
     </NavLink>
   );
+}
+
+function DocumentTitleSync() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const previousTitle = document.title;
+    const pageTitle = pathname.startsWith("/team/")
+      ? "People & Locations"
+      : pathname === "/evidence"
+        ? "Evidence Catalogue"
+        : pathname === "/timeline"
+          ? "Investigation Timeline"
+          : pathname === "/workspace"
+            ? "Investigator Workspace"
+            : "Case Dashboard";
+    document.title = `${pageTitle} | Project ReMotion`;
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [pathname]);
+
+  return null;
 }
 
 function loadBookmarks(): string[] {
@@ -88,7 +114,9 @@ function loadHypothesisDraft(): HypothesisDraft | null {
       suspectId: typeof draft.suspectId === "string" ? draft.suspectId : "",
       nature: typeof draft.nature === "string" ? draft.nature : "",
       evidenceIds: Array.isArray(draft.evidenceIds)
-        ? draft.evidenceIds.filter((id): id is string => typeof id === "string")
+        ? draft.evidenceIds.filter(
+            (id): id is string => typeof id === "string",
+          )
         : [],
       confidence:
         typeof draft.confidence === "string" ||
@@ -110,10 +138,10 @@ export default function App() {
     null,
   );
   const [dashboardError, setDashboardError] = useState<string | null>(null);
-  const [bookmarks, setBookmarks] = useState<string[]>(loadBookmarks);
-  const [notes, setNotes] = useState<Record<string, string>>(loadNotes);
+  const [bookmarks, setBookmarks] = useState<string[]>([]);
+  const [notes, setNotes] = useState<Record<string, string>>({});
   const [hypothesisDraft, setHypothesisDraft] =
-    useState<HypothesisDraft | null>(loadHypothesisDraft);
+    useState<HypothesisDraft | null>(null);
 
   function toggleBookmark(evidenceId: string) {
     const nextBookmarks = bookmarks.includes(evidenceId)
@@ -140,6 +168,12 @@ export default function App() {
       JSON.stringify(savedDraft),
     );
   }
+
+  useEffect(() => {
+    setBookmarks(loadBookmarks());
+    setNotes(loadNotes());
+    setHypothesisDraft(loadHypothesisDraft());
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -180,133 +214,134 @@ export default function App() {
     <BrowserRouter>
       <BookmarkContext.Provider value={{ bookmarks, toggleBookmark }}>
         <>
-          <header className="app-header">
-            <div className="header-inner">
-              <div className="brand">
-                <img
-                  src="/assets/logo/logo.svg"
-                  alt="Project ReMotion logo"
-                  className="brand-logo"
-                />
-                <div>
-                  <h1>Project ReMotion</h1>
-                  <p className="subtitle">
-                    Investigate the failure of an AI-assisted rehabilitation
-                    robot.
-                  </p>
-                </div>
+        <DocumentTitleSync />
+        <header className="app-header">
+          <div className="header-inner">
+            <div className="brand">
+              <img
+                src="/assets/logo/logo.svg"
+                alt="Project ReMotion logo"
+                className="brand-logo"
+              />
+              <div>
+                <h1>Project ReMotion</h1>
+                <p className="subtitle">
+                  Investigate the failure of an AI-assisted rehabilitation
+                  robot.
+                </p>
               </div>
-              <nav className="main-nav" aria-label="Main navigation">
-                <NavLink
-                  to="/"
-                  end
-                  className={({ isActive }) =>
-                    `nav-btn${isActive ? " active" : ""}`
-                  }
-                >
-                  Dashboard
-                </NavLink>
-                <NavLink
-                  to="/evidence"
-                  className={({ isActive }) =>
-                    `nav-btn${isActive ? " active" : ""}`
-                  }
-                >
-                  Evidence
-                </NavLink>
-                <PeopleLocationsNavLink />
-                <NavLink
-                  to="/timeline"
-                  className={({ isActive }) =>
-                    `nav-btn${isActive ? " active" : ""}`
-                  }
-                >
-                  Timeline
-                </NavLink>
-                <NavLink
-                  to="/workspace"
-                  className={({ isActive }) =>
-                    `nav-btn${isActive ? " active" : ""}`
-                  }
-                >
-                  Workspace
-                </NavLink>
-              </nav>
             </div>
-          </header>
-          <main className="app-main">
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <DashboardPage data={dashboardData} error={dashboardError} />
+            <nav className="main-nav" aria-label="Main navigation">
+              <NavLink
+                to="/"
+                end
+                className={({ isActive }) =>
+                  `nav-btn${isActive ? " active" : ""}`
                 }
-              />
-              <Route
-                path="/evidence"
-                element={
-                  <EvidencePage
-                    data={dashboardData}
-                    error={dashboardError}
-                    notes={notes}
-                    onSaveNote={saveNote}
-                  />
+              >
+                Dashboard
+              </NavLink>
+              <NavLink
+                to="/evidence"
+                className={({ isActive }) =>
+                  `nav-btn${isActive ? " active" : ""}`
                 }
-              />
-              <Route
-                path="/team/people"
-                element={
-                  <PeopleLocationsPage
-                    section="people"
-                    data={dashboardData}
-                    error={dashboardError}
-                  />
+              >
+                Evidence
+              </NavLink>
+              <PeopleLocationsNavLink />
+              <NavLink
+                to="/timeline"
+                className={({ isActive }) =>
+                  `nav-btn${isActive ? " active" : ""}`
                 }
-              />
-              <Route
-                path="/team/people/:personId"
-                element={
-                  <PersonDetailPage
-                    data={dashboardData}
-                    error={dashboardError}
-                  />
+              >
+                Timeline
+              </NavLink>
+              <NavLink
+                to="/workspace"
+                className={({ isActive }) =>
+                  `nav-btn${isActive ? " active" : ""}`
                 }
-              />
-              <Route
-                path="/team/locations"
-                element={
-                  <PeopleLocationsPage
-                    section="locations"
-                    data={dashboardData}
-                    error={dashboardError}
-                  />
-                }
-              />
-              <Route
-                path="/timeline"
-                element={
-                  <TimelinePage data={dashboardData} error={dashboardError} />
-                }
-              />
-              <Route
-                path="/workspace"
-                element={
-                  <WorkspacePage
-                    data={dashboardData}
-                    error={dashboardError}
-                    notes={notes}
-                    hypothesisDraft={hypothesisDraft}
-                    onSaveHypothesis={saveHypothesisDraft}
-                  />
-                }
-              />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </main>
-          <footer className="app-footer">
-            Project ReMotion Investigation Portal &mdash; Research Center AI,
-            Software and IT-Security of HCW (fictional case study)
-          </footer>
+              >
+                Workspace
+              </NavLink>
+            </nav>
+          </div>
+        </header>
+        <main className="app-main">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <DashboardPage data={dashboardData} error={dashboardError} />
+              }
+            />
+            <Route
+              path="/evidence"
+              element={
+                <EvidencePage
+                  data={dashboardData}
+                  error={dashboardError}
+                  notes={notes}
+                  onSaveNote={saveNote}
+                />
+              }
+            />
+            <Route
+              path="/team/people"
+              element={
+                <PeopleLocationsPage
+                  section="people"
+                  data={dashboardData}
+                  error={dashboardError}
+                />
+              }
+            />
+            <Route
+              path="/team/people/:personId"
+              element={
+                <PersonDetailPage
+                  data={dashboardData}
+                  error={dashboardError}
+                />
+              }
+            />
+            <Route
+              path="/team/locations"
+              element={
+                <PeopleLocationsPage
+                  section="locations"
+                  data={dashboardData}
+                  error={dashboardError}
+                />
+              }
+            />
+            <Route
+              path="/timeline"
+              element={
+                <TimelinePage data={dashboardData} error={dashboardError} />
+              }
+            />
+            <Route
+              path="/workspace"
+              element={
+                <WorkspacePage
+                  data={dashboardData}
+                  error={dashboardError}
+                  notes={notes}
+                  hypothesisDraft={hypothesisDraft}
+                  onSaveHypothesis={saveHypothesisDraft}
+                />
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+        <footer className="app-footer">
+          Project ReMotion Investigation Portal &mdash; Research Center AI,
+          Software and IT-Security of HCW (fictional case study)
+        </footer>
         </>
       </BookmarkContext.Provider>
     </BrowserRouter>

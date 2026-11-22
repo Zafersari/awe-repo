@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Evidence } from "../../shared/models";
 import type { DashboardData, HypothesisDraft } from "../../app/types";
 import { useBookmarks } from "../../app/BookmarkContext";
@@ -68,6 +68,12 @@ export default function WorkspacePage({
   const [draftState, setDraftState] = useState<HypothesisDraft | null>(null);
   const { bookmarks } = useBookmarks();
 
+  useEffect(() => {
+    if (!saved) return;
+    const timeoutId = window.setTimeout(() => setSaved(false), 2000);
+    return () => window.clearTimeout(timeoutId);
+  }, [saved]);
+
   if (error) {
     return (
       <section className="view active">
@@ -89,7 +95,8 @@ export default function WorkspacePage({
   const bookmarkedEvidence = data.evidence.filter((item) =>
     bookmarks.includes(item.id),
   );
-  const draft = draftState ??
+  const draft =
+    draftState ??
     hypothesisDraft ?? {
       suspectId: "",
       nature: "",

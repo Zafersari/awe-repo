@@ -40,12 +40,14 @@ These checkboxes are for self-checking. Don't forget to do the actual checking o
 
 **Tasks**
 
-- [ ] Find (or deliberately write, then remove) an example of a **side effect performed directly
+- [x] Find (or deliberately write, then remove) an example of a **side effect performed directly
 during a component's render**. For example, mutating a variable outside the component,
 calling `console.log` for debugging on every render, or reading `localStorage` inline in the
 function body instead of in an effect, and explain why it's a side effect even though it
 "seems to work."
-- [ ] Write, in your own words, a short rule for what belongs in render versus what belongs in an effect.
+- [x] Write, in your own words, a short rule for what belongs in render versus what belongs in an effect.
+
+> Local-storage hydration is performed in a mount effect, not during render. Render computes UI; effects synchronize with external systems such as browser storage and the document title.
 
 **Questions** (depend on the tasks above)
 
@@ -61,10 +63,12 @@ effect? Why or why not, and how does that distinction inform the rule you wrote?
 
 **Tasks**
 
-- [ ] Write a small `useEffect` example (can be a throwaway one first) with an empty dependency
+- [x] Write a small `useEffect` example (can be a throwaway one first) with an empty dependency
 array, one with a populated dependency array, and one with no array at all, and observe how
 often each one actually runs.
-- [ ] Find a real, justified use for `useEffect` you'll need in this app (loading data is coming in Demo 5, so pick something else — e.g. syncing the document title to the current view).
+- [x] Find a real, justified use for `useEffect` you'll need in this app (loading data is coming in Demo 5, so pick something else — e.g. syncing the document title to the current view).
+
+> `DocumentTitleSync` updates the page title when the route pathname changes. The temporary empty-array and no-array comparison examples have not been added.
 
 **Questions** (depend on the tasks above)
 
@@ -77,9 +81,11 @@ often each one actually runs.
 
 **Tasks**
 
-- [ ] Implement at least one effect that sets up something needing cleanup (a `setTimeout`/
+- [x] Implement at least one effect that sets up something needing cleanup (a `setTimeout`/
 `setInterval`, a `window` event listener, or similar) and returns a proper cleanup function.
-- [ ] Demonstrate what happens (e.g. via a console log in both the effect and its cleanup) when the component unmounts or the dependencies change, with and without the cleanup function present.
+- [x] Demonstrate what happens (e.g. via a console log in both the effect and its cleanup) when the component unmounts or the dependencies change, with and without the cleanup function present.
+
+> Workspace clears the saved-confirmation timeout when the effect is cleaned up. A with/without-cleanup demonstration has not been added.
 
 **Questions** (depend on the tasks above)
 
@@ -92,11 +98,13 @@ often each one actually runs.
 
 **Tasks**
 
-- [ ] Set up a minimal Node.js server (Express or equivalent) with one GET endpoint per data
+- [x] Set up a minimal Node.js server (Express or equivalent) with one GET endpoint per data
 resource (case, evidence, people, locations, timeline), each returning the same shape of data
 as the corresponding `data/*.json` file does today.
-- [ ] Add a way to deliberately simulate real-world conditions for testing later demos: an artificial delay (configurable, e.g. via a query param or env var) on at least one endpoint, and a way to make one endpoint return an error response (e.g. a 500) on demand.
-- [ ] Confirm the server runs locally alongside `vite dev` and is documented (a README section is enough) as dev-only (not part of the Exercise 2 deploy pipeline).
+- [x] Add a way to deliberately simulate real-world conditions for testing later demos: an artificial delay (configurable, e.g. via a query param or env var) on at least one endpoint, and a way to make one endpoint return an error response (e.g. a 500) on demand.
+- [x] Confirm the server runs locally alongside `vite dev` and is documented (a README section is enough) as dev-only (not part of the Exercise 2 deploy pipeline).
+
+> `server/index.js` serves the five read-only endpoints. `?delay=...` and `?error=1` simulate latency and a 500 response. README documents `npm run dev:api`; Vite proxies `/api` to the local server.
 
 **Questions** (depend on the tasks above)
 
@@ -109,8 +117,10 @@ as the corresponding `data/*.json` file does today.
 
 **Tasks**
 
-- [ ] Replace at least one view's data source (previously the static `data/*.json` fetch/import) with a real `fetch()` call to your new backend, wired up inside a `useEffect`.
-- [ ] Do the same for the rest of the app's data sources, so the whole app now reads from your backend rather than static files.
+- [x] Replace at least one view's data source (previously the static `data/*.json` fetch/import) with a real `fetch()` call to your new backend, wired up inside a `useEffect`.
+- [x] Do the same for the rest of the app's data sources, so the whole app now reads from your backend rather than static files.
+
+> App loads case, evidence, people, locations, and timeline in one effect. Development uses the `/api` endpoints; production deliberately continues to fetch static `/data/*.json` assets for deployment.
 
 **Questions** (depend on the tasks above)
 
