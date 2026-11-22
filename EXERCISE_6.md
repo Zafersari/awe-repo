@@ -199,13 +199,20 @@ what happens if you do nothing special about it. Does the UI ever show a result 
 
 **Tasks**
 
-- [ ] Organize your data-fetching code into distinct layers: a thin API-access layer (raw `fetch` calls, knows the backend's URLs/shapes and nothing else), your custom hook(s) from Demo 8 (application logic: loading/error/cancellation), and your components (UI only, no direct `fetch` calls anywhere in a component).
-- [ ] Confirm no component in the app calls `fetch` directly anymore.
+- [x] Organize your data-fetching code into distinct layers: a thin API-access layer (raw `fetch` calls, knows the backend's URLs/shapes and nothing else), your custom hook(s) from Demo 8 (application logic: loading/error/cancellation), and your components (UI only, no direct `fetch` calls anywhere in a component).
+- [x] Confirm no component in the app calls `fetch` directly anymore.
+
+> `src/shared/api.ts` owns endpoint URLs and raw requests, `useFetchJson` owns loading/error/cancellation, and `App` composes the hook results for the views. The only `fetch()` in `src` is in the API module.
 
 **Questions** (depend on the tasks above)
 
-- [ ] If your backend's endpoint URLs or response shape changed tomorrow, how many files would you need to touch, and which ones? Would any component need to change?
-- [ ] What's the argument *against* this separation for a small app like this one? E.g. when would the extra layering be overkill rather than helpful? Do you think it's justified here?
+- [x] If your backend's endpoint URLs or response shape changed tomorrow, how many files would you need to touch, and which ones? Would any component need to change?
+
+> Endpoint changes belong in `src/shared/api.ts`; if the response shape changes, its mapping and the shared data types may also need updates. Components can stay unchanged as long as the API layer preserves their current data contract.
+
+- [x] What's the argument *against* this separation for a small app like this one? E.g. when would the extra layering be overkill rather than helpful? Do you think it's justified here?
+
+> For a tiny app with one endpoint and no reuse, the extra module and hook boundary could add indirection without reducing duplication. Here five resources share request lifecycle handling and one API boundary, so the separation is small and useful.
 
 ---
 

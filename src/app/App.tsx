@@ -20,6 +20,7 @@ import PersonDetailPage from "../features/people-locations/PersonDetailPage";
 import PeopleLocationsPage from "../features/people-locations/PeopleLocationsPage";
 import TimelinePage from "../features/timeline/TimelinePage";
 import WorkspacePage from "../features/workspace/WorkspacePage";
+import { getDataUrl } from "../shared/api";
 import { useFetchJson } from "../shared/useFetchJson";
 import type { CaseData, DashboardData, HypothesisDraft } from "./types";
 
@@ -27,34 +28,6 @@ interface EvidenceRequest {
   revision: number;
   delayMs: number;
   empty: boolean;
-}
-
-function getDataUrl(fileName: string, evidenceRequest: EvidenceRequest): string {
-  let endpoint = `/data/${fileName}`;
-  if (import.meta.env.DEV) {
-    const resource = fileName.replace(/\.json$/, "");
-    const params = new URLSearchParams();
-    const pageParams = new URLSearchParams(window.location.search);
-
-    if (resource === "evidence" && pageParams.get("apiError") === "evidence") {
-      params.set("error", "1");
-    }
-    if (resource === "evidence" && evidenceRequest.revision > 0) {
-      params.set("delay", String(evidenceRequest.delayMs));
-      if (evidenceRequest.empty) params.set("empty", "1");
-      params.set("request", String(evidenceRequest.revision));
-    } else {
-      if (resource === "evidence" && pageParams.get("apiEmpty") === "evidence") {
-        params.set("empty", "1");
-      }
-      const delay = pageParams.get("apiDelay");
-      if (delay) params.set("delay", delay);
-    }
-
-    const query = params.toString();
-    endpoint = `/api/${resource}${query ? `?${query}` : ""}`;
-  }
-  return endpoint;
 }
 
 function PeopleLocationsNavLink() {
@@ -171,24 +144,24 @@ export default function App() {
     import.meta.env.DEV &&
     new URLSearchParams(window.location.search).get("apiNoCancel") === "1";
   const caseRequest = useFetchJson<CaseData>(
-    getDataUrl("case.json", evidenceRequest),
+    getDataUrl("case", evidenceRequest),
     "case.json",
   );
   const evidenceRequestState = useFetchJson<Evidence[]>(
-    getDataUrl("evidence.json", evidenceRequest),
+    getDataUrl("evidence", evidenceRequest),
     "evidence.json",
     !demonstrateRace,
   );
   const peopleRequest = useFetchJson<Person[]>(
-    getDataUrl("people.json", evidenceRequest),
+    getDataUrl("people", evidenceRequest),
     "people.json",
   );
   const locationsRequest = useFetchJson<Location[]>(
-    getDataUrl("locations.json", evidenceRequest),
+    getDataUrl("locations", evidenceRequest),
     "locations.json",
   );
   const timelineRequest = useFetchJson<TimelineEvent[]>(
-    getDataUrl("timeline.json", evidenceRequest),
+    getDataUrl("timeline", evidenceRequest),
     "timeline.json",
   );
   const resources = [

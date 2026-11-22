@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { fetchJson } from "./api";
 
 interface FetchState<T> {
   data: T | null;
@@ -21,13 +22,7 @@ export function useFetchJson<T>(
     const controller = new AbortController();
     setState({ data: null, error: null, loading: true });
 
-    fetch(url, { signal: controller.signal })
-      .then(async (response) => {
-        if (!response.ok) {
-          throw new Error(`Could not load ${resourceName} (${response.status}).`);
-        }
-        return (await response.json()) as T;
-      })
+    fetchJson<T>(url, controller.signal)
       .then((data) => {
         if (!controller.signal.aborted) {
           setState({ data, error: null, loading: false });
@@ -39,7 +34,7 @@ export function useFetchJson<T>(
             data: null,
             error:
               requestError instanceof Error
-                ? requestError.message
+                ? `Could not load ${resourceName}: ${requestError.message}`
                 : `Could not load ${resourceName}.`,
             loading: false,
           });
