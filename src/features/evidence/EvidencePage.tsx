@@ -64,6 +64,12 @@ interface EvidencePageProps {
   error: string | null;
 }
 
+function toggleBookmarkId(bookmarkIds: string[], evidenceId: string): string[] {
+  return bookmarkIds.includes(evidenceId)
+    ? bookmarkIds.filter((id) => id !== evidenceId)
+    : [...bookmarkIds, evidenceId];
+}
+
 export default function EvidencePage({ data, error }: EvidencePageProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [bookmarks, setBookmarks] = useState<string[] | null>(null);
@@ -104,9 +110,7 @@ export default function EvidencePage({ data, error }: EvidencePageProps) {
   );
 
   function toggleBookmark(evidenceId: string) {
-    const nextBookmarks = currentBookmarks.includes(evidenceId)
-      ? currentBookmarks.filter((id) => id !== evidenceId)
-      : [...currentBookmarks, evidenceId];
+    const nextBookmarks = toggleBookmarkId(currentBookmarks, evidenceId);
     setBookmarks(nextBookmarks);
     window.localStorage.setItem(
       "remotion_bookmarks",
