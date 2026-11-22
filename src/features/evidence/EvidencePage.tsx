@@ -84,8 +84,7 @@ function EvidenceCard({
       </button>
       <h3>{evidence.title}</h3>
       <div className="evidence-meta">
-        {evidence.id} &middot; {evidence.type} &middot;{" "}
-        {formatDate(evidence.timestamp)}
+        {evidence.id} &middot; {evidence.type} &middot; {formatDate(evidence.timestamp)}
       </div>
       <div className="evidence-summary">{evidence.summary}</div>
       {evidence.tags.includes("critical") && (
@@ -127,7 +126,9 @@ export default function EvidencePage({
     return (
       <section className="view active">
         <h2>Evidence Catalogue</h2>
-        <p role="alert">{error}</p>
+        <div className="warning-banner" role="alert">
+          Evidence could not be loaded. {error}
+        </div>
       </section>
     );
   }
@@ -136,7 +137,22 @@ export default function EvidencePage({
     return (
       <section className="view active">
         <h2>Evidence Catalogue</h2>
-        <p>Loading evidence...</p>
+        <div className="evidence-loading" role="status" aria-live="polite">
+          <div className="spinner" aria-hidden="true" />
+          <p>Loading evidence...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (data.evidence.length === 0) {
+    return (
+      <section className="view active">
+        <h2>Evidence Catalogue</h2>
+        <div className="evidence-empty-state" role="status">
+          <h3>No evidence available</h3>
+          <p>The case data loaded successfully, but contains no evidence items.</p>
+        </div>
       </section>
     );
   }
@@ -146,8 +162,7 @@ export default function EvidencePage({
   ];
   const normalizedSearch = filters.search.trim().toLowerCase();
   const filteredEvidence = data.evidence.filter((evidence) => {
-    const searchText =
-      `${evidence.title} ${evidence.summary} ${evidence.tags.join(" ")}`.toLowerCase();
+    const searchText = `${evidence.title} ${evidence.summary} ${evidence.tags.join(" ")}`.toLowerCase();
     const person = data.people.find(
       (candidate) => candidate.id === filters.person,
     );
@@ -171,8 +186,7 @@ export default function EvidencePage({
       return second.title.localeCompare(first.title);
     }
     const dateOrder =
-      new Date(first.timestamp).getTime() -
-      new Date(second.timestamp).getTime();
+      new Date(first.timestamp).getTime() - new Date(second.timestamp).getTime();
     return filters.sort === "date-asc" ? dateOrder : -dateOrder;
   });
   const selectedEvidence = data.evidence.find(
@@ -216,11 +230,7 @@ export default function EvidencePage({
             id="filterType"
             value={filters.type}
             onChange={(event) =>
-              dispatch({
-                type: "set-filter",
-                field: "type",
-                value: event.target.value,
-              })
+              dispatch({ type: "set-filter", field: "type", value: event.target.value })
             }
           >
             <option value="">All types</option>
@@ -237,11 +247,7 @@ export default function EvidencePage({
             id="filterPerson"
             value={filters.person}
             onChange={(event) =>
-              dispatch({
-                type: "set-filter",
-                field: "person",
-                value: event.target.value,
-              })
+              dispatch({ type: "set-filter", field: "person", value: event.target.value })
             }
           >
             <option value="">All people</option>
@@ -258,11 +264,7 @@ export default function EvidencePage({
             id="filterLocation"
             value={filters.location}
             onChange={(event) =>
-              dispatch({
-                type: "set-filter",
-                field: "location",
-                value: event.target.value,
-              })
+              dispatch({ type: "set-filter", field: "location", value: event.target.value })
             }
           >
             <option value="">All locations</option>
@@ -281,11 +283,7 @@ export default function EvidencePage({
             id="filterStatus"
             value={filters.status}
             onChange={(event) =>
-              dispatch({
-                type: "set-filter",
-                field: "status",
-                value: event.target.value,
-              })
+              dispatch({ type: "set-filter", field: "status", value: event.target.value })
             }
           >
             <option value="">All statuses</option>
@@ -300,11 +298,7 @@ export default function EvidencePage({
             id="filterRelevance"
             value={filters.relevance}
             onChange={(event) =>
-              dispatch({
-                type: "set-filter",
-                field: "relevance",
-                value: event.target.value,
-              })
+              dispatch({ type: "set-filter", field: "relevance", value: event.target.value })
             }
           >
             <option value="">All relevance</option>
@@ -338,7 +332,10 @@ export default function EvidencePage({
         </div>
       </div>
       {orderedEvidence.length === 0 ? (
-        <p>No evidence matches the current filters.</p>
+        <div className="evidence-empty-state" role="status">
+          <h3>No matching evidence</h3>
+          <p>No evidence matches the current filters.</p>
+        </div>
       ) : (
         <div className="evidence-grid">
           {orderedEvidence.map((evidence) => (
@@ -353,10 +350,7 @@ export default function EvidencePage({
         </div>
       )}
       {selectedEvidence && (
-        <section
-          className="evidence-detail"
-          aria-labelledby="evidence-detail-title"
-        >
+        <section className="evidence-detail" aria-labelledby="evidence-detail-title">
           <div className="evidence-detail-header">
             <div>
               <h2 id="evidence-detail-title">{selectedEvidence.title}</h2>
@@ -381,9 +375,7 @@ export default function EvidencePage({
           <div className="detail-field">
             <strong>Summary</strong> {selectedEvidence.summary}
           </div>
-          <div className="evidence-detail-content">
-            {selectedEvidence.content}
-          </div>
+          <div className="evidence-detail-content">{selectedEvidence.content}</div>
           <div className="detail-field">
             <strong>Related people</strong>{" "}
             {selectedEvidence.personIds

@@ -23,9 +23,24 @@ import WorkspacePage from "../features/workspace/WorkspacePage";
 import type { CaseData, DashboardData, HypothesisDraft } from "./types";
 
 async function fetchJson<T>(fileName: string): Promise<T> {
-  const endpoint = import.meta.env.DEV
-    ? `/api/${fileName.replace(/\.json$/, "")}`
-    : `/data/${fileName}`;
+  let endpoint = `/data/${fileName}`;
+  if (import.meta.env.DEV) {
+    const resource = fileName.replace(/\.json$/, "");
+    const params = new URLSearchParams();
+    const pageParams = new URLSearchParams(window.location.search);
+
+    if (resource === "evidence" && pageParams.get("apiError") === "evidence") {
+      params.set("error", "1");
+    }
+    if (resource === "evidence" && pageParams.get("apiEmpty") === "evidence") {
+      params.set("empty", "1");
+    }
+    const delay = pageParams.get("apiDelay");
+    if (delay) params.set("delay", delay);
+
+    const query = params.toString();
+    endpoint = `/api/${resource}${query ? `?${query}` : ""}`;
+  }
   const response = await fetch(endpoint);
   if (!response.ok) {
     throw new Error(`Could not load ${fileName} (${response.status}).`);

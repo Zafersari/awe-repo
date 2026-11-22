@@ -52,6 +52,11 @@ const server = createServer(async (request, response) => {
     await new Promise((resolveDelay) => setTimeout(resolveDelay, delayMs));
   }
 
+  if (url.pathname === "/api/evidence" && url.searchParams.get("empty") === "1") {
+    sendJson(response, 200, []);
+    return;
+  }
+
   try {
     const body = await readFile(resolve(dataDirectory, fileName), "utf8");
     response.writeHead(200, { "content-type": "application/json; charset=utf-8" });

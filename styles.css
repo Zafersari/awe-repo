@@ -203,6 +203,20 @@ a:focus-visible {
   border-top-color: var(--color-accent);
 }
 
+.evidence-empty-state {
+  padding: 28px 20px;
+  text-align: center;
+  color: var(--color-text-muted);
+  background: var(--color-panel);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+}
+
+.evidence-empty-state h3 {
+  margin-bottom: 6px;
+  color: var(--color-text);
+}
+
 /* Dashboard */
 .stat-grid {
   display: grid;
