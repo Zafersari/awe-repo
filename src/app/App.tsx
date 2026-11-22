@@ -20,6 +20,7 @@ import PersonDetailPage from "../features/people-locations/PersonDetailPage";
 import PeopleLocationsPage from "../features/people-locations/PeopleLocationsPage";
 import TimelinePage from "../features/timeline/TimelinePage";
 import WorkspacePage from "../features/workspace/WorkspacePage";
+import { useFetchJson } from "../shared/useFetchJson";
 import type { CaseData, DashboardData, HypothesisDraft } from "./types";
 
 interface EvidenceRequest {
@@ -28,11 +29,7 @@ interface EvidenceRequest {
   empty: boolean;
 }
 
-async function fetchJson<T>(
-  fileName: string,
-  signal: AbortSignal,
-  evidenceRequest: EvidenceRequest,
-): Promise<T> {
+function getDataUrl(fileName: string, evidenceRequest: EvidenceRequest): string {
   let endpoint = `/data/${fileName}`;
   if (import.meta.env.DEV) {
     const resource = fileName.replace(/\.json$/, "");
@@ -45,6 +42,7 @@ async function fetchJson<T>(
     if (resource === "evidence" && evidenceRequest.revision > 0) {
       params.set("delay", String(evidenceRequest.delayMs));
       if (evidenceRequest.empty) params.set("empty", "1");
+      params.set("request", String(evidenceRequest.revision));
     } else {
       if (resource === "evidence" && pageParams.get("apiEmpty") === "evidence") {
         params.set("empty", "1");
@@ -56,11 +54,7 @@ async function fetchJson<T>(
     const query = params.toString();
     endpoint = `/api/${resource}${query ? `?${query}` : ""}`;
   }
-  const response = await fetch(endpoint, { signal });
-  if (!response.ok) {
-    throw new Error(`Could not load ${fileName} (${response.status}).`);
-  }
-  return response.json() as Promise<T>;
+  return endpoint;
 }
 
 function PeopleLocationsNavLink() {
@@ -164,10 +158,6 @@ function loadHypothesisDraft(): HypothesisDraft | null {
 }
 
 export default function App() {
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
-    null,
-  );
-  const [dashboardError, setDashboardError] = useState<string | null>(null);
   const [bookmarks, setBookmarks] = useState<string[]>([]);
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [hypothesisDraft, setHypothesisDraft] =
@@ -177,6 +167,56 @@ export default function App() {
     delayMs: 0,
     empty: false,
   });
+  const demonstrateRace =
+    import.meta.env.DEV &&
+    new URLSearchParams(window.location.search).get("apiNoCancel") === "1";
+  const caseRequest = useFetchJson<CaseData>(
+    getDataUrl("case.json", evidenceRequest),
+    "case.json",
+  );
+  const evidenceRequestState = useFetchJson<Evidence[]>(
+    getDataUrl("evidence.json", evidenceRequest),
+    "evidence.json",
+    !demonstrateRace,
+  );
+  const peopleRequest = useFetchJson<Person[]>(
+    getDataUrl("people.json", evidenceRequest),
+    "people.json",
+  );
+  const locationsRequest = useFetchJson<Location[]>(
+    getDataUrl("locations.json", evidenceRequest),
+    "locations.json",
+  );
+  const timelineRequest = useFetchJson<TimelineEvent[]>(
+    getDataUrl("timeline.json", evidenceRequest),
+    "timeline.json",
+  );
+  const resources = [
+    caseRequest,
+    evidenceRequestState,
+    peopleRequest,
+    locationsRequest,
+    timelineRequest,
+  ];
+  const dashboardError =
+    resources.find((resource) => resource.error)?.error ?? null;
+  const dashboardData: DashboardData | null = resources.some(
+    (resource) => resource.loading,
+  )
+    ? null
+    : caseRequest.data &&
+        evidenceRequestState.data &&
+        peopleRequest.data &&
+        locationsRequest.data &&
+        timelineRequest.data
+      ? {
+          caseData: caseRequest.data,
+          evidence: evidenceRequestState.data,
+          people: peopleRequest.data,
+          locations: locationsRequest.data,
+          timeline: timelineRequest.data,
+        }
+      : null;
 
   function toggleBookmark(evidenceId: string) {
     const nextBookmarks = bookmarks.includes(evidenceId)
@@ -217,46 +257,6 @@ export default function App() {
     setNotes(loadNotes());
     setHypothesisDraft(loadHypothesisDraft());
   }, []);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const demonstrateRace =
-      import.meta.env.DEV &&
-      new URLSearchParams(window.location.search).get("apiNoCancel") === "1";
-    setDashboardData(null);
-    setDashboardError(null);
-
-    Promise.all([
-      fetchJson<CaseData>("case.json", controller.signal, evidenceRequest),
-      fetchJson<Evidence[]>("evidence.json", controller.signal, evidenceRequest),
-      fetchJson<Person[]>("people.json", controller.signal, evidenceRequest),
-      fetchJson<Location[]>("locations.json", controller.signal, evidenceRequest),
-      fetchJson<TimelineEvent[]>("timeline.json", controller.signal, evidenceRequest),
-    ])
-      .then(([caseData, evidence, people, locations, timeline]) => {
-        if (controller.signal.aborted) return;
-        setDashboardData({
-          caseData,
-          evidence,
-          people,
-          locations,
-          timeline,
-        });
-      })
-      .catch((loadError: unknown) => {
-        if (!controller.signal.aborted) {
-          setDashboardError(
-            loadError instanceof Error
-              ? loadError.message
-              : "Could not load case data.",
-          );
-        }
-      });
-
-    return () => {
-      if (!demonstrateRace) controller.abort();
-    };
-  }, [evidenceRequest]);
 
   return (
     <BrowserRouter>

@@ -179,12 +179,19 @@ what happens if you do nothing special about it. Does the UI ever show a result 
 
 **Tasks**
 
-- [ ] Extract the data-fetching logic (loading/error/empty state, the effect, cancellation) you've built across Demos 5–7 into at least one reusable custom hook (e.g. `useFetch<T>(url)` or a more specific `useEvidence()`), and use it in at least two different places.
+- [x] Extract the data-fetching logic (loading/error/empty state, the effect, cancellation) you've built across Demos 5–7 into at least one reusable custom hook (e.g. `useFetch<T>(url)` or a more specific `useEvidence()`), and use it in at least two different places.
+
+> `useFetchJson<T>` in `src/shared/useFetchJson.ts` centralizes loading, error, fetching, and cancellation. App calls it for case, evidence, people, locations, and timeline; resource-specific URLs and empty-state UI remain outside the hook.
 
 **Questions** (depend on the tasks above)
 
-- [ ] What makes something a legitimate custom hook rather than just a regular helper function? What rule(s) does React enforce about how/where hooks (including your custom one) can be called?
-- [ ] Show the two places using your hook. What did extracting it save you from duplicating, and is there anything about the two usages that *couldn't* be shared and had to stay specific to each call site?
+- [x] What makes something a legitimate custom hook rather than just a regular helper function? What rule(s) does React enforce about how/where hooks (including your custom one) can be called?
+
+> A custom hook uses React hooks to encapsulate reusable stateful behavior and follows hook rules: call it at the top level of a function component or another hook, not conditionally or inside loops or callbacks.
+
+- [x] Show the two places using your hook. What did extracting it save you from duplicating, and is there anything about the two usages that *couldn't* be shared and had to stay specific to each call site?
+
+> App uses `useFetchJson` for all five resources. It avoids duplicating request state, fetch lifecycle, and cancellation; URLs/types and each view's resource-specific empty UI stay caller-specific.
 
 ---
 
