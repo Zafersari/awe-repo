@@ -108,6 +108,7 @@ interface EvidencePageProps {
   error: string | null;
   notes: Record<string, string>;
   onSaveNote: (evidenceId: string, text: string) => void;
+  onRunEvidenceRequest: (delayMs: number, empty: boolean) => void;
 }
 
 export default function EvidencePage({
@@ -115,6 +116,7 @@ export default function EvidencePage({
   error,
   notes,
   onSaveNote,
+  onRunEvidenceRequest,
 }: EvidencePageProps) {
   const [filters, dispatch] = useReducer(evidenceFilterReducer, initialFilters);
   const [selectedEvidenceId, setSelectedEvidenceId] = useState<string | null>(
@@ -126,6 +128,24 @@ export default function EvidencePage({
     return (
       <section className="view active">
         <h2>Evidence Catalogue</h2>
+        {import.meta.env.DEV && (
+          <div className="toolbar-row" aria-label="Request race demo">
+            <button
+              type="button"
+              className="btn btn-secondary btn-small"
+              onClick={() => onRunEvidenceRequest(2500, false)}
+            >
+              Start slow evidence request
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary btn-small"
+              onClick={() => onRunEvidenceRequest(0, true)}
+            >
+              Start fast empty request
+            </button>
+          </div>
+        )}
         <div className="warning-banner" role="alert">
           Evidence could not be loaded. {error}
         </div>
@@ -137,6 +157,24 @@ export default function EvidencePage({
     return (
       <section className="view active">
         <h2>Evidence Catalogue</h2>
+        {import.meta.env.DEV && (
+          <div className="toolbar-row" aria-label="Request race demo">
+            <button
+              type="button"
+              className="btn btn-secondary btn-small"
+              onClick={() => onRunEvidenceRequest(2500, false)}
+            >
+              Start slow evidence request
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary btn-small"
+              onClick={() => onRunEvidenceRequest(0, true)}
+            >
+              Start fast empty request
+            </button>
+          </div>
+        )}
         <div className="evidence-loading" role="status" aria-live="polite">
           <div className="spinner" aria-hidden="true" />
           <p>Loading evidence...</p>
@@ -204,6 +242,24 @@ export default function EvidencePage({
   return (
     <section className="view active" aria-labelledby="evidence-title">
       <h2 id="evidence-title">Evidence Catalogue</h2>
+      {import.meta.env.DEV && (
+        <div className="toolbar-row" aria-label="Request race demo">
+          <button
+            type="button"
+            className="btn btn-secondary btn-small"
+            onClick={() => onRunEvidenceRequest(2500, false)}
+          >
+            Start slow evidence request
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary btn-small"
+            onClick={() => onRunEvidenceRequest(0, true)}
+          >
+            Start fast empty request
+          </button>
+        </div>
+      )}
       <div className="toolbar" id="evidenceToolbar">
         <div className="toolbar-row">
           <label htmlFor="evidenceSearch" className="visually-hidden">

@@ -156,15 +156,22 @@ didn't need before?
 
 **Tasks**
 
-- [ ] Using your backend's artificial-delay control, construct a request race: trigger a request, then trigger another one (for the same data) before the first resolves, and observe
+- [x] Using your backend's artificial-delay control, construct a request race: trigger a request, then trigger another one (for the same data) before the first resolves, and observe
 what happens if you do nothing special about it. Does the UI ever show a result from the
 *older* request after a newer one already resolved?
-- [ ] Fix it using `AbortController` (or a request-id/"ignore stale response" guard, your choice), so the UI can never show a stale result.
+- [x] Fix it using `AbortController` (or a request-id/"ignore stale response" guard, your choice), so the UI can never show a stale result.
+
+> In development, `?apiNoCancel=1` demonstrates the race. On Evidence, start the slow request then the fast empty request: the old full list arrives later and replaces the empty result. Without that query parameter, effect cleanup aborts the older request and the empty result stays visible.
 
 **Questions** (depend on the tasks above)
 
-- [ ] Reproduce the race live (with artificial delay dialed up) before your fix, then show the fix preventing it. What exact sequence of events causes the stale result to win without the fix?
-- [ ] `AbortController` cancels the *request*. Does the effect's cleanup function run separately, or is aborting the fetch itself what you're doing inside the cleanup? Explain how the two connect in your implementation.
+- [x] Reproduce the race live (with artificial delay dialed up) before your fix, then show the fix preventing it. What exact sequence of events causes the stale result to win without the fix?
+
+> The slow request starts first, the fast empty request resolves and renders, then the old slow request resolves and overwrites it. `?apiNoCancel=1` reproduces this; the default run keeps the empty result.
+
+- [x] `AbortController` cancels the *request*. Does the effect's cleanup function run separately, or is aborting the fetch itself what you're doing inside the cleanup? Explain how the two connect in your implementation.
+
+> React runs the effect cleanup when its request dependencies change or the component unmounts. The cleanup calls `controller.abort()`, which cancels the fetches using that signal; the catch handler ignores the resulting abort instead of setting an error.
 
 ---
 

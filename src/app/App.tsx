@@ -22,7 +22,17 @@ import TimelinePage from "../features/timeline/TimelinePage";
 import WorkspacePage from "../features/workspace/WorkspacePage";
 import type { CaseData, DashboardData, HypothesisDraft } from "./types";
 
-async function fetchJson<T>(fileName: string): Promise<T> {
+interface EvidenceRequest {
+  revision: number;
+  delayMs: number;
+  empty: boolean;
+}
+
+async function fetchJson<T>(
+  fileName: string,
+  signal: AbortSignal,
+  evidenceRequest: EvidenceRequest,
+): Promise<T> {
   let endpoint = `/data/${fileName}`;
   if (import.meta.env.DEV) {
     const resource = fileName.replace(/\.json$/, "");
@@ -32,16 +42,21 @@ async function fetchJson<T>(fileName: string): Promise<T> {
     if (resource === "evidence" && pageParams.get("apiError") === "evidence") {
       params.set("error", "1");
     }
-    if (resource === "evidence" && pageParams.get("apiEmpty") === "evidence") {
-      params.set("empty", "1");
+    if (resource === "evidence" && evidenceRequest.revision > 0) {
+      params.set("delay", String(evidenceRequest.delayMs));
+      if (evidenceRequest.empty) params.set("empty", "1");
+    } else {
+      if (resource === "evidence" && pageParams.get("apiEmpty") === "evidence") {
+        params.set("empty", "1");
+      }
+      const delay = pageParams.get("apiDelay");
+      if (delay) params.set("delay", delay);
     }
-    const delay = pageParams.get("apiDelay");
-    if (delay) params.set("delay", delay);
 
     const query = params.toString();
     endpoint = `/api/${resource}${query ? `?${query}` : ""}`;
   }
-  const response = await fetch(endpoint);
+  const response = await fetch(endpoint, { signal });
   if (!response.ok) {
     throw new Error(`Could not load ${fileName} (${response.status}).`);
   }
@@ -157,6 +172,11 @@ export default function App() {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [hypothesisDraft, setHypothesisDraft] =
     useState<HypothesisDraft | null>(null);
+  const [evidenceRequest, setEvidenceRequest] = useState<EvidenceRequest>({
+    revision: 0,
+    delayMs: 0,
+    empty: false,
+  });
 
   function toggleBookmark(evidenceId: string) {
     const nextBookmarks = bookmarks.includes(evidenceId)
@@ -184,6 +204,14 @@ export default function App() {
     );
   }
 
+  function runEvidenceRequest(delayMs: number, empty: boolean) {
+    setEvidenceRequest((current) => ({
+      revision: current.revision + 1,
+      delayMs,
+      empty,
+    }));
+  }
+
   useEffect(() => {
     setBookmarks(loadBookmarks());
     setNotes(loadNotes());
@@ -191,17 +219,22 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
+    const controller = new AbortController();
+    const demonstrateRace =
+      import.meta.env.DEV &&
+      new URLSearchParams(window.location.search).get("apiNoCancel") === "1";
+    setDashboardData(null);
+    setDashboardError(null);
 
     Promise.all([
-      fetchJson<CaseData>("case.json"),
-      fetchJson<Evidence[]>("evidence.json"),
-      fetchJson<Person[]>("people.json"),
-      fetchJson<Location[]>("locations.json"),
-      fetchJson<TimelineEvent[]>("timeline.json"),
+      fetchJson<CaseData>("case.json", controller.signal, evidenceRequest),
+      fetchJson<Evidence[]>("evidence.json", controller.signal, evidenceRequest),
+      fetchJson<Person[]>("people.json", controller.signal, evidenceRequest),
+      fetchJson<Location[]>("locations.json", controller.signal, evidenceRequest),
+      fetchJson<TimelineEvent[]>("timeline.json", controller.signal, evidenceRequest),
     ])
       .then(([caseData, evidence, people, locations, timeline]) => {
-        if (cancelled) return;
+        if (controller.signal.aborted) return;
         setDashboardData({
           caseData,
           evidence,
@@ -211,7 +244,7 @@ export default function App() {
         });
       })
       .catch((loadError: unknown) => {
-        if (!cancelled) {
+        if (!controller.signal.aborted) {
           setDashboardError(
             loadError instanceof Error
               ? loadError.message
@@ -221,9 +254,9 @@ export default function App() {
       });
 
     return () => {
-      cancelled = true;
+      if (!demonstrateRace) controller.abort();
     };
-  }, []);
+  }, [evidenceRequest]);
 
   return (
     <BrowserRouter>
@@ -300,6 +333,7 @@ export default function App() {
                   error={dashboardError}
                   notes={notes}
                   onSaveNote={saveNote}
+                  onRunEvidenceRequest={runEvidenceRequest}
                 />
               }
             />
