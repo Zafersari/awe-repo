@@ -1,10 +1,11 @@
-import type { Evidence, TimelineEvent } from "../../../js/models";
+import type { Evidence, TimelineEvent } from "../../shared/models";
 import { formatDate } from "../../shared/formatDate";
 import type { DashboardData } from "../../app/types";
 import StatusBadge, {
   type StatusBadgeTone,
 } from "../../shared/components/StatusBadge";
 import { Link } from "react-router-dom";
+import { useBookmarks } from "../../app/BookmarkContext";
 
 function statusBadgeTone(status: string): StatusBadgeTone {
   switch (status.toLowerCase()) {
@@ -170,6 +171,7 @@ function DashboardIntro() {
 
 interface DashboardContentProps {
   data: DashboardData;
+  bookmarks: string[];
   reviewed: number;
   recentEvidence: Evidence[];
   recentTimeline: TimelineEvent[];
@@ -177,6 +179,7 @@ interface DashboardContentProps {
 
 function DashboardContent({
   data,
+  bookmarks,
   reviewed,
   recentEvidence,
   recentTimeline,
@@ -190,7 +193,7 @@ function DashboardContent({
         <StatCard value={data.evidence.length} label="Evidence items" />
         <StatCard value={data.people.length} label="People" />
         <StatCard value={data.locations.length} label="Locations" />
-        <StatCard value={data.bookmarks.length} label="Bookmarked" />
+        <StatCard value={bookmarks.length} label="Bookmarked" />
         <StatCard value={reviewed} label="Reviewed" />
       </div>
       <ReviewProgress reviewed={reviewed} total={data.evidence.length} />
@@ -208,6 +211,8 @@ interface DashboardPageProps {
 }
 
 export default function DashboardPage({ data, error }: DashboardPageProps) {
+  const { bookmarks } = useBookmarks();
+
   if (error) {
     return (
       <section className="view active">
@@ -236,6 +241,7 @@ export default function DashboardPage({ data, error }: DashboardPageProps) {
   return (
     <DashboardContent
       data={data}
+      bookmarks={bookmarks}
       reviewed={reviewed}
       recentEvidence={recentEvidence}
       recentTimeline={recentTimeline}

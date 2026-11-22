@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-import type { Location, TimelineEvent } from "../../../js/models";
+import type { Location, TimelineEvent } from "../../shared/models";
 import { formatDate } from "../../shared/formatDate";
 import type { DashboardData } from "../../app/types";
 

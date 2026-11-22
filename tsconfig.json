@@ -8,8 +8,7 @@
     "strictNullChecks": true,
     "noEmit": true,
     "isolatedModules": true,
-    "allowJs": true,
     "jsx": "react-jsx"
   },
-  "include": ["js/**/*.ts", "js/**/*.js", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import type { Evidence } from "../../../js/models";
+import type { Evidence } from "../../shared/models";
 import type { DashboardData, HypothesisDraft } from "../../app/types";
+import { useBookmarks } from "../../app/BookmarkContext";
 
 function BookmarkList({ evidence }: { evidence: Evidence[] }) {
   if (evidence.length === 0) {
@@ -23,8 +24,14 @@ function BookmarkList({ evidence }: { evidence: Evidence[] }) {
   );
 }
 
-function NotesList({ data }: { data: DashboardData }) {
-  const entries = data.evidence.filter((item) => data.notes[item.id]);
+function NotesList({
+  data,
+  notes,
+}: {
+  data: DashboardData;
+  notes: Record<string, string>;
+}) {
+  const entries = data.evidence.filter((item) => notes[item.id]);
 
   if (entries.length === 0) {
     return <p>No notes yet. Add one from an evidence item's detail view.</p>;
@@ -35,7 +42,7 @@ function NotesList({ data }: { data: DashboardData }) {
       {entries.map((item) => (
         <div className="mini-list-item" key={item.id}>
           <strong>{item.id}</strong> &mdash; {item.title}
-          <div>{data.notes[item.id]}</div>
+          <div>{notes[item.id]}</div>
         </div>
       ))}
     </>
@@ -45,11 +52,21 @@ function NotesList({ data }: { data: DashboardData }) {
 interface WorkspacePageProps {
   data: DashboardData | null;
   error: string | null;
+  notes: Record<string, string>;
+  hypothesisDraft: HypothesisDraft | null;
+  onSaveHypothesis: (draft: HypothesisDraft) => void;
 }
 
-export default function WorkspacePage({ data, error }: WorkspacePageProps) {
+export default function WorkspacePage({
+  data,
+  error,
+  notes,
+  hypothesisDraft,
+  onSaveHypothesis,
+}: WorkspacePageProps) {
   const [saved, setSaved] = useState(false);
   const [draftState, setDraftState] = useState<HypothesisDraft | null>(null);
+  const { bookmarks } = useBookmarks();
 
   if (error) {
     return (
@@ -69,12 +86,11 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
     );
   }
 
-  const bookmarks = data.evidence.filter((item) =>
-    data.bookmarks.includes(item.id),
+  const bookmarkedEvidence = data.evidence.filter((item) =>
+    bookmarks.includes(item.id),
   );
-  const draft =
-    draftState ??
-    data.hypothesisDraft ?? {
+  const draft = draftState ??
+    hypothesisDraft ?? {
       suspectId: "",
       nature: "",
       evidenceIds: [],
@@ -90,11 +106,7 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
 
   function saveHypothesis(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const hypothesis = {
-      ...draft,
-      savedAt: new Date().toISOString(),
-    };
-    window.localStorage.setItem("remotion_hypothesis", JSON.stringify(hypothesis));
+    onSaveHypothesis(draft);
     setSaved(true);
   }
 
@@ -105,7 +117,7 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
         <div className="workspace-col">
           <h3>Bookmarked Evidence</h3>
           <div className="bookmarks-list">
-            <BookmarkList evidence={bookmarks} />
+            <BookmarkList evidence={bookmarkedEvidence} />
           </div>
         </div>
         <div className="workspace-col">
@@ -115,7 +127,7 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
             the Evidence view.
           </p>
           <div className="notes-list">
-            <NotesList data={data} />
+            <NotesList data={data} notes={notes} />
           </div>
         </div>
       </div>

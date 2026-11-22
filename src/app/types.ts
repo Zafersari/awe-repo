@@ -3,7 +3,7 @@ import type {
   Location,
   Person,
   TimelineEvent,
-} from "../../js/models";
+} from "../shared/models";
 
 export interface CaseData {
   title: string;
@@ -26,7 +26,4 @@ export interface DashboardData {
   people: Person[];
   locations: Location[];
   timeline: TimelineEvent[];
-  bookmarks: string[];
-  notes: Record<string, string>;
-  hypothesisDraft: HypothesisDraft | null;
 }

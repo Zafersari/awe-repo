@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, NavLink } from "react-router-dom";
-import type { Location, Person } from "../../../js/models";
+import type { Location, Person } from "../../shared/models";
 import type { DashboardData } from "../../app/types";
 
 interface PeopleLocationsPanelProps {
