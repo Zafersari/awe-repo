@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Evidence } from "../../../js/models";
 import type { DashboardData } from "../../app/types";
 
@@ -47,6 +48,8 @@ interface WorkspacePageProps {
 }
 
 export default function WorkspacePage({ data, error }: WorkspacePageProps) {
+  const [saved, setSaved] = useState(false);
+
   if (error) {
     return (
       <section className="view active">
@@ -69,6 +72,22 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
     data.bookmarks.includes(item.id),
   );
   const draft = data.hypothesisDraft;
+
+  function saveHypothesis(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const hypothesis = {
+      suspectId: String(formData.get("suspectId") ?? ""),
+      nature: String(formData.get("nature") ?? ""),
+      evidenceIds: formData.getAll("evidenceIds").map(String),
+      confidence: String(formData.get("confidence") ?? "50"),
+      explanation: String(formData.get("explanation") ?? ""),
+      alternative: String(formData.get("alternative") ?? ""),
+      savedAt: new Date().toISOString(),
+    };
+    window.localStorage.setItem("remotion_hypothesis", JSON.stringify(hypothesis));
+    setSaved(true);
+  }
 
   return (
     <section className="view active" aria-labelledby="workspace-title">
@@ -94,10 +113,14 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
 
       <div className="hypothesis-card">
         <h3>Hypothesis Draft</h3>
-        <form>
+        <form onSubmit={saveHypothesis}>
           <div className="form-row">
             <label htmlFor="hypSuspect">Suspected responsible person</label>
-            <select id="hypSuspect" defaultValue={draft?.suspectId ?? ""}>
+            <select
+              id="hypSuspect"
+              name="suspectId"
+              defaultValue={draft?.suspectId ?? ""}
+            >
               <option value="">Select a person...</option>
               {data.people.map((person) => (
                 <option key={person.id} value={person.id}>
@@ -109,7 +132,11 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
 
           <div className="form-row">
             <label htmlFor="hypNature">Accidental or deliberate incident</label>
-            <select id="hypNature" defaultValue={draft?.nature ?? ""}>
+            <select
+              id="hypNature"
+              name="nature"
+              defaultValue={draft?.nature ?? ""}
+            >
               <option value="">Select...</option>
               <option value="accidental">Accidental</option>
               <option value="deliberate">Deliberate</option>
@@ -121,6 +148,7 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
             <label htmlFor="hypEvidence">Selected supporting evidence</label>
             <select
               id="hypEvidence"
+              name="evidenceIds"
               multiple
               size={6}
               defaultValue={draft?.evidenceIds ?? []}
@@ -138,6 +166,7 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
             <input
               type="range"
               id="hypConfidence"
+              name="confidence"
               min="0"
               max="100"
               defaultValue={draft?.confidence ?? "50"}
@@ -149,6 +178,7 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
             <label htmlFor="hypExplanation">Written explanation</label>
             <textarea
               id="hypExplanation"
+              name="explanation"
               rows={4}
               placeholder="Explain your reasoning..."
               defaultValue={draft?.explanation ?? ""}
@@ -159,6 +189,7 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
             <label htmlFor="hypAlternative">Alternative explanation</label>
             <textarea
               id="hypAlternative"
+              name="alternative"
               rows={3}
               placeholder="What else could explain the evidence?"
               defaultValue={draft?.alternative ?? ""}
@@ -166,10 +197,10 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
           </div>
 
           <div className="form-actions">
-            <button type="button" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary">
               Save hypothesis draft
             </button>
-            <span className="saved-msg hidden">Saved</span>
+            <span className={`saved-msg${saved ? "" : " hidden"}`}>Saved</span>
           </div>
         </form>
       </div>

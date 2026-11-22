@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Evidence } from "../../../js/models";
 import { formatDate } from "../../shared/formatDate";
 import type { DashboardData } from "../../app/types";
@@ -5,9 +6,13 @@ import type { DashboardData } from "../../app/types";
 function EvidenceCard({
   evidence,
   isBookmarked,
+  onOpen,
+  onToggleBookmark,
 }: {
   evidence: Evidence;
   isBookmarked: boolean;
+  onOpen: () => void;
+  onToggleBookmark: () => void;
 }) {
   const status = evidence.status || "unknown";
   const relevance = evidence.relevance || "unknown";
@@ -21,18 +26,21 @@ function EvidenceCard({
       : "badge-unreviewed";
 
   return (
-    <article className="evidence-card">
+    <article className="evidence-card" onClick={onOpen}>
       <button
         type="button"
         className={`bookmark-btn${isBookmarked ? " active" : ""}`}
         aria-label={`${isBookmarked ? "Bookmarked" : "Bookmark"} ${evidence.title}`}
+        onClick={(event) => {
+          event.stopPropagation();
+          onToggleBookmark();
+        }}
       >
         <span className="bookmark-icon">{isBookmarked ? "★" : "☆"}</span>
       </button>
       <h3>{evidence.title}</h3>
       <div className="evidence-meta">
-        {evidence.id} &middot; {evidence.type} &middot;{" "}
-        {formatDate(evidence.timestamp)}
+        {evidence.id} &middot; {evidence.type} &middot; {formatDate(evidence.timestamp)}
       </div>
       <div className="evidence-summary">{evidence.summary}</div>
       {evidence.tags.includes("critical") && (
@@ -57,6 +65,12 @@ interface EvidencePageProps {
 }
 
 export default function EvidencePage({ data, error }: EvidencePageProps) {
+  const [bookmarks, setBookmarks] = useState<string[] | null>(null);
+  const [notes, setNotes] = useState<Record<string, string> | null>(null);
+  const [selectedEvidenceId, setSelectedEvidenceId] = useState<string | null>(
+    null,
+  );
+
   if (error) {
     return (
       <section className="view active">
@@ -80,9 +94,37 @@ export default function EvidencePage({ data, error }: EvidencePageProps) {
   ];
   const orderedEvidence = [...data.evidence].sort(
     (first, second) =>
-      new Date(second.timestamp).getTime() -
-      new Date(first.timestamp).getTime(),
+      new Date(second.timestamp).getTime() - new Date(first.timestamp).getTime(),
   );
+  const currentBookmarks = bookmarks ?? data.bookmarks;
+  const currentNotes = notes ?? data.notes;
+  const selectedEvidence = data.evidence.find(
+    (evidence) => evidence.id === selectedEvidenceId,
+  );
+
+  function toggleBookmark(evidenceId: string) {
+    const nextBookmarks = currentBookmarks.includes(evidenceId)
+      ? currentBookmarks.filter((id) => id !== evidenceId)
+      : [...currentBookmarks, evidenceId];
+    setBookmarks(nextBookmarks);
+    window.localStorage.setItem(
+      "remotion_bookmarks",
+      JSON.stringify(nextBookmarks),
+    );
+  }
+
+  function saveNote(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!selectedEvidence) return;
+
+    const formData = new FormData(event.currentTarget);
+    const nextNotes = {
+      ...currentNotes,
+      [selectedEvidence.id]: String(formData.get("note") ?? ""),
+    };
+    setNotes(nextNotes);
+    window.localStorage.setItem("remotion_notes", JSON.stringify(nextNotes));
+  }
 
   return (
     <section className="view active" aria-labelledby="evidence-title">
@@ -160,11 +202,7 @@ export default function EvidencePage({ data, error }: EvidencePageProps) {
             <option value="title-asc">Title (A-Z)</option>
             <option value="title-desc">Title (Z-A)</option>
           </select>
-          <button
-            type="button"
-            id="clearFiltersBtn"
-            className="btn btn-secondary"
-          >
+          <button type="button" id="clearFiltersBtn" className="btn btn-secondary">
             Clear filters
           </button>
         </div>
@@ -177,10 +215,97 @@ export default function EvidencePage({ data, error }: EvidencePageProps) {
             <EvidenceCard
               key={evidence.id}
               evidence={evidence}
-              isBookmarked={data.bookmarks.includes(evidence.id)}
+              isBookmarked={currentBookmarks.includes(evidence.id)}
+              onOpen={() => setSelectedEvidenceId(evidence.id)}
+              onToggleBookmark={() => toggleBookmark(evidence.id)}
             />
           ))}
         </div>
+      )}
+      {selectedEvidence && (
+        <section className="evidence-detail" aria-labelledby="evidence-detail-title">
+          <div className="evidence-detail-header">
+            <div>
+              <h2 id="evidence-detail-title">{selectedEvidence.title}</h2>
+              <div className="evidence-meta">
+                {selectedEvidence.id} &middot; {selectedEvidence.type} &middot;{" "}
+                {formatDate(selectedEvidence.timestamp)}
+              </div>
+            </div>
+            <button
+              type="button"
+              className="btn btn-secondary btn-small"
+              onClick={() => setSelectedEvidenceId(null)}
+            >
+              Close
+            </button>
+          </div>
+          {selectedEvidence.tags.includes("critical") && (
+            <div className="warning-banner">
+              This item is tagged as critical evidence.
+            </div>
+          )}
+          <div className="detail-field">
+            <strong>Summary</strong> {selectedEvidence.summary}
+          </div>
+          <div className="evidence-detail-content">{selectedEvidence.content}</div>
+          <div className="detail-field">
+            <strong>Related people</strong>{" "}
+            {selectedEvidence.personIds
+              .map(
+                (personId) =>
+                  data.people.find(
+                    (person) =>
+                      person.id === personId || person.name === personId,
+                  )?.name ?? personId,
+              )
+              .join(", ") || "None"}
+          </div>
+          <div className="detail-field">
+            <strong>Related locations</strong>{" "}
+            {selectedEvidence.locationIds
+              .map((locationId) => {
+                const location = data.locations.find(
+                  (candidate) => candidate.id === locationId,
+                );
+                return location
+                  ? `${location.id} - ${location.name}`
+                  : locationId;
+              })
+              .join(", ") || "None"}
+          </div>
+          <div className="detail-field">
+            <strong>Tags</strong>{" "}
+            {selectedEvidence.tags.map((tag) => (
+              <span className="tag-chip" key={tag}>
+                {tag}
+              </span>
+            ))}
+          </div>
+          <div className="detail-field">
+            <strong>Investigator note</strong>
+            <form onSubmit={saveNote}>
+              <textarea
+                name="note"
+                className="note-textarea"
+                rows={3}
+                placeholder="Add a private note about this evidence..."
+                defaultValue={currentNotes[selectedEvidence.id] ?? ""}
+              />
+              <button
+                type="submit"
+                className="btn btn-primary btn-small"
+                style={{ marginTop: 6 }}
+              >
+                Save note
+              </button>
+            </form>
+          </div>
+          <div className="detail-field">
+            <strong>Note preview</strong>
+            <div>{currentNotes[selectedEvidence.id] ?? ""}</div>
+          </div>
+        </section>
       )}
     </section>
   );

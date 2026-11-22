@@ -10,9 +10,7 @@ import {
   evidenceMentionsPerson,
 } from "../utils.js";
 import {
-  saveBookmarksToStorage,
   loadNoteForEvidence,
-  saveNoteForEvidence,
 } from "../storage.js";
 
 export const populateEvidenceDropdowns = (): void => {
@@ -164,7 +162,6 @@ export const renderEvidenceList = (): void => {
   }
   container.innerHTML = html;
 
-  container.addEventListener("click", handleEvidenceListClick as EventListener);
 };
 
 export const renderEvidenceCardHTML = (ev: Evidence): string => {
@@ -215,36 +212,6 @@ export const renderEvidenceCardHTML = (ev: Evidence): string => {
   html += "</div>";
   html += "</div>";
   return html;
-};
-
-export const handleEvidenceListClick = (event: Event): void => {
-  const target = event.target as HTMLElement;
-
-  if (target.dataset && target.dataset.action === "bookmark") {
-    event.stopPropagation();
-    handleBookmarkClick(target.dataset.id as string);
-    return;
-  }
-
-  const card = target.closest(".evidence-card");
-  if (card) {
-    openEvidenceDetail(card.getAttribute("data-id") as string);
-  }
-};
-
-export const handleBookmarkClick = (evidenceId: string): void => {
-  const ev = findEvidenceById(evidenceId);
-  if (!ev) return;
-
-  if (state.bookmarks.indexOf(evidenceId) === -1) {
-    state.bookmarks.push(evidenceId);
-    ev.bookmarked = true;
-  } else {
-    state.bookmarks = state.bookmarks.filter((id) => id !== evidenceId);
-    ev.bookmarked = false;
-  }
-  saveBookmarksToStorage();
-  if (state.currentPage === "evidence") renderEvidenceList();
 };
 
 export const applyStoredBookmarkFlags = (): void => {
@@ -342,7 +309,7 @@ export const renderEvidenceDetail = (ev: Evidence): void => {
     formatDate(ev.timestamp) +
     "</div></div>";
   html +=
-    '<button type="button" class="btn btn-secondary btn-small" onclick="closeEvidenceDetail()">Close</button>';
+    '<button type="button" class="btn btn-secondary btn-small">Close</button>';
   html += "</div>";
 
   if (tags.indexOf("critical") !== -1) {
@@ -388,7 +355,7 @@ export const renderEvidenceDetail = (ev: Evidence): void => {
     storedNote +
     "</textarea>";
   html +=
-    '<button type="button" class="btn btn-primary btn-small" style="margin-top:6px;" onclick="saveCurrentNote()">Save note</button>';
+    '<button type="button" class="btn btn-primary btn-small" style="margin-top:6px;">Save note</button>';
   html += "</div>";
 
   html +=
@@ -425,16 +392,3 @@ export const statusOptionHTML = (
   return '<option value="' + value + '"' + selected + ">" + label + "</option>";
 };
 
-export const saveCurrentNote = (): void => {
-  const textarea = document.getElementById(
-    "evidenceNoteInput",
-  ) as HTMLTextAreaElement | null;
-  if (!textarea) return;
-  const evidenceId = textarea.getAttribute("data-evidence-id");
-  if (!evidenceId) return;
-
-  const text = textarea.value;
-  saveNoteForEvidence(evidenceId, text);
-  const preview = document.getElementById("notePreview");
-  if (preview) preview.innerHTML = text;
-};
