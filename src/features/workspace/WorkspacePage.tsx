@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Evidence } from "../../../js/models";
-import type { DashboardData } from "../../app/types";
+import type { DashboardData, HypothesisDraft } from "../../app/types";
 
 function BookmarkList({ evidence }: { evidence: Evidence[] }) {
   if (evidence.length === 0) {
@@ -49,6 +49,7 @@ interface WorkspacePageProps {
 
 export default function WorkspacePage({ data, error }: WorkspacePageProps) {
   const [saved, setSaved] = useState(false);
+  const [draftState, setDraftState] = useState<HypothesisDraft | null>(null);
 
   if (error) {
     return (
@@ -71,18 +72,26 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
   const bookmarks = data.evidence.filter((item) =>
     data.bookmarks.includes(item.id),
   );
-  const draft = data.hypothesisDraft;
+  const draft =
+    draftState ??
+    data.hypothesisDraft ?? {
+      suspectId: "",
+      nature: "",
+      evidenceIds: [],
+      confidence: "50",
+      explanation: "",
+      alternative: "",
+    };
+
+  function updateDraft(changes: Partial<HypothesisDraft>) {
+    setDraftState((current) => ({ ...draft, ...current, ...changes }));
+    setSaved(false);
+  }
 
   function saveHypothesis(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
     const hypothesis = {
-      suspectId: String(formData.get("suspectId") ?? ""),
-      nature: String(formData.get("nature") ?? ""),
-      evidenceIds: formData.getAll("evidenceIds").map(String),
-      confidence: String(formData.get("confidence") ?? "50"),
-      explanation: String(formData.get("explanation") ?? ""),
-      alternative: String(formData.get("alternative") ?? ""),
+      ...draft,
       savedAt: new Date().toISOString(),
     };
     window.localStorage.setItem("remotion_hypothesis", JSON.stringify(hypothesis));
@@ -119,7 +128,10 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
             <select
               id="hypSuspect"
               name="suspectId"
-              defaultValue={draft?.suspectId ?? ""}
+              value={draft.suspectId}
+              onChange={(event) =>
+                updateDraft({ suspectId: event.target.value })
+              }
             >
               <option value="">Select a person...</option>
               {data.people.map((person) => (
@@ -135,7 +147,8 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
             <select
               id="hypNature"
               name="nature"
-              defaultValue={draft?.nature ?? ""}
+              value={draft.nature}
+              onChange={(event) => updateDraft({ nature: event.target.value })}
             >
               <option value="">Select...</option>
               <option value="accidental">Accidental</option>
@@ -151,7 +164,15 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
               name="evidenceIds"
               multiple
               size={6}
-              defaultValue={draft?.evidenceIds ?? []}
+              value={draft.evidenceIds}
+              onChange={(event) =>
+                updateDraft({
+                  evidenceIds: Array.from(
+                    event.currentTarget.selectedOptions,
+                    (option) => option.value,
+                  ),
+                })
+              }
             >
               {data.evidence.map((item) => (
                 <option key={item.id} value={item.id}>
@@ -169,9 +190,12 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
               name="confidence"
               min="0"
               max="100"
-              defaultValue={draft?.confidence ?? "50"}
+              value={draft.confidence}
+              onChange={(event) =>
+                updateDraft({ confidence: event.target.value })
+              }
             />
-            <output>{draft?.confidence ?? "50"}</output>
+            <output>{draft.confidence}</output>
           </div>
 
           <div className="form-row">
@@ -181,7 +205,10 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
               name="explanation"
               rows={4}
               placeholder="Explain your reasoning..."
-              defaultValue={draft?.explanation ?? ""}
+              value={draft.explanation}
+              onChange={(event) =>
+                updateDraft({ explanation: event.target.value })
+              }
             />
           </div>
 
@@ -192,7 +219,10 @@ export default function WorkspacePage({ data, error }: WorkspacePageProps) {
               name="alternative"
               rows={3}
               placeholder="What else could explain the evidence?"
-              defaultValue={draft?.alternative ?? ""}
+              value={draft.alternative}
+              onChange={(event) =>
+                updateDraft({ alternative: event.target.value })
+              }
             />
           </div>
 

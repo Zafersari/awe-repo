@@ -65,6 +65,7 @@ interface EvidencePageProps {
 }
 
 export default function EvidencePage({ data, error }: EvidencePageProps) {
+  const [searchTerm, setSearchTerm] = useState("");
   const [bookmarks, setBookmarks] = useState<string[] | null>(null);
   const [notes, setNotes] = useState<Record<string, string> | null>(null);
   const [selectedEvidenceId, setSelectedEvidenceId] = useState<string | null>(
@@ -139,6 +140,8 @@ export default function EvidencePage({ data, error }: EvidencePageProps) {
             id="evidenceSearch"
             placeholder="Search evidence by title, summary, or tag..."
             autoComplete="off"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
           />
           <label htmlFor="filterType" className="visually-hidden">
             Filter by type

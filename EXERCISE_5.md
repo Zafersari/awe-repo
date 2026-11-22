@@ -39,13 +39,13 @@ These checkboxes are for self-checking. Don't forget to do the actual checking o
 
 **Tasks**
 
-- [ ] Build the Evidence Catalogue and Workspace views' static structure in React (cards, the filter toolbar, the notes list, the hypothesis form) if you haven't already, then migrate at least 3 real event handlers from the vanilla version (e.g. bookmark click, search input, save-note click) into React event handlers (`onClick`, `onChange`, `onSubmit`, etc.).
-- [ ] For each one, confirm the vanilla version's inline `onclick` attribute or manually-attached `addEventListener` is gone. React should own the event, not the DOM.
+- [x] Build the Evidence Catalogue and Workspace views' static structure in React (cards, the filter toolbar, the notes list, the hypothesis form) if you haven't already, then migrate at least 3 real event handlers from the vanilla version (e.g. bookmark click, search input, save-note click) into React event handlers (`onClick`, `onChange`, `onSubmit`, etc.).
+- [x] For each one, confirm the vanilla version's inline `onclick` attribute or manually-attached `addEventListener` is gone. React should own the event, not the DOM.
 
 **Questions** (depend on the tasks above)
 
-- [ ] How do you attach a click handler to a button in React versus how the vanilla version did it (inline `onclick="..."` in the HTML string, or `addEventListener` in JS)? What actually receives the event object in each approach, and is it the same kind of object?
-- [ ] The vanilla version's evidence-list click handling used event delegation (one listener on the container, checking `event.target`) partly to work around listeners being re-registered on
+- [x] How do you attach a click handler to a button in React versus how the vanilla version did it (inline `onclick="..."` in the HTML string, or `addEventListener` in JS)? What actually receives the event object in each approach, and is it the same kind of object?
+- [x] The vanilla version's evidence-list click handling used event delegation (one listener on the container, checking `event.target`) partly to work around listeners being re-registered on
 every render. Do you still need that pattern in React? Why or why not?
 
 ---
@@ -54,15 +54,15 @@ every render. Do you still need that pattern in React? Why or why not?
 
 **Tasks**
 
-- [ ] Make the Evidence search box a controlled input (`value` + `onChange` backed by `useState`).
-- [ ] Make the entire hypothesis form (suspect select, nature select, evidence multi-select,
+- [x] Make the Evidence search box a controlled input (`value` + `onChange` backed by `useState`).
+- [x] Make the entire hypothesis form (suspect select, nature select, evidence multi-select,
 confidence range, explanation and alternative textareas) fully controlled.
-- [ ] Wire the "Save hypothesis draft" action to read from your controlled state and persist it (still to `localStorage` for now).
+- [x] Wire the "Save hypothesis draft" action to read from your controlled state and persist it (still to `localStorage` for now).
 
 **Questions** (depend on the tasks above)
 
-- [ ] What makes an input "controlled" versus "uncontrolled" in React? Show what happens if you try to type in one of your controlled inputs without wiring its `onChange` and explain, in terms of React's render cycle, *why* that happens.
-- [ ] The hypothesis form has several different input types (select, multi-select, range, textarea). Did you use one `useState` per field, or a single object? Justify your choice — and note this question again once you get to Demo 7 (`useReducer`), which asks you to reconsider it for a different form.
+- [x] What makes an input "controlled" versus "uncontrolled" in React? Show what happens if you try to type in one of your controlled inputs without wiring its `onChange` and explain, in terms of React's render cycle, *why* that happens.
+- [x] The hypothesis form has several different input types (select, multi-select, range, textarea). Did you use one `useState` per field, or a single object? Justify your choice — and note this question again once you get to Demo 7 (`useReducer`), which asks you to reconsider it for a different form.
 
 ---
 
